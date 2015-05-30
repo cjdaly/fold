@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.equinox.http.registry.resources">
+      <resource
+            alias="/stuff"
+            base-name="/static-html">
+      </resource>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.servlets">
+      <servlet
+            alias="/test"
+            class="net.locosoft.fold.server.TestServlet">
+      </servlet>
+   </extension>
+</plugin>

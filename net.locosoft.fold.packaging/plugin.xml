@@ -5,8 +5,12 @@
          id="product"
          point="org.eclipse.core.runtime.products">
       <product
-            application="net.locosoft.fold.packaging.app"
+            application="net.locosoft.fold.packaging.application"
             name="fold">
+         <property
+               name="appName"
+               value="fold">
+         </property>
       </product>
    </extension>
    <extension
