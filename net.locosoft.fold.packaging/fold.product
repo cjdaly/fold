@@ -32,7 +32,6 @@
       <plugin id="javax.xml"/>
       <plugin id="net.locosoft.fold.packaging"/>
       <plugin id="net.locosoft.fold.server"/>
-      <plugin id="org.apache.ant"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.felix.gogo.command"/>
@@ -40,7 +39,6 @@
       <plugin id="org.apache.felix.gogo.shell"/>
       <plugin id="org.apache.httpcomponents.httpclient"/>
       <plugin id="org.apache.httpcomponents.httpcore"/>
-      <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
       <plugin id="org.eclipse.core.expressions"/>
