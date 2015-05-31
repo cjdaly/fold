@@ -85,7 +85,11 @@
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.event" autoStart="true" startLevel="2" />
+      <plugin id="org.eclipse.equinox.http.jetty" autoStart="true" startLevel="0" />
+      <plugin id="org.eclipse.equinox.http.registry" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.osgi" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
       <property name="eclipse.ignoreApp" value="false" />
       <property name="org.osgi.service.http.port" value="8421" />
       <property name="osgi.noShutdown" value="true" />
