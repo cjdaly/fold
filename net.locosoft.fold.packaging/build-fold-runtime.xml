@@ -14,6 +14,11 @@
 	<property name="fold-eclipse-dir" value="${fold-runtime-dir}/eclipse"/>
 
 	<target name="main">
+		<!--
+		<delete dir="${fold-eclipse-dir}"/>
+		TODO: run Eclipse Product export wizard here
+		-->
+		
 		<delete file="${fold-eclipse-dir}/eclipse"/>
 		<delete>
 			<dirset dir="${fold-eclipse-dir}/plugins">
