@@ -9,12 +9,12 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.neo4j;
+package net.locosoft.fold.packaging.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class Neo4jActivator implements BundleActivator {
+public class FoldActivator implements BundleActivator {
 
 	private static BundleContext context;
 
@@ -23,13 +23,13 @@ public class Neo4jActivator implements BundleActivator {
 	}
 
 	public void start(BundleContext bundleContext) throws Exception {
-		Neo4jActivator.context = bundleContext;
-		System.out.println("starting Neo4jActivator");
+		FoldActivator.context = bundleContext;
+		System.out.println("starting FoldActivator");
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
-		Neo4jActivator.context = null;
-		System.out.println("stopping Neo4jActivator");
+		FoldActivator.context = null;
+		System.out.println("stopping FoldActivator");
 	}
 
 }

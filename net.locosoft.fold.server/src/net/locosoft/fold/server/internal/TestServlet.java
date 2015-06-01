@@ -9,7 +9,7 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.server;
+package net.locosoft.fold.server.internal;
 
 import java.io.IOException;
 

@@ -9,13 +9,12 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.packaging;
+package net.locosoft.fold.server.internal;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
-public class FoldActivator implements BundleActivator {
-
+public class ServerActivator implements BundleActivator {
 	private static BundleContext context;
 
 	static BundleContext getContext() {
@@ -23,13 +22,13 @@ public class FoldActivator implements BundleActivator {
 	}
 
 	public void start(BundleContext bundleContext) throws Exception {
-		FoldActivator.context = bundleContext;
-		System.out.println("starting FoldActivator");
+		ServerActivator.context = bundleContext;
+		System.out.println("starting ServerActivator");
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
-		FoldActivator.context = null;
-		System.out.println("stopping FoldActivator");
+		ServerActivator.context = null;
+		System.out.println("stopping ServerActivator");
 	}
 
 }

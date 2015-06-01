@@ -12,7 +12,7 @@
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/test"
-            class="net.locosoft.fold.server.TestServlet">
+            class="net.locosoft.fold.server.internal.TestServlet">
       </servlet>
    </extension>
 </plugin>

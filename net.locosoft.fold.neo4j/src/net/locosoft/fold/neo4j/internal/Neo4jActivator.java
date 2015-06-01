@@ -9,26 +9,28 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.server;
+package net.locosoft.fold.neo4j.internal;
+
+import net.locosoft.fold.neo4j.INeo4jService;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 
-public class ServerActivator implements BundleActivator {
-	private static BundleContext context;
+public class Neo4jActivator implements BundleActivator {
 
-	static BundleContext getContext() {
-		return context;
-	}
+	private ServiceRegistration<INeo4jService> _serviceRegistration;
 
 	public void start(BundleContext bundleContext) throws Exception {
-		ServerActivator.context = bundleContext;
-		System.out.println("starting ServerActivator");
+		Neo4jService neo4jService = new Neo4jService();
+		_serviceRegistration = bundleContext.registerService(
+				INeo4jService.class, neo4jService, null);
+		System.out.println("starting Neo4jActivator");
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
-		ServerActivator.context = null;
-		System.out.println("stopping ServerActivator");
+		_serviceRegistration.unregister();
+		System.out.println("stopping Neo4jActivator");
 	}
 
 }

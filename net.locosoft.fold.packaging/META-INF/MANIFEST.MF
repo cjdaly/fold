@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: fold packaging
 Bundle-SymbolicName: net.locosoft.fold.packaging;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: net.locosoft.fold.packaging.FoldActivator
+Bundle-Activator: net.locosoft.fold.packaging.internal.FoldActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ActivationPolicy: lazy
 Require-Bundle: org.eclipse.osgi,

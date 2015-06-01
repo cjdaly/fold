@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: fold Neo4j driver
 Bundle-SymbolicName: net.locosoft.fold.neo4j;singleton:=true
 Bundle-Version: 1.0.0.qualifier
-Bundle-Activator: net.locosoft.fold.neo4j.Neo4jActivator
+Bundle-Activator: net.locosoft.fold.neo4j.internal.Neo4jActivator
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.osgi,
  org.apache.httpcomponents.httpclient,

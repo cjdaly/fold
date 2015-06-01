@@ -21,7 +21,7 @@
             thread="main"
             visible="true">
          <run
-               class="net.locosoft.fold.packaging.FoldApplication">
+               class="net.locosoft.fold.packaging.internal.FoldApplication">
          </run>
       </application>
    </extension>
