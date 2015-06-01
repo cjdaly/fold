@@ -80,6 +80,9 @@
    </plugins>
 
    <configurations>
+      <plugin id="net.locosoft.fold.neo4j" autoStart="true" startLevel="0" />
+      <plugin id="net.locosoft.fold.packaging" autoStart="true" startLevel="0" />
+      <plugin id="net.locosoft.fold.server" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
