@@ -7,7 +7,7 @@
    </configIni>
 
    <launcherArgs>
-      <programArgs>-consoleLog -console -clean
+      <programArgs>-consoleLog -clean
       </programArgs>
       <vmArgs>-Xms40m -Xmx256m
       </vmArgs>

@@ -32,7 +32,6 @@ public class Neo4jService implements INeo4jService, Runnable {
 	public Neo4jService(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 		_neo4jHomeDir = getNeo4jHomeDir();
-		System.out.println("neoHome: " + _neo4jHomeDir);
 	}
 
 	private String getNeo4jHomeDir() {
@@ -76,13 +75,8 @@ public class Neo4jService implements INeo4jService, Runnable {
 	public void run() {
 		try {
 			while (!_stopping) {
-				execNeo4jCommand("/bin/ls");
-
-				Thread.sleep(10 * 1000);
-
-				execNeo4jCommand("/bin/pwd");
-
-				Thread.sleep(10 * 1000);
+				execNeo4jCommand(_neo4jHomeDir + "/bin/neo4j status");
+				Thread.sleep(5 * 1000);
 			}
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
@@ -91,8 +85,6 @@ public class Neo4jService implements INeo4jService, Runnable {
 	}
 
 	private int execNeo4jCommand(String command) {
-		System.out.println("COMMAND: " + command);
-
 		int status = -1;
 		StringBuilder processOut = new StringBuilder();
 		try {
@@ -108,8 +100,7 @@ public class Neo4jService implements INeo4jService, Runnable {
 			ex.printStackTrace();
 		}
 
-		System.out.println("OUTPUT:");
-		System.out.println(processOut.toString());
+		System.out.println(command + "\n -> " + processOut.toString());
 		return status;
 	}
 
