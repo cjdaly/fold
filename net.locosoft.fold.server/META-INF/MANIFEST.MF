@@ -5,6 +5,8 @@ Bundle-SymbolicName: net.locosoft.fold.server;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Require-Bundle: org.eclipse.osgi,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
  javax.servlet,
  javax.xml,
  org.eclipse.equinox.http.jetty,

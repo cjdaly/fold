@@ -11,8 +11,8 @@
    <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
-            alias="/test"
-            class="net.locosoft.fold.server.internal.TestServlet">
+            alias="/fold"
+            class="net.locosoft.fold.server.internal.FoldServlet">
       </servlet>
    </extension>
 </plugin>

@@ -19,27 +19,30 @@ import javax.servlet.ServletException;
 import javax.servlet.ServletRequest;
 import javax.servlet.ServletResponse;
 
-public class TestServlet implements Servlet {
+public class FoldServlet implements Servlet {
 
-	public void init(ServletConfig config) throws ServletException {
-		System.out.println("init TestServlet");
+	private ServletConfig _servletConfig;
+
+	public void init(ServletConfig servletConfig) throws ServletException {
+		_servletConfig = servletConfig;
+		System.out.println("init FoldServlet");
 	}
 
 	public ServletConfig getServletConfig() {
-		return null;
+		return _servletConfig;
 	}
 
 	public void service(ServletRequest req, ServletResponse res)
 			throws ServletException, IOException {
-		System.out.println("service TestServlet");
+		System.out.println("service FoldServlet");
 	}
 
 	public String getServletInfo() {
-		return null;
+		return "fold";
 	}
 
 	public void destroy() {
-		System.out.println("destroy TestServlet");
+		System.out.println("destroy FoldServlet");
 	}
 
 }
