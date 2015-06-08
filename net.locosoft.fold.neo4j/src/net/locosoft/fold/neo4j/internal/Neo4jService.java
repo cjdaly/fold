@@ -75,8 +75,14 @@ public class Neo4jService implements INeo4jService, Runnable {
 	public void run() {
 		try {
 			while (!_stopping) {
-				execNeo4jCommand(_neo4jHomeDir + "/bin/neo4j status");
-				Thread.sleep(5 * 1000);
+				int pid = getNeo4jPID();
+				if (pid == -1) {
+					execNeo4jCommand("start");
+					Thread.sleep(10 * 1000);
+				} else {
+					System.out.println("Neo PID: " + pid);
+					Thread.sleep(60 * 1000);
+				}
 			}
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
@@ -84,11 +90,38 @@ public class Neo4jService implements INeo4jService, Runnable {
 		_stopped = true;
 	}
 
-	private int execNeo4jCommand(String command) {
-		int status = -1;
-		StringBuilder processOut = new StringBuilder();
+	public int getNeo4jPID() {
+		StringBuilder neo4jStatus = new StringBuilder();
+		execNeo4jCommand("status", neo4jStatus);
+
+		String runCheck = "is running at pid";
+		int index = neo4jStatus.indexOf(runCheck);
+		if (index == -1)
+			return -1;
+
+		String pidText = neo4jStatus.toString()
+				.substring(index + runCheck.length()).trim();
+		int pid = -1;
 		try {
-			Process process = Runtime.getRuntime().exec(command);
+			pid = Integer.parseInt(pidText);
+		} catch (NumberFormatException ex) {
+			ex.printStackTrace();
+		}
+		return pid;
+	}
+
+	private int execNeo4jCommand(String command) {
+		return execNeo4jCommand(command, null);
+	}
+
+	private int execNeo4jCommand(String command, StringBuilder processOut) {
+		String fullCommand = _neo4jHomeDir + "/bin/neo4j " + command;
+
+		int status = -1;
+		if (processOut == null)
+			processOut = new StringBuilder();
+		try {
+			Process process = Runtime.getRuntime().exec(fullCommand);
 			ProcessStreamReader reader = new ProcessStreamReader(
 					process.getInputStream(), processOut);
 			reader.start();
