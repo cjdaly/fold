@@ -27,20 +27,21 @@ public class Neo4jBridge {
 	public Neo4jBridge() {
 	}
 
-	public JsonObject do_GET(URI uri) {
+	public JsonObject doGetJson(URI uri) {
 		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
 			CloseableHttpResponse response = httpClient
 					.execute(new HttpGet(uri));
 
 			String bodyText = EntityUtils.toString(response.getEntity());
-			System.out.println(">>> " + bodyText);
+			JsonObject jsonObject = JsonObject.readFrom(bodyText);
+			return jsonObject;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
 		return null;
 	}
 
-	public JsonObject do_POST(URI uri, JsonObject content) {
+	public JsonObject doPostJson(URI uri, JsonObject content) {
 		return null;
 	}
 

@@ -15,6 +15,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
+import java.net.URISyntaxException;
+
+import com.eclipsesource.json.JsonObject;
 
 public class Neo4jController implements Runnable {
 
@@ -38,19 +42,28 @@ public class Neo4jController implements Runnable {
 	}
 
 	public void run() {
-		try {
-			while (!_stopping) {
+		while (!_stopping) {
+			try {
 				int pid = getNeo4jPID();
 				if (pid == -1) {
 					execNeo4jCommand("start");
 					Thread.sleep(10 * 1000);
 				} else {
 					System.out.println("Neo PID: " + pid);
+
+					Neo4jBridge neo4jBridge = new Neo4jBridge();
+					URI uri = new URI("http://localhost:7474/db/data");
+					JsonObject jsonObject = neo4jBridge.doGetJson(uri);
+
+					System.out.println("JSON: " + jsonObject);
+
 					Thread.sleep(60 * 1000);
 				}
+			} catch (InterruptedException ex) {
+				ex.printStackTrace();
+			} catch (URISyntaxException ex) {
+				ex.printStackTrace();
 			}
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
 		}
 		_stopped = true;
 	}
