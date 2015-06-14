@@ -9,11 +9,17 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.neo4j.internal;
+package net.locosoft.fold.neo4j;
 
-public class Neo4jCypher {
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
-	private static final String CYPHER_URL = "http://localhost:7474/db/data/cypher";
+public interface ICypherTransaction {
 
-	
+	JsonObject getRequest();
+
+	void setParameter(String name, JsonValue value);
+
+	JsonObject getResponse();
+
 }

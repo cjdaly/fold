@@ -13,4 +13,8 @@ package net.locosoft.fold.neo4j;
 
 public interface INeo4jService {
 
+	ICypherTransaction createCypherTransaction(String statement);
+
+	void doCypher(ICypherTransaction cypher);
+
 }

@@ -16,22 +16,43 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.net.URISyntaxException;
 
-import com.eclipsesource.json.JsonObject;
+import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.Path;
 
 public class Neo4jController implements Runnable {
 
-	private Neo4jService _neo4jService;
 	private Thread _thread;
 
-	public Neo4jController(Neo4jService neo4jService) {
-		_neo4jService = neo4jService;
+	public Neo4jController() {
 		_thread = new Thread(this);
 	}
 
+	public String getNeo4jHomeDir() {
+		try {
+			String eclipseLocation = System
+					.getProperty("eclipse.home.location");
+			IPath eclipsePath = new Path(new URI(eclipseLocation).getPath());
+			IPath foldHomePath = eclipsePath.removeLastSegments(1)
+					.removeTrailingSeparator();
+
+			String neo4jVersion = System
+					.getProperty("net.locosoft.fold.neo4j.version");
+			IPath neo4jHomePath = foldHomePath.append("/neo4j/neo4j-community-"
+					+ neo4jVersion);
+			return neo4jHomePath.toString();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return null;
+	}
+
 	boolean _stopping = false;
-	boolean _stopped = false;
+	boolean _stopped = true;
+
+	public boolean isNeo4jReady() {
+		return !(_stopped || _stopping);
+	}
 
 	public void start() {
 		_thread.start();
@@ -49,19 +70,10 @@ public class Neo4jController implements Runnable {
 					execNeo4jCommand("start");
 					Thread.sleep(10 * 1000);
 				} else {
-					System.out.println("Neo PID: " + pid);
-
-					Neo4jBridge neo4jBridge = new Neo4jBridge();
-					URI uri = new URI("http://localhost:7474/db/data");
-					JsonObject jsonObject = neo4jBridge.doGetJson(uri);
-
-					System.out.println("JSON: " + jsonObject);
-
+					_stopped = false;
 					Thread.sleep(60 * 1000);
 				}
 			} catch (InterruptedException ex) {
-				ex.printStackTrace();
-			} catch (URISyntaxException ex) {
 				ex.printStackTrace();
 			}
 		}
@@ -93,8 +105,7 @@ public class Neo4jController implements Runnable {
 	}
 
 	private int execNeo4jCommand(String command, StringBuilder processOut) {
-		String fullCommand = _neo4jService.getNeo4jHomeDir() + "/bin/neo4j "
-				+ command;
+		String fullCommand = getNeo4jHomeDir() + "/bin/neo4j " + command;
 
 		int status = -1;
 		if (processOut == null)

@@ -11,14 +11,13 @@
 
 package net.locosoft.fold.neo4j.internal;
 
-import java.net.URI;
-
+import net.locosoft.fold.neo4j.ICypherTransaction;
 import net.locosoft.fold.neo4j.INeo4jService;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+
+import com.eclipsesource.json.JsonObject;
 
 public class Neo4jService implements INeo4jService {
 
@@ -28,7 +27,7 @@ public class Neo4jService implements INeo4jService {
 
 	public Neo4jService(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
-		_neo4jController = new Neo4jController(this);
+		_neo4jController = new Neo4jController();
 	}
 
 	public void start() {
@@ -42,23 +41,16 @@ public class Neo4jService implements INeo4jService {
 		_neo4jController.stop();
 	}
 
-	public String getNeo4jHomeDir() {
-		try {
-			String eclipseLocation = System
-					.getProperty("eclipse.home.location");
-			IPath eclipsePath = new Path(new URI(eclipseLocation).getPath());
-			IPath foldHomePath = eclipsePath.removeLastSegments(1)
-					.removeTrailingSeparator();
+	public ICypherTransaction createCypherTransaction(String statement) {
+		return new CypherTransaction(statement);
+	}
 
-			String neo4jVersion = System
-					.getProperty("net.locosoft.fold.neo4j.version");
-			IPath neo4jHomePath = foldHomePath.append("/neo4j/neo4j-community-"
-					+ neo4jVersion);
-			return neo4jHomePath.toString();
-		} catch (Exception ex) {
-			ex.printStackTrace();
+	public void doCypher(ICypherTransaction cypher) {
+		if (_neo4jController.isNeo4jReady()) {
+			JsonObject response = Neo4jRestUtil.doPostJson(
+					Neo4jRestUtil.CYPHER_URI, cypher.getRequest());
+			((CypherTransaction) cypher).setResponse(response);
 		}
-		return null;
 	}
 
 }
