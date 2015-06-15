@@ -117,13 +117,12 @@ public class Neo4jController implements Runnable {
 			reader.start();
 			status = process.waitFor();
 			reader.join();
+			System.out.println(processOut.toString());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} catch (InterruptedException ex) {
 			ex.printStackTrace();
 		}
-
-		System.out.println(command + "\n -> " + processOut.toString());
 		return status;
 	}
 
