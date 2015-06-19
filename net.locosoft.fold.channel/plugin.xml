@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="net.locosoft.fold.channel" name="channel declaration" schema="schema/net.locosoft.fold.channel.exsd"/>
+
+
+</plugin>

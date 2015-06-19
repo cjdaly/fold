@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="net.locosoft.fold.channel.vitals" name="vital signs" schema="schema/net.locosoft.fold.channel.vitals.exsd"/>
+   <extension
+         point="net.locosoft.fold.channel">
+      <channel
+            id="vitals"
+            implementation="net.locosoft.fold.channel.vitals.internal.VitalsChannel">
+      </channel>
+   </extension>
+   <extension
+         point="net.locosoft.fold.channel.vitals">
+      <vitals
+            id=" javaRuntime"
+            implementation="net.locosoft.fold.channel.vitals.internal.JavaRuntimeVitals">
+         <vital
+               datatype="long"
+               id="freeMemory"
+               units="bytes"></vital>
+         <vital
+               datatype="long"
+               id="maxMemory"
+               units="bytes">
+         </vital>
+         <vital
+               datatype="long"
+               id="totalMemory"
+               units="bytes">
+         </vital>
+      </vitals>
+   </extension>
+
+</plugin>
