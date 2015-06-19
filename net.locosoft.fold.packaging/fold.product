@@ -27,12 +27,12 @@
       <plugin id="com.eclipsesource.json"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
-      <plugin id="net.locosoft.fold.neo4j"/>
-      <plugin id="net.locosoft.fold.packaging"/>
-      <plugin id="net.locosoft.fold.server"/>
       <plugin id="net.locosoft.fold.channel"/>
       <plugin id="net.locosoft.fold.channel.times"/>
       <plugin id="net.locosoft.fold.channel.vitals"/>
+      <plugin id="net.locosoft.fold.neo4j"/>
+      <plugin id="net.locosoft.fold.packaging"/>
+      <plugin id="net.locosoft.fold.server"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.felix.gogo.command"/>
@@ -80,10 +80,9 @@
    </plugins>
 
    <configurations>
-      <plugin id="net.locosoft.fold.neo4j" autoStart="true" startLevel="0" />
-      <plugin id="net.locosoft.fold.packaging" autoStart="true" startLevel="0" />
-      <plugin id="net.locosoft.fold.server" autoStart="true" startLevel="0" />
       <plugin id="net.locosoft.fold.channel" autoStart="true" startLevel="0" />
+      <plugin id="net.locosoft.fold.neo4j" autoStart="true" startLevel="0" />
+      <plugin id="net.locosoft.fold.server" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="0" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.equinox.ds" autoStart="true" startLevel="2" />
@@ -93,7 +92,7 @@
       <plugin id="org.eclipse.equinox.simpleconfigurator" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
-      <property name="eclipse.ignoreApp" value="false" />
+      <property name="eclipse.ignoreApp" value="true" />
       <property name="net.locosoft.fold.neo4j.version" value="2.2.2" />
       <property name="org.osgi.service.http.port" value="8421" />
       <property name="osgi.noShutdown" value="true" />
