@@ -15,5 +15,3 @@ Require-Bundle: org.eclipse.osgi,
  com.eclipsesource.json,
  net.locosoft.fold.neo4j,
  net.locosoft.fold.channel
-Bundle-ActivationPolicy: lazy
-Bundle-Activator: net.locosoft.fold.server.internal.ServerActivator
