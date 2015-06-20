@@ -13,4 +13,10 @@ package net.locosoft.fold.channel;
 
 public interface IChannelService {
 
+	IChannel[] getAllChannels();
+
+	IChannel getChannel(String channelId);
+
+	<T extends IChannel> T getChannel(Class<T> channelInterface);
+
 }

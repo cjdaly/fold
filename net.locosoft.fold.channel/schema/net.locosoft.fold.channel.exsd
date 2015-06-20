@@ -65,7 +65,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn="net.locosoft.fold.channel.Channel:"/>
+                  <meta.attribute kind="java" basedOn=":net.locosoft.fold.channel.IChannel"/>
                </appinfo>
             </annotation>
          </attribute>

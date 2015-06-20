@@ -13,4 +13,8 @@ package net.locosoft.fold.channel;
 
 public interface IChannel {
 
+	String getChannelId();
+
+	Class<? extends IChannel> getChannelInterface();
+
 }

@@ -13,4 +13,14 @@ package net.locosoft.fold.channel;
 
 public abstract class AbstractChannel implements IChannel {
 
+	private String _id;
+
+	public void setIdFromExtensionRegistry(String id) {
+		_id = id;
+	}
+
+	public String getChannelId() {
+		return _id;
+	}
+
 }

@@ -12,7 +12,13 @@
 package net.locosoft.fold.channel.vitals.internal;
 
 import net.locosoft.fold.channel.AbstractChannel;
+import net.locosoft.fold.channel.IChannel;
+import net.locosoft.fold.channel.vitals.IVitalsChannel;
 
-public class VitalsChannel extends AbstractChannel {
+public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
+
+	public Class<? extends IChannel> getChannelInterface() {
+		return IVitalsChannel.class;
+	}
 
 }

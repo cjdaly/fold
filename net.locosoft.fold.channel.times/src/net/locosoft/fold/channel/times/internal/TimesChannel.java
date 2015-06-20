@@ -12,11 +12,12 @@
 package net.locosoft.fold.channel.times.internal;
 
 import net.locosoft.fold.channel.AbstractChannel;
+import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.times.ITimesChannel;
 
 public class TimesChannel extends AbstractChannel implements ITimesChannel {
 
-	public TimesChannel() {
+	public Class<? extends IChannel> getChannelInterface() {
+		return ITimesChannel.class;
 	}
-
 }
