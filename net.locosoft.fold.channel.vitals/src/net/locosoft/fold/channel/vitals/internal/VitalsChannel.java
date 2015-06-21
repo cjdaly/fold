@@ -26,10 +26,21 @@ import org.eclipse.core.runtime.Platform;
 
 public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
+	private VitalsMonitor _vitalsMonitor = new VitalsMonitor(this);
 	private HashMap<String, IVitals> _idToVitals = new HashMap<String, IVitals>();
 
 	public Class<? extends IChannel> getChannelInterface() {
 		return IVitalsChannel.class;
+	}
+
+	String[] getVitalsIds() {
+		Set<String> idSet = _idToVitals.keySet();
+		String[] ids = idSet.toArray(new String[] {});
+		return ids;
+	}
+
+	IVitals getVitals(String id) {
+		return _idToVitals.get(id);
 	}
 
 	public void init() {
@@ -50,13 +61,11 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 			}
 		}
 
-		Set<String> vitalsIds = _idToVitals.keySet();
-		for (String vitalsId : vitalsIds) {
-			IVitals vitals = _idToVitals.get(vitalsId);
-			String vitalsAsJson = vitals.readVitalsAsJson(null);
-			System.out.println("vitals:" + vitalsId);
-			System.out.println("  " + vitalsAsJson);
-		}
+		_vitalsMonitor.start();
+	}
+
+	public void fini() {
+		_vitalsMonitor.stop();
 	}
 
 }

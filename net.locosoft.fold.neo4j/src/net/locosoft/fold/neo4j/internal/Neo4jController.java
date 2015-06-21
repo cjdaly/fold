@@ -23,6 +23,8 @@ import org.eclipse.core.runtime.Path;
 public class Neo4jController implements Runnable {
 
 	private Thread _thread;
+	private boolean _stopping = false;
+	private boolean _stopped = true;
 
 	public Neo4jController() {
 		_thread = new Thread(this);
@@ -46,9 +48,6 @@ public class Neo4jController implements Runnable {
 		}
 		return null;
 	}
-
-	boolean _stopping = false;
-	boolean _stopped = true;
 
 	public boolean isNeo4jReady() {
 		return !(_stopped || _stopping);
