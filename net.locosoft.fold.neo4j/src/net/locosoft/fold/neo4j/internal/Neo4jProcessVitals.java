@@ -9,17 +9,13 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel.vitals.internal;
+package net.locosoft.fold.neo4j.internal;
 
 import net.locosoft.fold.channel.vitals.AbstractVitals;
 
-public class JavaRuntimeVitals extends AbstractVitals {
+public class Neo4jProcessVitals extends AbstractVitals {
 
 	public void readVitals() {
-		Runtime runtime = Runtime.getRuntime();
-		recordVital("freeMemory", runtime.freeMemory());
-		recordVital("maxMemory", runtime.maxMemory());
-		recordVital("totalMemory", runtime.totalMemory());
 	}
 
 }

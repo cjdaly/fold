@@ -9,34 +9,13 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel.vitals;
+package net.locosoft.fold.channel.vitals.internal;
 
-public abstract class Vitals {
+import net.locosoft.fold.channel.vitals.AbstractVitals;
 
-	public abstract void readVitals();
+public class FoldProcessVitals extends AbstractVitals {
 
-	public int getIntVital(String id) {
-		return 0;
-	}
-
-	public long getLongVital(String id) {
-		return 0;
-	}
-
-	public float getFloatVital(String id) {
-		return 0;
-	}
-
-	public double getDoubleVital(String id) {
-		return 0;
-	}
-
-	public boolean getBooleanVital(String id) {
-		return false;
-	}
-
-	public String getStringVital(String id) {
-		return "";
+	public void readVitals() {
 	}
 
 }

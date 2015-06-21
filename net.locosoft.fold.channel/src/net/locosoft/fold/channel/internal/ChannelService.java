@@ -13,8 +13,8 @@ package net.locosoft.fold.channel.internal;
 
 import java.util.HashMap;
 
-import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
+import net.locosoft.fold.channel.IChannelInternal;
 import net.locosoft.fold.channel.IChannelService;
 
 import org.eclipse.core.runtime.CoreException;
@@ -57,11 +57,12 @@ public class ChannelService implements IChannelService {
 						.createExecutableExtension("implementation");
 				IChannel channel = (IChannel) extension;
 
-				if (channel instanceof AbstractChannel) {
-					AbstractChannel abstractChannel = (AbstractChannel) channel;
-					abstractChannel.setIdFromExtensionRegistry(channelId);
+				if (channel instanceof IChannelInternal) {
+					IChannelInternal channelInternal = (IChannelInternal) channel;
+					channelInternal.setIdFromExtensionRegistry(channelId);
+					channelInternal.init();
 				} else {
-					// TODO: check value returned matches extension registry
+					// TODO: complain?
 				}
 
 				// TODO: check for duplicate id/iface use

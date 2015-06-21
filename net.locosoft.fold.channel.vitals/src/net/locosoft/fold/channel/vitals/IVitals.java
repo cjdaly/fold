@@ -9,17 +9,22 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel.vitals.internal;
+package net.locosoft.fold.channel.vitals;
 
-import net.locosoft.fold.channel.vitals.AbstractVitals;
+public interface IVitals {
 
-public class JavaRuntimeVitals extends AbstractVitals {
+	// predefined vital attributes
+	String ATTR_ID = "id";
+	String ATTR_VALUE = "value";
+	String ATTR_DATATYPE = "datatype";
+	String ATTR_UNITS = "units";
+	String ATTR_NAME = "name";
+	String ATTR_DESCRIPTION = "description";
 
-	public void readVitals() {
-		Runtime runtime = Runtime.getRuntime();
-		recordVital("freeMemory", runtime.freeMemory());
-		recordVital("maxMemory", runtime.maxMemory());
-		recordVital("totalMemory", runtime.totalMemory());
-	}
+	// attribute groups
+	String[] ATTRS_ALL = new String[0];
+	String[] ATTRS_DEFAULT = new String[] { ATTR_ID, ATTR_VALUE };
+
+	String readVitalsAsJson(String[] attributes);
 
 }

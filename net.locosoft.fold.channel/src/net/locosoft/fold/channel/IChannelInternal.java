@@ -9,17 +9,14 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel.vitals.internal;
+package net.locosoft.fold.channel;
 
-import net.locosoft.fold.channel.vitals.AbstractVitals;
+public interface IChannelInternal {
 
-public class JavaRuntimeVitals extends AbstractVitals {
+	void setIdFromExtensionRegistry(String id);
 
-	public void readVitals() {
-		Runtime runtime = Runtime.getRuntime();
-		recordVital("freeMemory", runtime.freeMemory());
-		recordVital("maxMemory", runtime.maxMemory());
-		recordVital("totalMemory", runtime.totalMemory());
-	}
+	void init();
+
+	void fini();
 
 }

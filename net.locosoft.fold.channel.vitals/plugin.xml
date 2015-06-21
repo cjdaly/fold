@@ -29,6 +29,15 @@
                units="bytes">
          </vital>
       </vitals>
+      <vitals
+            id="foldProcess"
+            implementation="net.locosoft.fold.channel.vitals.internal.FoldProcessVitals">
+         <vital
+               datatype="long"
+               id="vmPeak"
+               units="bytes">
+         </vital>
+      </vitals>
    </extension>
 
 </plugin>

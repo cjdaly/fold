@@ -9,6 +9,7 @@ Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.runtime,
  org.apache.httpcomponents.httpclient,
  org.apache.httpcomponents.httpcore,
- com.eclipsesource.json
+ com.eclipsesource.json,
+ net.locosoft.fold.channel.vitals
 Bundle-ActivationPolicy: lazy
 Export-Package: net.locosoft.fold.neo4j
