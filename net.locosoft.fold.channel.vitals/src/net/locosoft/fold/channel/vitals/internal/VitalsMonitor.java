@@ -38,14 +38,19 @@ public class VitalsMonitor implements Runnable {
 	}
 
 	public void run() {
+		_stopped = false;
 		while (!_stopping) {
 			try {
 				String[] vitalsIds = _vitalsChannel.getVitalsIds();
 				for (String vitalsId : vitalsIds) {
 					IVitals vitals = _vitalsChannel.getVitals(vitalsId);
-					String vitalsAsJson = vitals.readVitalsAsJson(null);
-					System.out.println("vitals: " + vitalsId);
-					System.out.println("  " + vitalsAsJson);
+					try {
+						String vitalsAsJson = vitals.readVitalsAsJson(null);
+						System.out.println("vitals: " + vitalsId);
+						System.out.println("  " + vitalsAsJson);
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 				}
 
 				Thread.sleep(10 * 1000);

@@ -116,7 +116,6 @@ public class Neo4jController implements Runnable {
 			reader.start();
 			status = process.waitFor();
 			reader.join();
-			System.out.println(processOut.toString());
 		} catch (IOException ex) {
 			ex.printStackTrace();
 		} catch (InterruptedException ex) {
@@ -135,10 +134,8 @@ public class Neo4jController implements Runnable {
 		}
 
 		public void run() {
-			try {
-				BufferedReader reader = new BufferedReader(
-						new InputStreamReader(_inputStream));
-
+			try (BufferedReader reader = new BufferedReader(
+					new InputStreamReader(_inputStream))) {
 				int readRaw = reader.read();
 				while (readRaw != -1) {
 					char c = (char) readRaw;

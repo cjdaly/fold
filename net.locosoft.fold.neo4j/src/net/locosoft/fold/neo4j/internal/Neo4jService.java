@@ -41,6 +41,10 @@ public class Neo4jService implements INeo4jService {
 		_neo4jController.stop();
 	}
 
+	public int getNeo4jPID() {
+		return _neo4jController.getNeo4jPID();
+	}
+
 	public ICypherTransaction createCypherTransaction(String statement) {
 		return new CypherTransaction(statement);
 	}

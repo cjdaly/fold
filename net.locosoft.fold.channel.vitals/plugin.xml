@@ -35,7 +35,7 @@
          <vital
                datatype="long"
                id="vmPeak"
-               units="bytes">
+               units="kB">
          </vital>
       </vitals>
    </extension>
