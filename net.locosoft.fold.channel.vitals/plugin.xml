@@ -38,6 +38,15 @@
                units="kB">
          </vital>
       </vitals>
+      <vitals
+            id="neo4jProcess"
+            implementation="net.locosoft.fold.channel.vitals.internal.Neo4jProcessVitals">
+         <vital
+               datatype="long"
+               id="vmPeak"
+               units="kB">
+         </vital>
+      </vitals>
    </extension>
 
 </plugin>

@@ -18,14 +18,12 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.locosoft.fold.channel.ChannelServiceUtil;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.IChannelService;
 import net.locosoft.fold.neo4j.ICypherTransaction;
 import net.locosoft.fold.neo4j.INeo4jService;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
+import net.locosoft.fold.neo4j.Neo4jServiceUtil;
 
 import com.eclipsesource.json.WriterConfig;
 
@@ -36,15 +34,8 @@ public class FoldServlet extends HttpServlet {
 	private INeo4jService _neo4jService;
 
 	public void init() throws ServletException {
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		BundleContext bundleContext = bundle.getBundleContext();
-
-		_neo4jService = bundleContext.getService(bundleContext
-				.getServiceReference(INeo4jService.class));
-
-		_channelService = bundleContext.getService(bundleContext
-				.getServiceReference(IChannelService.class));
-
+		_neo4jService = Neo4jServiceUtil.getNeo4jService();
+		_channelService = ChannelServiceUtil.getChannelService();
 		System.out.println("init FoldServlet");
 	}
 

@@ -9,28 +9,22 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.neo4j.internal;
+package net.locosoft.fold.channel.vitals.internal;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import net.locosoft.fold.channel.vitals.AbstractVitals;
 import net.locosoft.fold.neo4j.INeo4jService;
+import net.locosoft.fold.neo4j.Neo4jServiceUtil;
 import net.locosoft.fold.util.FoldUtil;
-
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
 
 public class Neo4jProcessVitals extends AbstractVitals {
 
 	private INeo4jService _neo4jService;
 
 	public Neo4jProcessVitals() {
-		Bundle bundle = FrameworkUtil.getBundle(getClass());
-		BundleContext bundleContext = bundle.getBundleContext();
-		_neo4jService = bundleContext.getService(bundleContext
-				.getServiceReference(INeo4jService.class));
+		_neo4jService = Neo4jServiceUtil.getNeo4jService();
 	}
 
 	public void readVitals() {

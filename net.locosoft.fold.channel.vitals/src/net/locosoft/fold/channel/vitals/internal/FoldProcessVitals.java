@@ -19,16 +19,19 @@ import net.locosoft.fold.util.FoldUtil;
 
 public class FoldProcessVitals extends AbstractVitals {
 
-	private int _foldPID;
+	private int _foldPID = -1;
 
-	public FoldProcessVitals() {
+	private int getFoldPid() {
+		if (_foldPID != -1)
+			return _foldPID;
 		String foldHomeDir = FoldUtil.getFoldHomeDir();
 		String foldPID = FoldUtil.readFileToString(foldHomeDir + "/fold.PID");
 		_foldPID = Integer.parseInt(foldPID.trim());
+		return _foldPID;
 	}
 
 	public void readVitals() {
-		String procStatus = FoldUtil.readFileToString("/proc/" + _foldPID
+		String procStatus = FoldUtil.readFileToString("/proc/" + getFoldPid()
 				+ "/status");
 		Pattern pattern = Pattern.compile("VmPeak:\\s+(\\d+)\\s+kB");
 		Matcher matcher = pattern.matcher(procStatus);

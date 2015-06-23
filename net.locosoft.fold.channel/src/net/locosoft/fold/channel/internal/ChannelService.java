@@ -59,7 +59,7 @@ public class ChannelService implements IChannelService {
 
 				if (channel instanceof IChannelInternal) {
 					IChannelInternal channelInternal = (IChannelInternal) channel;
-					channelInternal.setIdFromExtensionRegistry(channelId);
+					channelInternal.setChannelId(channelId);
 					channelInternal.init();
 				} else {
 					// TODO: complain?

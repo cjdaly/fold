@@ -9,21 +9,16 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel;
+package net.locosoft.fold.neo4j.internal;
 
 import net.locosoft.fold.neo4j.INode;
 
-import org.eclipse.core.resources.IProject;
+public class Node implements INode {
 
-public interface IChannelInternal {
+	private int _id;
 
-	void setChannelId(String id);
+	public int getId() {
+		return _id;
+	}
 
-	void init();
-
-	void fini();
-
-	IProject getChannelProject();
-
-	INode getChannelNode();
 }
