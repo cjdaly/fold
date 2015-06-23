@@ -11,19 +11,16 @@
 
 package net.locosoft.fold.neo4j.internal;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import net.locosoft.fold.channel.vitals.AbstractVitals;
+import net.locosoft.fold.neo4j.INeo4jService;
+import net.locosoft.fold.util.FoldUtil;
 
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.FrameworkUtil;
-
-import net.locosoft.fold.channel.vitals.AbstractVitals;
-import net.locosoft.fold.neo4j.INeo4jService;
 
 public class Neo4jProcessVitals extends AbstractVitals {
 
@@ -42,23 +39,10 @@ public class Neo4jProcessVitals extends AbstractVitals {
 			return; // TODO: ???
 		}
 
-		StringBuilder outputText = new StringBuilder();
-		try (BufferedReader reader = new BufferedReader(new FileReader("/proc/"
-				+ neo4jPID + "/status"))) {
-			int readRaw = reader.read();
-			while (readRaw != -1) {
-				char c = (char) readRaw;
-				outputText.append(c);
-				readRaw = reader.read();
-			}
-		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		}
-
+		String procStatus = FoldUtil.readFileToString("/proc/" + neo4jPID
+				+ "/status");
 		Pattern pattern = Pattern.compile("VmPeak:\\s+(\\d+)\\s+kB");
-		Matcher matcher = pattern.matcher(outputText.toString());
+		Matcher matcher = pattern.matcher(procStatus);
 		if (matcher.find()) {
 			String vmPeakText = matcher.group(1);
 			long vmPeak = Integer.parseInt(vmPeakText);

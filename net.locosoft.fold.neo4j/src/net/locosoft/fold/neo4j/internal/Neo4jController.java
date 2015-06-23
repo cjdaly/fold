@@ -15,10 +15,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.net.URI;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
+import net.locosoft.fold.util.FoldUtil;
 
 public class Neo4jController implements Runnable {
 
@@ -32,17 +30,12 @@ public class Neo4jController implements Runnable {
 
 	public String getNeo4jHomeDir() {
 		try {
-			String eclipseLocation = System
-					.getProperty("eclipse.home.location");
-			IPath eclipsePath = new Path(new URI(eclipseLocation).getPath());
-			IPath foldHomePath = eclipsePath.removeLastSegments(1)
-					.removeTrailingSeparator();
-
+			String foldHomeDir = FoldUtil.getFoldHomeDir();
 			String neo4jVersion = System
 					.getProperty("net.locosoft.fold.neo4j.version");
-			IPath neo4jHomePath = foldHomePath.append("/neo4j/neo4j-community-"
-					+ neo4jVersion);
-			return neo4jHomePath.toString();
+			String neo4jHomeDir = foldHomeDir + "/neo4j/neo4j-community-"
+					+ neo4jVersion;
+			return neo4jHomeDir;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}

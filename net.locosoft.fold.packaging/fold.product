@@ -33,6 +33,7 @@
       <plugin id="net.locosoft.fold.neo4j"/>
       <plugin id="net.locosoft.fold.packaging"/>
       <plugin id="net.locosoft.fold.server"/>
+      <plugin id="net.locosoft.fold.util"/>
       <plugin id="org.apache.commons.codec"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.apache.felix.gogo.command"/>
