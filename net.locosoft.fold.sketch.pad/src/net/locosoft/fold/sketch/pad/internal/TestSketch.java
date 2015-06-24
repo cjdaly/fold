@@ -9,14 +9,14 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.sketch;
+package net.locosoft.fold.sketch.pad.internal;
 
-public interface ISketchService {
+import net.locosoft.fold.sketch.AbstractSketch;
+import net.locosoft.fold.sketch.ISketch;
 
-	ISketch[] getAllSketches();
+public class TestSketch extends AbstractSketch implements ITestSketch {
 
-	ISketch getSketch(String sketchId);
-
-	<T extends ISketch> T getSketch(Class<T> sketchInterface);
-
+	public Class<? extends ISketch> getSketchInterface() {
+		return ITestSketch.class;
+	}
 }

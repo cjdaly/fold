@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="net.locosoft.fold.sketch">
+      <sketch
+            id="test"
+            implementation="net.locosoft.fold.sketch.pad.internal.TestSketch">
+      </sketch>
+   </extension>
+
+</plugin>

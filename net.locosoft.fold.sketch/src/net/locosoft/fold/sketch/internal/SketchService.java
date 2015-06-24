@@ -14,6 +14,7 @@ package net.locosoft.fold.sketch.internal;
 import java.util.HashMap;
 
 import net.locosoft.fold.sketch.ISketch;
+import net.locosoft.fold.sketch.ISketchInternal;
 import net.locosoft.fold.sketch.ISketchService;
 
 import org.eclipse.core.runtime.CoreException;
@@ -29,11 +30,13 @@ public class SketchService implements ISketchService {
 	private ServiceRegistration<ISketchService> _serviceRegistration;
 
 	private HashMap<String, ISketch> _idToSketch;
+	private HashMap<Class<? extends ISketch>, ISketch> _ifaceToSketch;
 
 	public SketchService(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
 		_idToSketch = new HashMap<String, ISketch>();
+		_ifaceToSketch = new HashMap<Class<? extends ISketch>, ISketch>();
 	}
 
 	private void initSketchMaps() {
@@ -47,8 +50,16 @@ public class SketchService implements ISketchService {
 						.createExecutableExtension("implementation");
 				ISketch sketch = (ISketch) extension;
 
+				if (sketch instanceof ISketchInternal) {
+					ISketchInternal sketchInternal = (ISketchInternal) sketch;
+					sketchInternal.setSketchId(sketchId);
+				} else {
+					// TODO: complain?
+				}
+
 				// TODO: check for duplicate id/iface use
 				_idToSketch.put(sketchId, sketch);
+				_ifaceToSketch.put(sketch.getSketchInterface(), sketch);
 			} catch (ClassCastException ex) {
 				ex.printStackTrace();
 			} catch (CoreException ex) {
@@ -72,8 +83,17 @@ public class SketchService implements ISketchService {
 	// ISketchService
 	//
 
+	public ISketch[] getAllSketches() {
+		return _idToSketch.values().toArray(new ISketch[0]);
+	}
+
 	public ISketch getSketch(String sketchId) {
 		return _idToSketch.get(sketchId);
+	}
+	
+	@SuppressWarnings("unchecked")
+	public <T extends ISketch> T getSketch(Class<T> sketchInterface) {
+		return (T) _ifaceToSketch.get(sketchInterface);
 	}
 
 }
