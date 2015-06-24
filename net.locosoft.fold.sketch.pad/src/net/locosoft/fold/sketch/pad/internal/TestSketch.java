@@ -13,6 +13,7 @@ package net.locosoft.fold.sketch.pad.internal;
 
 import net.locosoft.fold.sketch.AbstractSketch;
 import net.locosoft.fold.sketch.ISketch;
+import net.locosoft.fold.sketch.pad.ITestSketch;
 
 public class TestSketch extends AbstractSketch implements ITestSketch {
 

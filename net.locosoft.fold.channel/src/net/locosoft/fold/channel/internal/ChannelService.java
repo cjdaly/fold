@@ -11,7 +11,12 @@
 
 package net.locosoft.fold.channel.internal;
 
+import java.io.IOException;
 import java.util.HashMap;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.IChannelInternal;
@@ -97,4 +102,14 @@ public class ChannelService implements IChannelService {
 	public <T extends IChannel> T getChannel(Class<T> channelInterface) {
 		return (T) _ifaceToChannel.get(channelInterface);
 	}
+
+	public void doHttp(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+		// TODO: select channel, call method in channel? use sketches?
+		
+		response.setContentType("text/plain");
+		response.getWriter().println("Hello World!");
+		
+	}
+
 }

@@ -9,5 +9,4 @@ Require-Bundle: javax.servlet,
  org.eclipse.equinox.http.jetty,
  org.eclipse.equinox.http.registry,
  org.eclipse.equinox.http.servlet,
- net.locosoft.fold.channel,
- net.locosoft.fold.sketch
+ net.locosoft.fold.channel

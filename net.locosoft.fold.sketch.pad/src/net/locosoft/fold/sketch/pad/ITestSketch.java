@@ -9,7 +9,7 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.sketch.pad.internal;
+package net.locosoft.fold.sketch.pad;
 
 import net.locosoft.fold.sketch.ISketch;
 

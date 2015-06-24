@@ -2,13 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.equinox.http.registry.resources">
-      <resource
-            alias="/stuff"
-            base-name="/static-html">
-      </resource>
-   </extension>
-   <extension
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/fold"
