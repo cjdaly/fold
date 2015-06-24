@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension-point id="net.locosoft.fold.sketch" name="net.locosoft.fold.sketch" schema="schema/net.locosoft.fold.sketch.exsd"/>
+
+</plugin>
