@@ -25,6 +25,7 @@
 
    <plugins>
       <plugin id="com.eclipsesource.json"/>
+      <plugin id="com.github.rjeschke.txtmark"/>
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="net.locosoft.fold.channel"/>

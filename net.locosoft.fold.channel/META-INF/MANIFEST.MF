@@ -9,6 +9,7 @@ Require-Bundle: javax.servlet;visibility:=reexport,
  org.eclipse.core.resources;visibility:=reexport,
  org.eclipse.core.runtime;visibility:=reexport,
  com.eclipsesource.json;visibility:=reexport,
+ com.github.rjeschke.txtmark;visibility:=reexport,
  net.locosoft.fold.util;visibility:=reexport,
  net.locosoft.fold.neo4j;visibility:=reexport,
  net.locosoft.fold.sketch;visibility:=reexport

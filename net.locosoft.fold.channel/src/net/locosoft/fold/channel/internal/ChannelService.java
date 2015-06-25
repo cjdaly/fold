@@ -29,6 +29,8 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+import com.github.rjeschke.txtmark.Processor;
+
 public class ChannelService implements IChannelService {
 
 	private BundleContext _bundleContext;
@@ -106,10 +108,11 @@ public class ChannelService implements IChannelService {
 	public void doHttp(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 		// TODO: select channel, call method in channel? use sketches?
-		
-		response.setContentType("text/plain");
-		response.getWriter().println("Hello World!");
-		
+		response.setContentType("text/html");
+
+		String htmlText = Processor.process("*Hello* **fold!**");
+
+		response.getWriter().println(htmlText);
 	}
 
 }

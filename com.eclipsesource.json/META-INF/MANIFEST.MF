@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Minimal JSON
 Bundle-SymbolicName: com.eclipsesource.json
-Bundle-Version: 0.9.4.fold-qualifier
-Bundle-Vendor: eclipsesource.com
+Bundle-Version: 0.9.3.fold-qualifier
+Bundle-Vendor: https://github.com/ralfstx/minimal-json
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.eclipsesource.json
