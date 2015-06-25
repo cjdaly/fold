@@ -627,12 +627,14 @@ final class CmdLineParser
 
     private final static class Colls
     {
-        final static <T> T[] objArray(final T... ts)
+        @SafeVarargs // cjdaly :-/
+		final static <T> T[] objArray(final T... ts)
         {
             return ts;
         }
 
-        final static <A> List<A> list(final A... coll)
+        @SafeVarargs // cjdaly :-/
+		final static <A> List<A> list(final A... coll)
         {
             final List<A> ret = new ArrayList<A>(coll.length);
             for (int i = 0; i < coll.length; i++)
