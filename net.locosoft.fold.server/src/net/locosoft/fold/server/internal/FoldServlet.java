@@ -32,8 +32,6 @@ public class FoldServlet extends HttpServlet {
 
 	public void init() throws ServletException {
 		_channelService = ChannelServiceUtil.getChannelService();
-
-		System.out.println("init FoldServlet");
 	}
 
 	protected void doGet(HttpServletRequest request,

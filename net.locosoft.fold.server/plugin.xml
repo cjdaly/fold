@@ -5,7 +5,16 @@
          point="org.eclipse.equinox.http.registry.servlets">
       <servlet
             alias="/fold"
-            class="net.locosoft.fold.server.internal.FoldServlet">
+            class="net.locosoft.fold.server.internal.FoldServlet"
+            httpcontextId="net.locosoft.fold.server.foldServletHttpContext"
+            load-on-startup="true">
       </servlet>
+   </extension>
+   <extension
+         point="org.eclipse.equinox.http.registry.httpcontexts">
+      <httpcontext
+            class="net.locosoft.fold.server.internal.FoldServletHttpContext"
+            id="net.locosoft.fold.server.foldServletHttpContext">
+      </httpcontext>
    </extension>
 </plugin>
