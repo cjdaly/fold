@@ -17,15 +17,22 @@ import java.net.URL;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.locosoft.fold.channel.ChannelServiceUtil;
+import net.locosoft.fold.channel.IChannelService;
+
 import org.osgi.service.http.HttpContext;
 
 public class FoldServletHttpContext implements HttpContext {
 
+	private IChannelService _channelService;
+
+	public FoldServletHttpContext() {
+		_channelService = ChannelServiceUtil.getChannelService();
+	}
+
 	public boolean handleSecurity(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-
-		System.out.println("securityCheck: " + request.getRequestURL());
-		return true;
+		return _channelService.channelSecurity(request, response);
 	}
 
 	public String getMimeType(String name) {
@@ -38,7 +45,4 @@ public class FoldServletHttpContext implements HttpContext {
 		return null;
 	}
 
-	public String toString() {
-		return "FOO";
-	}
 }

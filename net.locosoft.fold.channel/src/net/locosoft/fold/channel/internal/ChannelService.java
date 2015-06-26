@@ -105,13 +105,19 @@ public class ChannelService implements IChannelService {
 		return (T) _ifaceToChannel.get(channelInterface);
 	}
 
-	public void doHttp(HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		// TODO: select channel, call method in channel? use sketches?
+	public boolean channelSecurity(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		System.out.println("channelSecurity ");
+		System.out.println("  getPathInfo: " + request.getPathInfo());
+		System.out.println("  getRemoteAddr: " + request.getRemoteAddr());
+
+		return true;
+	}
+
+	public void channelHttp(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
-
 		String htmlText = Processor.process("*Hello* **fold!**");
-
 		response.getWriter().println(htmlText);
 	}
 

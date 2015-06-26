@@ -4,5 +4,5 @@ Bundle-Name: fold sketch pad
 Bundle-SymbolicName: net.locosoft.fold.sketch.pad;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: net.locosoft.fold.sketch
+Require-Bundle: net.locosoft.fold.required
 Export-Package: net.locosoft.fold.sketch.pad

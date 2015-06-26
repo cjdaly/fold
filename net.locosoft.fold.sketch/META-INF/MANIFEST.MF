@@ -7,10 +7,10 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: net.locosoft.fold.sketch
 Bundle-ActivationPolicy: lazy
 Bundle-Activator: net.locosoft.fold.sketch.internal.SketchActivator
-Require-Bundle: org.eclipse.osgi;visibility:=reexport,
- org.eclipse.core.resources;visibility:=reexport,
- org.eclipse.core.runtime;visibility:=reexport,
- com.eclipsesource.json;visibility:=reexport,
- com.github.rjeschke.txtmark;visibility:=reexport,
- net.locosoft.fold.util;visibility:=reexport,
- net.locosoft.fold.neo4j;visibility:=reexport
+Require-Bundle: org.eclipse.osgi,
+ org.eclipse.core.resources,
+ org.eclipse.core.runtime,
+ com.eclipsesource.json,
+ com.github.rjeschke.txtmark,
+ net.locosoft.fold.util,
+ net.locosoft.fold.neo4j

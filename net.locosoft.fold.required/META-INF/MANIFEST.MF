@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: fold required
+Bundle-SymbolicName: net.locosoft.fold.required
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: javax.servlet;visibility:=reexport,
+ org.eclipse.osgi;visibility:=reexport,
+ org.eclipse.osgi.services;visibility:=reexport,
+ org.eclipse.core.resources;visibility:=reexport,
+ org.eclipse.core.runtime;visibility:=reexport,
+ com.eclipsesource.json;visibility:=reexport,
+ com.github.rjeschke.txtmark;visibility:=reexport,
+ net.locosoft.fold.util;visibility:=reexport,
+ net.locosoft.fold.neo4j;visibility:=reexport,
+ net.locosoft.fold.channel;visibility:=reexport,
+ net.locosoft.fold.sketch;visibility:=reexport

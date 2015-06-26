@@ -33,6 +33,7 @@
       <plugin id="net.locosoft.fold.channel.vitals"/>
       <plugin id="net.locosoft.fold.neo4j"/>
       <plugin id="net.locosoft.fold.packaging"/>
+      <plugin id="net.locosoft.fold.required"/>
       <plugin id="net.locosoft.fold.server"/>
       <plugin id="net.locosoft.fold.sketch"/>
       <plugin id="net.locosoft.fold.sketch.pad"/>

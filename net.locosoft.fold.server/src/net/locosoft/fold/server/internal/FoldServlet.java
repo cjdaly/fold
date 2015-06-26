@@ -36,27 +36,27 @@ public class FoldServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		_channelService.doHttp(request, response);
+		_channelService.channelHttp(request, response);
 	}
 
 	protected void doHead(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		_channelService.doHttp(request, response);
+		_channelService.channelHttp(request, response);
 	}
 
 	protected void doPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		_channelService.doHttp(request, response);
+		_channelService.channelHttp(request, response);
 	}
 
 	protected void doPut(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		_channelService.doHttp(request, response);
+		_channelService.channelHttp(request, response);
 	}
 
 	protected void doDelete(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		_channelService.doHttp(request, response);
+		_channelService.channelHttp(request, response);
 	}
 
 }

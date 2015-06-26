@@ -25,7 +25,10 @@ public interface IChannelService {
 
 	<T extends IChannel> T getChannel(Class<T> channelInterface);
 
-	void doHttp(HttpServletRequest request, HttpServletResponse response)
+	boolean channelSecurity(HttpServletRequest request,
+			HttpServletResponse response) throws IOException;
+
+	void channelHttp(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException;
 
 }
