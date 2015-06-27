@@ -29,42 +29,29 @@ public class SketchService implements ISketchService {
 	private BundleContext _bundleContext;
 	private ServiceRegistration<ISketchService> _serviceRegistration;
 
-	private HashMap<String, ISketch> _idToSketch;
-	private HashMap<Class<? extends ISketch>, ISketch> _ifaceToSketch;
+	private HashMap<String, IConfigurationElement> _idToConfigElement;
+	private HashMap<Class<? extends ISketch>, IConfigurationElement> _ifaceToConfigElement;
 
 	public SketchService(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
-		_idToSketch = new HashMap<String, ISketch>();
-		_ifaceToSketch = new HashMap<Class<? extends ISketch>, ISketch>();
+		_idToConfigElement = new HashMap<String, IConfigurationElement>();
+		_ifaceToConfigElement = new HashMap<Class<? extends ISketch>, IConfigurationElement>();
 	}
 
 	private void initSketchMaps() {
 		IExtensionRegistry extensionRegistry = Platform.getExtensionRegistry();
 		IConfigurationElement[] configurationElements = extensionRegistry
 				.getConfigurationElementsFor("net.locosoft.fold.sketch");
+
 		for (IConfigurationElement configurationElement : configurationElements) {
-			try {
-				String sketchId = configurationElement.getAttribute("id");
-				Object extension = configurationElement
-						.createExecutableExtension("implementation");
-				ISketch sketch = (ISketch) extension;
+			String sketchId = configurationElement.getAttribute("id");
+			ISketch sketch = constructSketch(configurationElement);
 
-				if (sketch instanceof ISketchInternal) {
-					ISketchInternal sketchInternal = (ISketchInternal) sketch;
-					sketchInternal.setSketchId(sketchId);
-				} else {
-					// TODO: complain?
-				}
-
-				// TODO: check for duplicate id/iface use
-				_idToSketch.put(sketchId, sketch);
-				_ifaceToSketch.put(sketch.getSketchInterface(), sketch);
-			} catch (ClassCastException ex) {
-				ex.printStackTrace();
-			} catch (CoreException ex) {
-				ex.printStackTrace();
-			}
+			// TODO: check for duplicates
+			_idToConfigElement.put(sketchId, configurationElement);
+			_ifaceToConfigElement.put(sketch.getSketchInterface(),
+					configurationElement);
 		}
 	}
 
@@ -83,17 +70,40 @@ public class SketchService implements ISketchService {
 	// ISketchService
 	//
 
-	public ISketch[] getAllSketches() {
-		return _idToSketch.values().toArray(new ISketch[0]);
+	public ISketch constructSketch(String sketchId) {
+		IConfigurationElement configurationElement = _idToConfigElement
+				.get(sketchId);
+		ISketch sketch = constructSketch(configurationElement);
+		return sketch;
 	}
 
-	public ISketch getSketch(String sketchId) {
-		return _idToSketch.get(sketchId);
-	}
-	
 	@SuppressWarnings("unchecked")
-	public <T extends ISketch> T getSketch(Class<T> sketchInterface) {
-		return (T) _ifaceToSketch.get(sketchInterface);
+	public <T extends ISketch> T constructSketch(Class<T> sketchInterface) {
+		IConfigurationElement configurationElement = _ifaceToConfigElement
+				.get(sketchInterface);
+		ISketch sketch = constructSketch(configurationElement);
+		return (T) sketch;
+	}
+
+	private ISketch constructSketch(IConfigurationElement configurationElement) {
+		if (configurationElement != null) {
+			try {
+				String sketchId = configurationElement.getAttribute("id");
+				Object extension = configurationElement
+						.createExecutableExtension("implementation");
+				ISketch sketch = (ISketch) extension;
+
+				ISketchInternal sketchInternal = (ISketchInternal) sketch;
+				sketchInternal.setSketchId(sketchId);
+
+				return sketch;
+			} catch (CoreException ex) {
+				ex.printStackTrace();
+			} catch (ClassCastException ex) {
+				ex.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 }

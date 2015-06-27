@@ -14,4 +14,5 @@ Require-Bundle: javax.servlet;visibility:=reexport,
  net.locosoft.fold.util;visibility:=reexport,
  net.locosoft.fold.neo4j;visibility:=reexport,
  net.locosoft.fold.channel;visibility:=reexport,
- net.locosoft.fold.sketch;visibility:=reexport
+ net.locosoft.fold.sketch;visibility:=reexport,
+ net.locosoft.fold.sketch.pad;visibility:=reexport

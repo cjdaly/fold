@@ -13,10 +13,8 @@ package net.locosoft.fold.sketch;
 
 public interface ISketchService {
 
-	ISketch[] getAllSketches();
+	ISketch constructSketch(String sketchId);
 
-	ISketch getSketch(String sketchId);
-
-	<T extends ISketch> T getSketch(Class<T> sketchInterface);
+	<T extends ISketch> T constructSketch(Class<T> sketchInterface);
 
 }

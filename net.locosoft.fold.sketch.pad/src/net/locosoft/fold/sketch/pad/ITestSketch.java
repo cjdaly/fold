@@ -11,8 +11,22 @@
 
 package net.locosoft.fold.sketch.pad;
 
+import net.locosoft.fold.sketch.AbstractSketch;
 import net.locosoft.fold.sketch.ISketch;
 
 public interface ITestSketch extends ISketch {
 
+	void foo();
+
+	class Impl extends AbstractSketch implements ITestSketch {
+
+		public Class<? extends ISketch> getSketchInterface() {
+			return ITestSketch.class;
+		}
+
+		public void foo() {
+			System.out.println("FOO!");
+		}
+
+	}
 }

@@ -11,12 +11,25 @@
 
 package net.locosoft.fold.channel;
 
-import net.locosoft.fold.neo4j.INode;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
+import net.locosoft.fold.neo4j.ICypher;
+import net.locosoft.fold.neo4j.INeo4jService;
+import net.locosoft.fold.neo4j.Neo4jServiceUtil;
+import net.locosoft.fold.sketch.ISketch;
+import net.locosoft.fold.sketch.SketchServiceUtil;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
+
+import com.eclipsesource.json.JsonValue;
+import com.github.rjeschke.txtmark.Processor;
 
 public abstract class AbstractChannel implements IChannel, IChannelInternal {
 
@@ -34,6 +47,23 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 	}
 
 	public void fini() {
+	}
+
+	public boolean channelSecurity(HttpServletRequest request,
+			HttpServletResponse response) throws IOException {
+		ISketch sketch = SketchServiceUtil.getSketchService().constructSketch(
+				"test");
+		System.out.println("sketch: " + sketch);
+
+		return true;
+	}
+
+	public void channelHttp(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		String htmlText = Processor.process("**fold** channel: "
+				+ getChannelId() + " / " + getChannelNodeId());
+		response.getWriter().println(htmlText);
 	}
 
 	public final void setChannelId(String id) {
@@ -56,8 +86,18 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 		return null;
 	}
 
-	public final INode getChannelNode() {
-		return null;
+	public final long getChannelNodeId() {
+		INeo4jService neo4jService = Neo4jServiceUtil.getNeo4jService();
+		ICypher cypher = neo4jService
+				.constructCypher("MERGE (channel:fold_Channel {fold_channelId : {channelId}}) RETURN ID(channel)");
+		cypher.addParameter("channelId", getChannelId());
+		neo4jService.invokeCypher(cypher);
+
+		JsonValue jsonValue = cypher.getResultDataRow(0);
+		if ((jsonValue == null) || (!jsonValue.isNumber()))
+			return -1;
+		else
+			return jsonValue.asLong();
 	}
 
 }

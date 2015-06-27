@@ -25,11 +25,10 @@ import net.locosoft.fold.channel.IChannelService;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-
-import com.github.rjeschke.txtmark.Processor;
 
 public class ChannelService implements IChannelService {
 
@@ -57,15 +56,11 @@ public class ChannelService implements IChannelService {
 						.createExecutableExtension("implementation");
 				IChannel channel = (IChannel) extension;
 
-				if (channel instanceof IChannelInternal) {
-					IChannelInternal channelInternal = (IChannelInternal) channel;
-					channelInternal.setChannelId(channelId);
-					channelInternal.init();
-				} else {
-					// TODO: complain?
-				}
+				IChannelInternal channelInternal = (IChannelInternal) channel;
+				channelInternal.setChannelId(channelId);
+				channelInternal.init();
 
-				// TODO: check for duplicate id/iface use
+				// TODO: check for duplicates
 				_idToChannel.put(channelId, channel);
 				_ifaceToChannel.put(channel.getChannelInterface(), channel);
 
@@ -105,20 +100,30 @@ public class ChannelService implements IChannelService {
 		return (T) _ifaceToChannel.get(channelInterface);
 	}
 
+	private IChannelInternal lookupChannel(String pathInfo) {
+		if ((pathInfo == null) || "".equals(pathInfo) || "/".equals(pathInfo)) {
+			return null;
+		} else {
+			Path path = new Path(pathInfo);
+			String channelSegment = path.segment(0);
+			return (IChannelInternal) _idToChannel.get(channelSegment);
+		}
+	}
+
 	public boolean channelSecurity(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		System.out.println("channelSecurity ");
-		System.out.println("  getPathInfo: " + request.getPathInfo());
-		System.out.println("  getRemoteAddr: " + request.getRemoteAddr());
-
-		return true;
+		IChannelInternal channel = lookupChannel(request.getPathInfo());
+		if (channel != null)
+			return channel.channelSecurity(request, response);
+		else
+			return false;
 	}
 
 	public void channelHttp(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-		String htmlText = Processor.process("*Hello* **fold!**");
-		response.getWriter().println(htmlText);
+		IChannelInternal channel = lookupChannel(request.getPathInfo());
+		if (channel != null)
+			channel.channelHttp(request, response);
 	}
 
 }

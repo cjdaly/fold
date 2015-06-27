@@ -11,15 +11,22 @@
 
 package net.locosoft.fold.neo4j;
 
+import com.eclipsesource.json.JsonArray;
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
-public interface ICypherTransaction {
+public interface ICypher {
 
 	JsonObject getRequest();
 
-	void setParameter(String name, JsonValue value);
+	void addParameter(String name, String value);
 
 	JsonObject getResponse();
+
+	JsonArray getResultDataRows();
+
+	int getResultDataRowCount();
+
+	JsonValue getResultDataRow(int index);
 
 }

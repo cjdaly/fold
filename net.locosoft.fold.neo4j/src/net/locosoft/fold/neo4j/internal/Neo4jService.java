@@ -11,13 +11,14 @@
 
 package net.locosoft.fold.neo4j.internal;
 
-import net.locosoft.fold.neo4j.ICypherTransaction;
+import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.WriterConfig;
 
 public class Neo4jService implements INeo4jService {
 
@@ -45,15 +46,25 @@ public class Neo4jService implements INeo4jService {
 		return _neo4jController.getNeo4jPID();
 	}
 
-	public ICypherTransaction createCypherTransaction(String statement) {
-		return new CypherTransaction(statement);
+	public ICypher constructCypher(String statement) {
+		return new Cypher(statement);
 	}
 
-	public void doCypher(ICypherTransaction cypher) {
+	public void invokeCypher(ICypher cypher) {
 		if (_neo4jController.isNeo4jReady()) {
+			System.out.println("Cypher In:");
+			System.out.println(cypher.getRequest().toString(
+					WriterConfig.PRETTY_PRINT));
+			System.out.println("------");
+
 			JsonObject response = Neo4jRestUtil.doPostJson(
 					Neo4jRestUtil.CYPHER_URI, cypher.getRequest());
-			((CypherTransaction) cypher).setResponse(response);
+			((Cypher) cypher).setResponse(response);
+
+			System.out.println("Cypher Out:");
+			System.out.println(cypher.getResponse().toString(
+					WriterConfig.PRETTY_PRINT));
+			System.out.println("------");
 		}
 	}
 

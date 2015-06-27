@@ -5,7 +5,7 @@
          point="net.locosoft.fold.sketch">
       <sketch
             id="test"
-            implementation="net.locosoft.fold.sketch.pad.internal.TestSketch">
+            implementation="net.locosoft.fold.sketch.pad.ITestSketch$Impl">
       </sketch>
    </extension>
 

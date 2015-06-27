@@ -9,10 +9,16 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.neo4j;
+package net.locosoft.fold.sketch.pad.neo4j;
 
-public interface INode {
+import net.locosoft.fold.sketch.AbstractSketch;
+import net.locosoft.fold.sketch.ISketch;
 
-	int getId();
+public interface Neo4jChannelInitSketch extends ISketch {
 
+	class Impl extends AbstractSketch implements Neo4jChannelInitSketch {
+		public Class<? extends ISketch> getSketchInterface() {
+			return Neo4jChannelInitSketch.class;
+		}
+	}
 }

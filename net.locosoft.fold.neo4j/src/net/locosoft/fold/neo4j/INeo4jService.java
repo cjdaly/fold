@@ -15,8 +15,8 @@ public interface INeo4jService {
 
 	int getNeo4jPID();
 
-	ICypherTransaction createCypherTransaction(String statement);
+	ICypher constructCypher(String statement);
 
-	void doCypher(ICypherTransaction cypher);
+	void invokeCypher(ICypher cypher);
 
 }

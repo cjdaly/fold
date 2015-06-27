@@ -11,7 +11,11 @@
 
 package net.locosoft.fold.channel;
 
-import net.locosoft.fold.neo4j.INode;
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.resources.IProject;
 
@@ -23,7 +27,13 @@ public interface IChannelInternal {
 
 	void fini();
 
+	boolean channelSecurity(HttpServletRequest request,
+			HttpServletResponse response) throws IOException;
+
+	void channelHttp(HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException;
+
 	IProject getChannelProject();
 
-	INode getChannelNode();
+	long getChannelNodeId();
 }
