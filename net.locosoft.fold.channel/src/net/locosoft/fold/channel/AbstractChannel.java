@@ -70,10 +70,22 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 			IWorkspaceRoot workspaceRoot = ResourcesPlugin.getWorkspace()
 					.getRoot();
 			IProject project = workspaceRoot.getProject(getChannelId());
-			if (!project.exists())
+			boolean workspaceStateChange = false;
+
+			if (!project.exists()) {
+				workspaceStateChange = true;
 				project.create(null);
-			if (!project.isOpen())
+			}
+
+			if (!project.isOpen()) {
+				workspaceStateChange = true;
 				project.open(null);
+			}
+
+			if (workspaceStateChange) {
+				workspaceRoot.getWorkspace().save(true, null);
+			}
+
 			return project;
 		} catch (CoreException ex) {
 			ex.printStackTrace();
