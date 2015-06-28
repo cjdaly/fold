@@ -19,9 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
-import net.locosoft.fold.neo4j.Neo4jServiceUtil;
-import net.locosoft.fold.sketch.ISketch;
-import net.locosoft.fold.sketch.SketchServiceUtil;
+import net.locosoft.fold.neo4j.Neo4jUtil;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -51,10 +49,6 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 
 	public boolean channelSecurity(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		ISketch sketch = SketchServiceUtil.getSketchService().constructSketch(
-				"test");
-		System.out.println("sketch: " + sketch);
-
 		return true;
 	}
 
@@ -87,7 +81,13 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 	}
 
 	public final long getChannelNodeId() {
-		INeo4jService neo4jService = Neo4jServiceUtil.getNeo4jService();
+		INeo4jService neo4jService = Neo4jUtil.getNeo4jService();
+
+		// TODO: move this bit to a less frequent spot
+		ICypher cypherConstraint = neo4jService
+				.constructCypher("CREATE CONSTRAINT ON (channel:fold_Channel) ASSERT channel.fold_channelId is UNIQUE");
+		neo4jService.invokeCypher(cypherConstraint);
+
 		ICypher cypher = neo4jService
 				.constructCypher("MERGE (channel:fold_Channel {fold_channelId : {channelId}}) RETURN ID(channel)");
 		cypher.addParameter("channelId", getChannelId());

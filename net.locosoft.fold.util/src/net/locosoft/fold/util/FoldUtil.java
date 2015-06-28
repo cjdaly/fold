@@ -19,6 +19,10 @@ import java.net.URI;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
+import org.osgi.framework.Bundle;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.FrameworkUtil;
+import org.osgi.framework.ServiceReference;
 
 public class FoldUtil {
 
@@ -52,6 +56,15 @@ public class FoldUtil {
 			ex.printStackTrace();
 		}
 		return null;
+	}
+
+	public static <T> T getService(Class<T> serviceType) {
+		Bundle bundle = FrameworkUtil.getBundle(serviceType);
+		BundleContext bundleContext = bundle.getBundleContext();
+		ServiceReference<T> serviceReference = bundleContext
+				.getServiceReference(serviceType);
+		T service = bundleContext.getService(serviceReference);
+		return service;
 	}
 
 }

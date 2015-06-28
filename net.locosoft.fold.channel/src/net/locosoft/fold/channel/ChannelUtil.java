@@ -11,20 +11,11 @@
 
 package net.locosoft.fold.channel;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
+import net.locosoft.fold.util.FoldUtil;
 
-public class ChannelServiceUtil {
+public class ChannelUtil {
 
 	public static IChannelService getChannelService() {
-		Bundle bundle = FrameworkUtil.getBundle(ChannelServiceUtil.class);
-		BundleContext bundleContext = bundle.getBundleContext();
-		ServiceReference<IChannelService> serviceReference = bundleContext
-				.getServiceReference(IChannelService.class);
-		IChannelService channelService = bundleContext
-				.getService(serviceReference);
-		return channelService;
+		return FoldUtil.getService(IChannelService.class);
 	}
 }

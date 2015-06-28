@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import net.locosoft.fold.channel.ChannelServiceUtil;
+import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannelService;
 
 @SuppressWarnings("serial")
@@ -31,7 +31,7 @@ public class FoldServlet extends HttpServlet {
 	}
 
 	public void init() throws ServletException {
-		_channelService = ChannelServiceUtil.getChannelService();
+		_channelService = ChannelUtil.getChannelService();
 	}
 
 	protected void doGet(HttpServletRequest request,

@@ -16,7 +16,7 @@ import java.util.regex.Pattern;
 
 import net.locosoft.fold.channel.vitals.AbstractVitals;
 import net.locosoft.fold.neo4j.INeo4jService;
-import net.locosoft.fold.neo4j.Neo4jServiceUtil;
+import net.locosoft.fold.neo4j.Neo4jUtil;
 import net.locosoft.fold.util.FoldUtil;
 
 public class Neo4jProcessVitals extends AbstractVitals {
@@ -24,7 +24,7 @@ public class Neo4jProcessVitals extends AbstractVitals {
 	private INeo4jService _neo4jService;
 
 	public Neo4jProcessVitals() {
-		_neo4jService = Neo4jServiceUtil.getNeo4jService();
+		_neo4jService = Neo4jUtil.getNeo4jService();
 	}
 
 	public void readVitals() {

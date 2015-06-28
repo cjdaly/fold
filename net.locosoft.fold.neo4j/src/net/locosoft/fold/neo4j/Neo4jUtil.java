@@ -11,19 +11,11 @@
 
 package net.locosoft.fold.neo4j;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
+import net.locosoft.fold.util.FoldUtil;
 
-public class Neo4jServiceUtil {
+public class Neo4jUtil {
 
 	public static INeo4jService getNeo4jService() {
-		Bundle bundle = FrameworkUtil.getBundle(Neo4jServiceUtil.class);
-		BundleContext bundleContext = bundle.getBundleContext();
-		ServiceReference<INeo4jService> serviceReference = bundleContext
-				.getServiceReference(INeo4jService.class);
-		INeo4jService neo4jService = bundleContext.getService(serviceReference);
-		return neo4jService;
+		return FoldUtil.getService(INeo4jService.class);
 	}
 }

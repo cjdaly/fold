@@ -11,21 +11,12 @@
 
 package net.locosoft.fold.sketch;
 
-import org.osgi.framework.Bundle;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.FrameworkUtil;
-import org.osgi.framework.ServiceReference;
+import net.locosoft.fold.util.FoldUtil;
 
-public class SketchServiceUtil {
+public class SketchUtil {
 
 	public static ISketchService getSketchService() {
-		Bundle bundle = FrameworkUtil.getBundle(SketchServiceUtil.class);
-		BundleContext bundleContext = bundle.getBundleContext();
-		ServiceReference<ISketchService> serviceReference = bundleContext
-				.getServiceReference(ISketchService.class);
-		ISketchService sketchService = bundleContext
-				.getService(serviceReference);
-		return sketchService;
+		return FoldUtil.getService(ISketchService.class);
 	}
 
 }
