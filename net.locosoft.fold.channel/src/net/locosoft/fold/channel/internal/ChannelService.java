@@ -101,13 +101,21 @@ public class ChannelService implements IChannelService {
 	}
 
 	private IChannelInternal lookupChannel(String pathInfo) {
-		if ((pathInfo == null) || "".equals(pathInfo) || "/".equals(pathInfo)) {
-			return null;
-		} else {
+		IChannelInternal channelInternal = null;
+
+		if ((pathInfo != null) && !("".equals(pathInfo))
+				&& !("/".equals(pathInfo))) {
 			Path path = new Path(pathInfo);
 			String channelSegment = path.segment(0);
-			return (IChannelInternal) _idToChannel.get(channelSegment);
+			channelInternal = (IChannelInternal) _idToChannel
+					.get(channelSegment);
 		}
+
+		if (channelInternal == null) {
+			channelInternal = (IChannelInternal) _idToChannel.get("fold");
+		}
+
+		return channelInternal;
 	}
 
 	public boolean channelSecurity(HttpServletRequest request,

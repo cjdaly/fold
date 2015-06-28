@@ -56,7 +56,8 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 		String htmlText = Processor.process("**fold** channel: "
-				+ getChannelId() + " / " + getChannelNodeId());
+				+ getChannelId() + " / " + getChannelNodeId() + " ^ "
+				+ getChannelProject().getFullPath());
 		response.getWriter().println(htmlText);
 	}
 
