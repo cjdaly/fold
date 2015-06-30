@@ -13,6 +13,8 @@ package net.locosoft.fold.neo4j;
 
 public interface INeo4jService {
 
+	boolean isNeo4jReady();
+
 	int getNeo4jPID();
 
 	ICypher constructCypher(String statement);

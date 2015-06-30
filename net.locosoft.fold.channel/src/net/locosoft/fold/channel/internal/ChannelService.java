@@ -31,6 +31,8 @@ import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 
+import com.github.rjeschke.txtmark.Processor;
+
 public class ChannelService implements IChannelService {
 
 	private BundleContext _bundleContext;
@@ -39,10 +41,13 @@ public class ChannelService implements IChannelService {
 	private TreeMap<String, IChannel> _idToChannel;
 	private HashMap<Class<? extends IChannel>, IChannel> _ifaceToChannel;
 
+	private ChannelController _channelController;
+
 	public ChannelService(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 		_idToChannel = new TreeMap<String, IChannel>();
 		_ifaceToChannel = new HashMap<Class<? extends IChannel>, IChannel>();
+		_channelController = new ChannelController(this);
 	}
 
 	private void initChannelMaps() {
@@ -72,22 +77,16 @@ public class ChannelService implements IChannelService {
 		}
 	}
 
-	private void initChannels() {
-		for (IChannel channel : getAllChannels()) {
-			IChannelInternal channelInternal = (IChannelInternal) channel;
-			channelInternal.init();
-		}
-	}
-
 	public void start() {
 		initChannelMaps();
-		initChannels();
+		_channelController.start();
 
 		_serviceRegistration = _bundleContext.registerService(
 				IChannelService.class, this, null);
 	}
 
 	public void stop() {
+		_channelController.stop();
 		_serviceRegistration.unregister();
 	}
 
@@ -128,18 +127,28 @@ public class ChannelService implements IChannelService {
 
 	public boolean channelSecurity(HttpServletRequest request,
 			HttpServletResponse response) throws IOException {
-		IChannelInternal channel = lookupChannel(request.getPathInfo());
-		if (channel != null)
-			return channel.channelSecurity(request, response);
-		else
-			return false;
+		if (!_channelController.isChannelReady()) {
+			return true;
+		} else {
+			IChannelInternal channel = lookupChannel(request.getPathInfo());
+			if (channel != null)
+				return channel.channelSecurity(request, response);
+			else
+				return false;
+		}
 	}
 
 	public void channelHttp(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		IChannelInternal channel = lookupChannel(request.getPathInfo());
-		if (channel != null)
-			channel.channelHttp(request, response);
+		if (!_channelController.isChannelReady()) {
+			response.setContentType("text/html");
+			String htmlText = Processor.process("**fold** channel down! :-(");
+			response.getWriter().println(htmlText);
+		} else {
+			IChannelInternal channel = lookupChannel(request.getPathInfo());
+			if (channel != null)
+				channel.channelHttp(request, response);
+		}
 	}
 
 }

@@ -42,6 +42,10 @@ public class Neo4jService implements INeo4jService {
 		_neo4jController.stop();
 	}
 
+	public boolean isNeo4jReady() {
+		return _neo4jController.isNeo4jReady();
+	}
+
 	public int getNeo4jPID() {
 		return _neo4jController.getNeo4jPID();
 	}

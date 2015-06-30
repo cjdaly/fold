@@ -67,6 +67,8 @@ public class Neo4jController implements Runnable {
 				}
 			} catch (InterruptedException ex) {
 				ex.printStackTrace();
+			} catch (Exception ex) {
+				ex.printStackTrace();
 			}
 		}
 		_stopped = true;
