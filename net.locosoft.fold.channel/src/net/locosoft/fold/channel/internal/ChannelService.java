@@ -13,6 +13,7 @@ package net.locosoft.fold.channel.internal;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -35,12 +36,12 @@ public class ChannelService implements IChannelService {
 	private BundleContext _bundleContext;
 	private ServiceRegistration<IChannelService> _serviceRegistration;
 
-	private HashMap<String, IChannel> _idToChannel;
+	private TreeMap<String, IChannel> _idToChannel;
 	private HashMap<Class<? extends IChannel>, IChannel> _ifaceToChannel;
 
 	public ChannelService(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
-		_idToChannel = new HashMap<String, IChannel>();
+		_idToChannel = new TreeMap<String, IChannel>();
 		_ifaceToChannel = new HashMap<Class<? extends IChannel>, IChannel>();
 	}
 
@@ -58,7 +59,6 @@ public class ChannelService implements IChannelService {
 
 				IChannelInternal channelInternal = (IChannelInternal) channel;
 				channelInternal.setChannelId(channelId);
-				channelInternal.init();
 
 				// TODO: check for duplicates
 				_idToChannel.put(channelId, channel);
@@ -72,8 +72,16 @@ public class ChannelService implements IChannelService {
 		}
 	}
 
+	private void initChannels() {
+		for (IChannel channel : getAllChannels()) {
+			IChannelInternal channelInternal = (IChannelInternal) channel;
+			channelInternal.init();
+		}
+	}
+
 	public void start() {
 		initChannelMaps();
+		initChannels();
 
 		_serviceRegistration = _bundleContext.registerService(
 				IChannelService.class, this, null);

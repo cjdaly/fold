@@ -12,6 +12,7 @@
 package net.locosoft.fold.sketch.internal;
 
 import java.util.HashMap;
+import java.util.TreeMap;
 
 import net.locosoft.fold.sketch.ISketch;
 import net.locosoft.fold.sketch.ISketchInternal;
@@ -29,13 +30,13 @@ public class SketchService implements ISketchService {
 	private BundleContext _bundleContext;
 	private ServiceRegistration<ISketchService> _serviceRegistration;
 
-	private HashMap<String, IConfigurationElement> _idToConfigElement;
+	private TreeMap<String, IConfigurationElement> _idToConfigElement;
 	private HashMap<Class<? extends ISketch>, IConfigurationElement> _ifaceToConfigElement;
 
 	public SketchService(BundleContext bundleContext) {
 		_bundleContext = bundleContext;
 
-		_idToConfigElement = new HashMap<String, IConfigurationElement>();
+		_idToConfigElement = new TreeMap<String, IConfigurationElement>();
 		_ifaceToConfigElement = new HashMap<Class<? extends ISketch>, IConfigurationElement>();
 	}
 

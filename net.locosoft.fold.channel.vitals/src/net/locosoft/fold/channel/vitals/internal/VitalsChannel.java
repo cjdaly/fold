@@ -11,7 +11,7 @@
 
 package net.locosoft.fold.channel.vitals.internal;
 
-import java.util.HashMap;
+import java.util.TreeMap;
 import java.util.Set;
 
 import net.locosoft.fold.channel.AbstractChannel;
@@ -27,7 +27,7 @@ import org.eclipse.core.runtime.Platform;
 public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
 	private VitalsMonitor _vitalsMonitor = new VitalsMonitor(this);
-	private HashMap<String, IVitals> _idToVitals = new HashMap<String, IVitals>();
+	private TreeMap<String, IVitals> _idToVitals = new TreeMap<String, IVitals>();
 
 	public Class<? extends IChannel> getChannelInterface() {
 		return IVitalsChannel.class;

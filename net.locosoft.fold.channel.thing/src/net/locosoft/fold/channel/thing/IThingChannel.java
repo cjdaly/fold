@@ -9,12 +9,14 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel.fold;
+package net.locosoft.fold.channel.thing;
 
 import net.locosoft.fold.channel.IChannel;
 
-public interface IFoldChannel extends IChannel {
+public interface IThingChannel extends IChannel {
 
-	int getStartCount();
+	String getThingName();
+
+	String getThingDescription();
 
 }

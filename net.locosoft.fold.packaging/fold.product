@@ -30,6 +30,7 @@
       <plugin id="javax.xml"/>
       <plugin id="net.locosoft.fold.channel"/>
       <plugin id="net.locosoft.fold.channel.fold"/>
+      <plugin id="net.locosoft.fold.channel.thing"/>
       <plugin id="net.locosoft.fold.channel.times"/>
       <plugin id="net.locosoft.fold.channel.vitals"/>
       <plugin id="net.locosoft.fold.neo4j"/>

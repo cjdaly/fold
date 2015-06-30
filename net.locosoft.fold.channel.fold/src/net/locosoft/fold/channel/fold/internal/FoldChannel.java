@@ -18,8 +18,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.locosoft.fold.channel.AbstractChannel;
+import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.fold.IFoldChannel;
+import net.locosoft.fold.util.MarkdownComposer;
 
 import org.eclipse.core.runtime.Path;
 
@@ -27,34 +29,75 @@ import com.github.rjeschke.txtmark.Processor;
 
 public class FoldChannel extends AbstractChannel implements IFoldChannel {
 
+	private int _startCount = -1;
+
+	public int getStartCount() {
+		return _startCount;
+	}
+
 	public Class<? extends IChannel> getChannelInterface() {
 		return IFoldChannel.class;
+	}
+
+	public void init() {
+
 	}
 
 	public void channelHttp(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String pathInfo = request.getPathInfo();
-		String tag;
 		if ((pathInfo == null) || ("".equals(pathInfo))
 				|| ("/".equals(pathInfo))) {
 			// empty channel segment (/fold)
-			tag = "(main)";
+			channelHttpDashboard(request, response);
 		} else {
 			Path path = new Path(pathInfo);
 			String channelSegment = path.segment(0);
 			if ("fold".equals(channelSegment)) {
 				// fold channel segment (/fold/fold)
-				tag = "(fold)";
+				channelHttpInternals(request, response);
 			} else {
 				// everything else
-				tag = "(default)";
+				channelHttpUndefined(request, response);
 			}
 		}
+	}
 
+	private void channelHttpDashboard(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
-		String htmlText = Processor.process("**fold** channel: "
+
+		MarkdownComposer md = new MarkdownComposer();
+		md.line("# fold", true);
+		md.line("### channels", true);
+
+		md.table();
+		IChannel[] channels = ChannelUtil.getChannelService().getAllChannels();
+		for (IChannel channel : channels) {
+			String channelLink = md.makeA("/fold/" + channel.getChannelId(),
+					channel.getChannelId());
+			md.tr(channelLink, "foo");
+		}
+		md.table(false);
+
+		response.getWriter().println(md.getHtml());
+	}
+
+	private void channelHttpInternals(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		String htmlText = Processor.process("**fold** internals: "
 				+ getChannelId() + " / " + getChannelNodeId() + " * "
-				+ getChannelProject().getFullPath() + " " + tag);
+				+ getChannelProject().getFullPath());
+		response.getWriter().println(htmlText);
+	}
+
+	private void channelHttpUndefined(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+		String htmlText = Processor.process("**fold** undefined: "
+				+ getChannelId() + " / " + getChannelNodeId() + " * "
+				+ getChannelProject().getFullPath());
 		response.getWriter().println(htmlText);
 	}
 
