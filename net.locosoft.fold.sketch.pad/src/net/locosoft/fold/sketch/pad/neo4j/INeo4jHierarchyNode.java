@@ -9,8 +9,10 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.sketch;
+package net.locosoft.fold.sketch.pad.neo4j;
 
-public interface ICodePoint extends IPoint {
+import net.locosoft.fold.sketch.ISketch;
+
+public interface INeo4jHierarchyNode extends ISketch {
 
 }

@@ -38,6 +38,10 @@ public class Cypher implements ICypher {
 		statement.add("parameters", _parameters);
 	}
 
+	public void addParameter(String name, JsonValue value) {
+		_parameters.add(name, value);
+	}
+
 	public void addParameter(String name, int value) {
 		_parameters.add(name, value);
 	}

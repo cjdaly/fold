@@ -15,6 +15,6 @@ import net.locosoft.fold.channel.IChannel;
 
 public interface IFoldChannel extends IChannel {
 
-	int getStartCount();
+	long getStartCount();
 
 }

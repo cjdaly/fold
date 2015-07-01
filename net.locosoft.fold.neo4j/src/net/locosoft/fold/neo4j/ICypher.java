@@ -19,6 +19,18 @@ public interface ICypher {
 
 	JsonObject getRequest();
 
+	void addParameter(String name, JsonValue value);
+
+	void addParameter(String name, int value);
+
+	void addParameter(String name, long value);
+
+	void addParameter(String name, float value);
+
+	void addParameter(String name, double value);
+
+	void addParameter(String name, boolean value);
+
 	void addParameter(String name, String value);
 
 	JsonObject getResponse();

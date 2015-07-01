@@ -21,6 +21,10 @@ import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.fold.IFoldChannel;
+import net.locosoft.fold.sketch.ISketchService;
+import net.locosoft.fold.sketch.SketchUtil;
+import net.locosoft.fold.sketch.pad.ITestSketch;
+import net.locosoft.fold.sketch.pad.neo4j.INeo4jCounterProperty;
 import net.locosoft.fold.util.MarkdownComposer;
 
 import org.eclipse.core.runtime.Path;
@@ -29,9 +33,9 @@ import com.github.rjeschke.txtmark.Processor;
 
 public class FoldChannel extends AbstractChannel implements IFoldChannel {
 
-	private int _startCount = -1;
+	private long _startCount = -1;
 
-	public int getStartCount() {
+	public long getStartCount() {
 		return _startCount;
 	}
 
@@ -40,7 +44,13 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 	}
 
 	public void init() {
+		ISketchService sketchService = SketchUtil.getSketchService();
+		INeo4jCounterProperty neo4jCounterProperty = sketchService
+				.constructSketch(INeo4jCounterProperty.class);
 
+		long channelNodeId = getChannelNodeId();
+		neo4jCounterProperty.init(channelNodeId);
+		_startCount = neo4jCounterProperty.incrementCounter("fold_startCount");
 	}
 
 	public void channelHttp(HttpServletRequest request,
@@ -69,6 +79,7 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 
 		MarkdownComposer md = new MarkdownComposer();
 		md.line("# fold", true);
+		md.line("startCount: " + getStartCount(), true);
 		md.line("### channels", true);
 
 		md.table();

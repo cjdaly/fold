@@ -4,7 +4,8 @@ Bundle-Name: fold sketch pad
 Bundle-SymbolicName: net.locosoft.fold.sketch.pad;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Export-Package: net.locosoft.fold.sketch.pad
+Export-Package: net.locosoft.fold.sketch.pad,
+ net.locosoft.fold.sketch.pad.neo4j
 Require-Bundle: javax.servlet,
  org.eclipse.osgi,
  org.eclipse.osgi.services,

@@ -28,16 +28,16 @@ public class ThingChannel extends AbstractChannel implements IThingChannel {
 	}
 
 	public String getThingName() {
-		return null;
+		return "thing1";
 	}
 
 	public String getThingDescription() {
-		return null;
+		return "...";
 	}
 
 	public void channelHttp(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
+		super.channelHttp(request, response);
 	}
 
 }
