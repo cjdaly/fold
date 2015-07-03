@@ -17,30 +17,18 @@ import java.util.regex.Pattern;
 import net.locosoft.fold.channel.vitals.AbstractVitals;
 import net.locosoft.fold.util.FoldUtil;
 
-public class FoldProcessVitals extends AbstractVitals {
+public class SystemMemoryVitals extends AbstractVitals {
 
-	private int _foldPID = -1;
-
-	private int getFoldPid() {
-		if (_foldPID != -1)
-			return _foldPID;
-		String foldHomeDir = FoldUtil.getFoldHomeDir();
-		String foldPID = FoldUtil.readFileToString(foldHomeDir + "/fold.PID");
-		_foldPID = Integer.parseInt(foldPID.trim());
-		return _foldPID;
-	}
-
-	private Pattern _vmPeakPattern = Pattern.compile("VmPeak:\\s+(\\d+)\\s+kB");
+	private Pattern _memFreePattern = Pattern
+			.compile("MemFree:\\s+(\\d+)\\s+kB");
 
 	public void readVitals() {
-		String procStatus = FoldUtil.readFileToString("/proc/" + getFoldPid()
-				+ "/status");
-		Matcher matcher = _vmPeakPattern.matcher(procStatus);
+		String procMemInfo = FoldUtil.readFileToString("/proc/meminfo");
+		Matcher matcher = _memFreePattern.matcher(procMemInfo);
 		if (matcher.find()) {
-			String vmPeakText = matcher.group(1);
-			long vmPeak = Long.parseLong(vmPeakText);
-			recordVital("vmPeak", vmPeak);
+			String memFreeText = matcher.group(1);
+			long memFree = Long.parseLong(memFreeText);
+			recordVital("memFree", memFree);
 		}
 	}
-
 }

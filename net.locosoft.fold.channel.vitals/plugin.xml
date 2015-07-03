@@ -12,12 +12,14 @@
    <extension
          point="net.locosoft.fold.channel.vitals">
       <vitals
+            checkInterval="30"
             id=" javaRuntime"
             implementation="net.locosoft.fold.channel.vitals.internal.JavaRuntimeVitals">
          <vital
                datatype="long"
                id="freeMemory"
-               units="bytes"></vital>
+               units="bytes">
+         </vital>
          <vital
                datatype="long"
                id="maxMemory"
@@ -30,6 +32,7 @@
          </vital>
       </vitals>
       <vitals
+            checkInterval="60"
             id="foldProcess"
             implementation="net.locosoft.fold.channel.vitals.internal.FoldProcessVitals">
          <vital
@@ -39,11 +42,56 @@
          </vital>
       </vitals>
       <vitals
+            checkInterval="60"
             id="neo4jProcess"
             implementation="net.locosoft.fold.channel.vitals.internal.Neo4jProcessVitals">
          <vital
                datatype="long"
                id="vmPeak"
+               units="kB">
+         </vital>
+      </vitals>
+      <vitals
+            checkInterval="15"
+            id="systemLoad"
+            implementation="net.locosoft.fold.channel.vitals.internal.SystemLoadVitals">
+         <vital
+               datatype="float"
+               id="loadAvg1Min">
+         </vital>
+      </vitals>
+      <vitals
+            checkInterval="15"
+            id="systemMemory"
+            implementation="net.locosoft.fold.channel.vitals.internal.SystemMemoryVitals">
+         <vital
+               datatype="long"
+               id="memFree"
+               units="kB">
+         </vital>
+      </vitals>
+      <vitals
+            checkInterval="60"
+            id="foldStorage"
+            implementation="net.locosoft.fold.channel.vitals.internal.FoldStorageVitals">
+         <vital
+               datatype="long"
+               id="dataEclipse"
+               units="kB">
+         </vital>
+         <vital
+               datatype="long"
+               id="dataNeo4j"
+               units="kB">
+         </vital>
+      </vitals>
+      <vitals
+            checkInterval="60"
+            id="systemStorage"
+            implementation="net.locosoft.fold.channel.vitals.internal.SystemStorageVitals">
+         <vital
+               datatype="long"
+               id="diskAvailable"
                units="kB">
          </vital>
       </vitals>

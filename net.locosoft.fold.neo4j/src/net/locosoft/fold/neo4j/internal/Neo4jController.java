@@ -11,11 +11,6 @@
 
 package net.locosoft.fold.neo4j.internal;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-
 import net.locosoft.fold.util.FoldUtil;
 
 public class Neo4jController implements Runnable {
@@ -100,46 +95,6 @@ public class Neo4jController implements Runnable {
 
 	private int execNeo4jCommand(String command, StringBuilder processOut) {
 		String fullCommand = getNeo4jHomeDir() + "/bin/neo4j " + command;
-
-		int status = -1;
-		if (processOut == null)
-			processOut = new StringBuilder();
-		try {
-			Process process = Runtime.getRuntime().exec(fullCommand);
-			ProcessStreamReader reader = new ProcessStreamReader(
-					process.getInputStream(), processOut);
-			reader.start();
-			status = process.waitFor();
-			reader.join();
-		} catch (IOException ex) {
-			ex.printStackTrace();
-		} catch (InterruptedException ex) {
-			ex.printStackTrace();
-		}
-		return status;
-	}
-
-	private class ProcessStreamReader extends Thread {
-		private InputStream _inputStream;
-		private StringBuilder _outputBuffer;
-
-		ProcessStreamReader(InputStream inputStream, StringBuilder outputBuffer) {
-			_inputStream = inputStream;
-			_outputBuffer = outputBuffer;
-		}
-
-		public void run() {
-			try (BufferedReader reader = new BufferedReader(
-					new InputStreamReader(_inputStream))) {
-				int readRaw = reader.read();
-				while (readRaw != -1) {
-					char c = (char) readRaw;
-					_outputBuffer.append(c);
-					readRaw = reader.read();
-				}
-			} catch (IOException ex) {
-				ex.printStackTrace();
-			}
-		}
+		return FoldUtil.execCommand(fullCommand, processOut);
 	}
 }

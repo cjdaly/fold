@@ -27,6 +27,8 @@ public class Neo4jProcessVitals extends AbstractVitals {
 		_neo4jService = Neo4jUtil.getNeo4jService();
 	}
 
+	private Pattern _vmPeakPattern = Pattern.compile("VmPeak:\\s+(\\d+)\\s+kB");
+
 	public void readVitals() {
 		int neo4jPID = _neo4jService.getNeo4jPID();
 		if (neo4jPID == -1) {
@@ -35,11 +37,11 @@ public class Neo4jProcessVitals extends AbstractVitals {
 
 		String procStatus = FoldUtil.readFileToString("/proc/" + neo4jPID
 				+ "/status");
-		Pattern pattern = Pattern.compile("VmPeak:\\s+(\\d+)\\s+kB");
-		Matcher matcher = pattern.matcher(procStatus);
+
+		Matcher matcher = _vmPeakPattern.matcher(procStatus);
 		if (matcher.find()) {
 			String vmPeakText = matcher.group(1);
-			long vmPeak = Integer.parseInt(vmPeakText);
+			long vmPeak = Long.parseLong(vmPeakText);
 			recordVital("vmPeak", vmPeak);
 		}
 	}

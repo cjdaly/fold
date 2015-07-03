@@ -62,7 +62,7 @@ public interface INeo4jTimes extends INeo4jNodeSketch {
 			cypher.addParameter("year",
 					String.valueOf(calendar.get(Calendar.YEAR)));
 			cypher.addParameter("month",
-					String.valueOf(calendar.get(Calendar.MONTH)));
+					String.valueOf(calendar.get(Calendar.MONTH) + 1)); // Jan=1
 			cypher.addParameter("day",
 					String.valueOf(calendar.get(Calendar.DAY_OF_MONTH)));
 			cypher.addParameter("hour",
