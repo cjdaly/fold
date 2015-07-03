@@ -23,7 +23,6 @@ import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.fold.IFoldChannel;
 import net.locosoft.fold.sketch.ISketchService;
 import net.locosoft.fold.sketch.SketchUtil;
-import net.locosoft.fold.sketch.pad.ITestSketch;
 import net.locosoft.fold.sketch.pad.neo4j.INeo4jCounterProperty;
 import net.locosoft.fold.util.MarkdownComposer;
 

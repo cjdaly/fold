@@ -13,13 +13,11 @@ package net.locosoft.fold.sketch.pad.neo4j;
 
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
-import net.locosoft.fold.neo4j.Neo4jUtil;
-import net.locosoft.fold.sketch.AbstractSketch;
 import net.locosoft.fold.sketch.ISketch;
 
 import com.eclipsesource.json.JsonValue;
 
-public interface INeo4jPropertyAccess extends ISketch {
+public interface INeo4jPropertyAccess extends INeo4jNodeSketch {
 
 	void init(long nodeId);
 
@@ -51,26 +49,22 @@ public interface INeo4jPropertyAccess extends ISketch {
 
 	void setValue(String propertyName, String value);
 
-	class Impl extends AbstractSketch implements INeo4jPropertyAccess {
-
-		private long _nodeId;
+	class Impl extends INeo4jNodeSketch.Impl implements INeo4jPropertyAccess {
 
 		public Class<? extends ISketch> getSketchInterface() {
 			return INeo4jPropertyAccess.class;
 		}
 
-		public void init(long nodeId) {
-			_nodeId = nodeId;
-		}
-
 		// getters
 
 		private JsonValue getValue(String propertyName) {
-			INeo4jService neo4jService = Neo4jUtil.getNeo4jService();
-			String cypherText = "MATCH node WHERE id(node)={nodeId} RETURN node.`"
+			INeo4jService neo4jService = getNeo4jService();
+			String cypherText = "MATCH node" //
+					+ " WHERE id(node)={nodeId}"
+					+ " RETURN node.`"
 					+ propertyName + "`";
 			ICypher cypher = neo4jService.constructCypher(cypherText);
-			cypher.addParameter("nodeId", _nodeId);
+			cypher.addParameter("nodeId", getNodeId());
 			neo4jService.invokeCypher(cypher);
 			return cypher.getResultDataRow(0);
 		}
@@ -102,11 +96,12 @@ public interface INeo4jPropertyAccess extends ISketch {
 		// setters
 
 		private void setValue(String propertyName, JsonValue value) {
-			INeo4jService neo4jService = Neo4jUtil.getNeo4jService();
-			String cypherText = "MATCH node WHERE id(node)={nodeId} SET node.`"
-					+ propertyName + "`={value}";
+			INeo4jService neo4jService = getNeo4jService();
+			String cypherText = "MATCH node" //
+					+ " WHERE id(node)={nodeId}" //
+					+ " SET node.`" + propertyName + "`={value}";
 			ICypher cypher = neo4jService.constructCypher(cypherText);
-			cypher.addParameter("nodeId", _nodeId);
+			cypher.addParameter("nodeId", getNodeId());
 			cypher.addParameter("value", value);
 			neo4jService.invokeCypher(cypher);
 		}

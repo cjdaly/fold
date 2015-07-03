@@ -93,24 +93,26 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 		return null;
 	}
 
+	private long _channelNodeId = -1;
+
 	public final long getChannelNodeId() {
-		INeo4jService neo4jService = Neo4jUtil.getNeo4jService();
+		if (_channelNodeId == -1) {
+			INeo4jService neo4jService = Neo4jUtil.getNeo4jService();
 
-		// TODO: move this bit to a less frequent spot
-		ICypher cypherConstraint = neo4jService
-				.constructCypher("CREATE CONSTRAINT ON (channel:fold_Channel) ASSERT channel.fold_channelId is UNIQUE");
-		neo4jService.invokeCypher(cypherConstraint);
+			// TODO: move this bit to a less frequent spot
+			ICypher cypherConstraint = neo4jService
+					.constructCypher("CREATE CONSTRAINT ON (channel:fold_Channel) ASSERT channel.fold_channelId is UNIQUE");
+			neo4jService.invokeCypher(cypherConstraint);
 
-		ICypher cypher = neo4jService
-				.constructCypher("MERGE (channel:fold_Channel {fold_channelId : {channelId}}) RETURN ID(channel)");
-		cypher.addParameter("channelId", getChannelId());
-		neo4jService.invokeCypher(cypher);
+			ICypher cypher = neo4jService
+					.constructCypher("MERGE (channel:fold_Channel {fold_channelId : {channelId}}) RETURN ID(channel)");
+			cypher.addParameter("channelId", getChannelId());
+			neo4jService.invokeCypher(cypher);
 
-		JsonValue jsonValue = cypher.getResultDataRow(0);
-		if ((jsonValue == null) || (!jsonValue.isNumber()))
-			return -1;
-		else
-			return jsonValue.asLong();
+			JsonValue jsonValue = cypher.getResultDataRow(0);
+			_channelNodeId = jsonValue.asLong();
+		}
+		return _channelNodeId;
 	}
 
 }

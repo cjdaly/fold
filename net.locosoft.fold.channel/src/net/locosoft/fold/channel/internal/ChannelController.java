@@ -71,14 +71,22 @@ public class ChannelController implements Runnable {
 	private void initChannels() {
 		for (IChannel channel : _channelService.getAllChannels()) {
 			IChannelInternal channelInternal = (IChannelInternal) channel;
-			channelInternal.init();
+			try {
+				channelInternal.init();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 
 	private void finiChannels() {
 		for (IChannel channel : _channelService.getAllChannels()) {
 			IChannelInternal channelInternal = (IChannelInternal) channel;
-			channelInternal.fini();
+			try {
+				channelInternal.fini();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
 		}
 	}
 

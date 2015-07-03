@@ -11,43 +11,45 @@
 
 package net.locosoft.fold.sketch.pad.neo4j;
 
-import com.eclipsesource.json.JsonValue;
-
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
-import net.locosoft.fold.neo4j.Neo4jUtil;
-import net.locosoft.fold.sketch.AbstractSketch;
 import net.locosoft.fold.sketch.ISketch;
 
-public interface INeo4jCounterProperty extends ISketch {
+import com.eclipsesource.json.JsonValue;
 
-	void init(long nodeId);
+public interface INeo4jCounterProperty extends INeo4jNodeSketch {
 
 	long incrementCounter(String counterPropertyName);
 
-	class Impl extends AbstractSketch implements INeo4jCounterProperty {
+	long decrementCounter(String counterPropertyName);
 
-		private long _nodeId;
+	class Impl extends INeo4jNodeSketch.Impl implements INeo4jCounterProperty {
 
 		public Class<? extends ISketch> getSketchInterface() {
 			return INeo4jCounterProperty.class;
 		}
 
-		public void init(long nodeId) {
-			_nodeId = nodeId;
-		}
-
-		public long incrementCounter(String counterPropertyName) {
-			INeo4jService neo4jService = Neo4jUtil.getNeo4jService();
-			String cypherText = "MATCH node WHERE id(node)={nodeId} SET node.`"
-					+ counterPropertyName + "`=COALESCE(node.`"
-					+ counterPropertyName + "`, 0) + 1 RETURN node.`"
-					+ counterPropertyName + "`";
+		private long crementCounter(String counterPropertyName,
+				boolean isIncrement) {
+			INeo4jService neo4jService = getNeo4jService();
+			char crementOp = isIncrement ? '+' : '-';
+			String cypherText = "MATCH node WHERE id(node)={nodeId}"
+					+ " SET node.`" + counterPropertyName + "`=COALESCE(node.`"
+					+ counterPropertyName + "`, 0) " + crementOp + " 1"
+					+ " RETURN node.`" + counterPropertyName + "`";
 			ICypher cypher = neo4jService.constructCypher(cypherText);
-			cypher.addParameter("nodeId", _nodeId);
+			cypher.addParameter("nodeId", getNodeId());
 			neo4jService.invokeCypher(cypher);
 			JsonValue jsonValue = cypher.getResultDataRow(0);
 			return jsonValue.asLong();
+		}
+
+		public long incrementCounter(String counterPropertyName) {
+			return crementCounter(counterPropertyName, true);
+		}
+
+		public long decrementCounter(String counterPropertyName) {
+			return crementCounter(counterPropertyName, false);
 		}
 	}
 }

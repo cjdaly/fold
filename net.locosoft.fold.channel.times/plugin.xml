@@ -8,5 +8,12 @@
             implementation="net.locosoft.fold.channel.times.internal.TimesChannel">
       </channel>
    </extension>
+   <extension
+         point="net.locosoft.fold.sketch">
+      <sketch
+            id="net.locosoft.fold.channel.times.INeo4jTimes"
+            implementation="net.locosoft.fold.channel.times.INeo4jTimes$Impl">
+      </sketch>
+   </extension>
 
 </plugin>

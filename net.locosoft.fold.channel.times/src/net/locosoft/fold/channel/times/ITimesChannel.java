@@ -15,4 +15,8 @@ import net.locosoft.fold.channel.IChannel;
 
 public interface ITimesChannel extends IChannel {
 
+	long getEpochNodeId();
+
+	long getMinuteNodeId(long timeMillis, boolean createIfAbsent);
+
 }

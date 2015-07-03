@@ -15,6 +15,10 @@
             id="net.locosoft.fold.sketch.pad.neo4j.INeo4jCounterProperty"
             implementation="net.locosoft.fold.sketch.pad.neo4j.INeo4jCounterProperty$Impl">
       </sketch>
+      <sketch
+            id="net.locosoft.fold.sketch.pad.neo4j.INeo4jHierarchyNode"
+            implementation="net.locosoft.fold.sketch.pad.neo4j.INeo4jHierarchyNode$Impl">
+      </sketch>
    </extension>
 
 </plugin>

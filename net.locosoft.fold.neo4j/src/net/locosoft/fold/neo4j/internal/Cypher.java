@@ -74,32 +74,36 @@ public class Cypher implements ICypher {
 		return _response;
 	}
 
-	public JsonArray getResultDataRows() {
+	private JsonArray getResultData() {
 		try {
-			JsonArray resultDataRows = getResponse().get("results").asArray()
-					.get(0).asObject().get("data").asArray().get(0).asObject()
-					.get("row").asArray();
-			return resultDataRows;
+			return getResponse().get("results").asArray().get(0).asObject()
+					.get("data").asArray();
+		} catch (IndexOutOfBoundsException ex) {
+			// ex.printStackTrace();
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
-		return null;
+		return new JsonArray();
 	}
 
 	public int getResultDataRowCount() {
-		JsonArray resultDataRows = getResultDataRows();
-		if (resultDataRows == null)
-			return 0;
-		else
-			return resultDataRows.size();
+		JsonArray resultData = getResultData();
+		return resultData.size();
 	}
 
 	public JsonValue getResultDataRow(int index) {
-		JsonArray resultDataRows = getResultDataRows();
-		if (resultDataRows == null)
-			return null;
-		else
-			return resultDataRows.get(index);
+		JsonArray resultData = getResultData();
+		if ((index >= 0) && (index < resultData.size())) {
+			try {
+				return resultData.get(index).asObject().get("row").asArray()
+						.get(0);
+			} catch (IndexOutOfBoundsException ex) {
+				// ex.printStackTrace();
+			} catch (Exception ex) {
+				ex.printStackTrace();
+			}
+		}
+		return null;
 	}
 
 }
