@@ -18,6 +18,8 @@ public interface ICypher {
 
 	JsonObject getRequest();
 
+	void addStatement(String statementText);
+
 	void addParameter(String name, JsonValue value);
 
 	void addParameter(String name, int value);

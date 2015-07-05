@@ -101,7 +101,7 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 
 			// TODO: move this bit to a less frequent spot
 			ICypher cypherConstraint = neo4jService
-					.constructCypher("CREATE CONSTRAINT ON (channel:fold_Channel) ASSERT channel.fold_channelId is UNIQUE");
+					.constructCypher("CREATE CONSTRAINT ON (channel:fold_Channel) ASSERT channel.fold_channelId IS UNIQUE");
 			neo4jService.invokeCypher(cypherConstraint);
 
 			ICypher cypher = neo4jService

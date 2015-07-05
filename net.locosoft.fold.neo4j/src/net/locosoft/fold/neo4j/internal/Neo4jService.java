@@ -50,6 +50,10 @@ public class Neo4jService implements INeo4jService {
 		return _neo4jController.getNeo4jPID();
 	}
 
+	public ICypher constructCypher() {
+		return constructCypher(null);
+	}
+
 	public ICypher constructCypher(String statement) {
 		return new Cypher(statement);
 	}

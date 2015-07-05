@@ -12,6 +12,7 @@
 package net.locosoft.fold.channel.vitals.internal;
 
 import net.locosoft.fold.channel.vitals.IVitals;
+import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 
 public class VitalsMonitor implements Runnable {
 
@@ -48,9 +49,10 @@ public class VitalsMonitor implements Runnable {
 					try {
 						IVitals vitals = _vitalsChannel.getVitals(vitalsId);
 						if (vitals.isCheckTime(currentTimeMillis)) {
-							vitals.checkVitals();
-							System.out.println("vitals: " + vitalsId);
-							// System.out.println("  " + vitalsAsJson);
+							ChannelItemNode vitalsNode = new ChannelItemNode(
+									_vitalsChannel, "Vitals");
+							long vitalsNodeId = vitalsNode.nextOrdinalNodeId();
+							vitals.checkVitals(vitalsNodeId);
 						}
 					} catch (Exception ex) {
 						ex.printStackTrace();

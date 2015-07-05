@@ -19,7 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.eclipse.core.resources.IProject;
 
-public interface IChannelInternal {
+public interface IChannelInternal extends IChannel {
 
 	void setChannelId(String id);
 

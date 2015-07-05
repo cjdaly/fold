@@ -15,22 +15,10 @@ import org.eclipse.core.runtime.IConfigurationElement;
 
 public interface IVitals {
 
-	// predefined vital attributes
-	String ATTR_ID = "id";
-	String ATTR_VALUE = "value";
-	String ATTR_DATATYPE = "datatype";
-	String ATTR_UNITS = "units";
-	String ATTR_NAME = "name";
-	String ATTR_DESCRIPTION = "description";
-
-	// attribute groups
-	String[] ATTRS_ALL = new String[0];
-	String[] ATTRS_DEFAULT = new String[] { ATTR_ID, ATTR_VALUE };
-
 	void init(IConfigurationElement configurationElement);
 
 	boolean isCheckTime(long currentTimeMillis);
 
-	void checkVitals();
+	void checkVitals(long vitalsItemNodeId);
 
 }

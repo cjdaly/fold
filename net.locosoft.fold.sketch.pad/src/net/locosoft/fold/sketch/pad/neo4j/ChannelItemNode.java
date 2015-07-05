@@ -9,18 +9,15 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.neo4j;
+package net.locosoft.fold.sketch.pad.neo4j;
 
-public interface INeo4jService {
+import net.locosoft.fold.channel.IChannelInternal;
 
-	boolean isNeo4jReady();
+public class ChannelItemNode extends OrdinalNode {
 
-	int getNeo4jPID();
-
-	ICypher constructCypher();
-
-	ICypher constructCypher(String statement);
-
-	void invokeCypher(ICypher cypher);
+	public ChannelItemNode(IChannelInternal channel, String itemLabel) {
+		super(channel.getChannelNodeId(), channel.getChannelId() + "_"
+				+ itemLabel);
+	}
 
 }

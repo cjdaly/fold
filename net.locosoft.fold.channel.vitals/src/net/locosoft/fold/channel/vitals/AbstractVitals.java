@@ -14,6 +14,7 @@ package net.locosoft.fold.channel.vitals;
 import java.util.TreeMap;
 
 import net.locosoft.fold.channel.vitals.internal.Vital;
+import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 
 import org.eclipse.core.runtime.IConfigurationElement;
 
@@ -40,6 +41,9 @@ public abstract class AbstractVitals implements IVitals {
 			_idToVital.put(vital.Id, vital);
 		}
 
+		Vital checkTime = new Vital("Vitals_checkTime", "long", "millis",
+				"check time", "check time in milliseconds");
+		_idToVital.put(checkTime.Id, checkTime);
 	}
 
 	public String getId() {
@@ -51,12 +55,22 @@ public abstract class AbstractVitals implements IVitals {
 		return (currentTimeMillis >= nextCheckTime);
 	}
 
-	public void checkVitals() {
+	public void checkVitals(long vitalsItemNodeId) {
 		for (Vital vital : _idToVital.values()) {
 			vital.clear();
 		}
 		readVitals();
 		_lastCheckTime = System.currentTimeMillis();
+		recordVital("Vitals_checkTime", _lastCheckTime);
+
+		if (vitalsItemNodeId != -1) {
+			MultiPropertyAccessNode sketch = new MultiPropertyAccessNode(
+					vitalsItemNodeId, _id + "_");
+			for (Vital vital : _idToVital.values()) {
+				vital.addTo(sketch);
+			}
+			sketch.setProperties();
+		}
 	}
 
 	protected void recordVital(String id, int value) {

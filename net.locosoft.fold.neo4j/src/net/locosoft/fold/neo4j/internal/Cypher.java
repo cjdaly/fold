@@ -20,6 +20,7 @@ import com.eclipsesource.json.JsonValue;
 public class Cypher implements ICypher {
 
 	private JsonObject _request;
+	private JsonObject _statement;
 	private JsonObject _parameters;
 	private JsonObject _response;
 
@@ -31,11 +32,17 @@ public class Cypher implements ICypher {
 		_request = new JsonObject();
 		JsonArray statements = new JsonArray();
 		_request.add("statements", statements);
-		JsonObject statement = new JsonObject();
-		statements.add(statement);
-		statement.add("statement", statementText);
+		_statement = new JsonObject();
+		statements.add(_statement);
+		if (statementText != null) {
+			_statement.add("statement", statementText);
+		}
 		_parameters = new JsonObject();
-		statement.add("parameters", _parameters);
+		_statement.add("parameters", _parameters);
+	}
+
+	public void addStatement(String statementText) {
+		_statement.add("statement", statementText);
 	}
 
 	public void addParameter(String name, JsonValue value) {

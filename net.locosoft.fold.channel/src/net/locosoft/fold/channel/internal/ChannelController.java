@@ -46,13 +46,13 @@ public class ChannelController implements Runnable {
 		while (!_stopping) {
 			_stopped = false;
 			try {
+				Thread.sleep(5 * 1000);
 				if (!_channelInit) {
 					if (Neo4jUtil.getNeo4jService().isNeo4jReady()) {
 						initChannels();
 						_channelInit = true;
 					}
 				}
-				Thread.sleep(5 * 1000);
 			} catch (InterruptedException ex) {
 				ex.printStackTrace();
 			} catch (Exception ex) {

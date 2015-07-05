@@ -11,6 +11,8 @@
 
 package net.locosoft.fold.channel.vitals.internal;
 
+import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
+
 import org.eclipse.core.runtime.IConfigurationElement;
 
 public class Vital {
@@ -20,6 +22,15 @@ public class Vital {
 	public final String Units;
 	public final String Name;
 	public final String Description;
+
+	public Vital(String id, String datatype, String units, String name,
+			String description) {
+		Id = id;
+		Datatype = datatype;
+		Units = units;
+		Name = name;
+		Description = description;
+	}
 
 	public Vital(IConfigurationElement vitalElement) {
 		Id = vitalElement.getAttribute("id");
@@ -42,9 +53,35 @@ public class Vital {
 
 	//
 
+	public void addTo(MultiPropertyAccessNode sketch) {
+		switch (Datatype) {
+		case "int":
+			sketch.addProperty(Id, getIntValue());
+			break;
+		case "long":
+			sketch.addProperty(Id, getLongValue());
+			break;
+		case "float":
+			sketch.addProperty(Id, getFloatValue());
+			break;
+		case "double":
+			sketch.addProperty(Id, getDoubleValue());
+			break;
+		case "boolean":
+			sketch.addProperty(Id, getBooleanValue());
+			break;
+		case "string":
+			sketch.addProperty(Id, getStringValue());
+			break;
+		}
+	}
+
+	//
+
 	private int _intValue;
 
 	public void setValue(int value) {
+		checkDatatype("int");
 		_intValue = value;
 	}
 
@@ -57,6 +94,7 @@ public class Vital {
 	private long _longValue;
 
 	public void setValue(long value) {
+		checkDatatype("long");
 		_longValue = value;
 	}
 
@@ -69,6 +107,7 @@ public class Vital {
 	private float _floatValue;
 
 	public void setValue(float value) {
+		checkDatatype("float");
 		_floatValue = value;
 	}
 
@@ -81,6 +120,7 @@ public class Vital {
 	private double _doubleValue;
 
 	public void setValue(double value) {
+		checkDatatype("double");
 		_doubleValue = value;
 	}
 
@@ -93,6 +133,7 @@ public class Vital {
 	private boolean _booleanValue;
 
 	public void setValue(boolean value) {
+		checkDatatype("boolean");
 		_booleanValue = value;
 	}
 
@@ -105,10 +146,22 @@ public class Vital {
 	private String _stringValue;
 
 	public void setValue(String value) {
+		checkDatatype("string");
 		_stringValue = value;
 	}
 
 	public String getStringValue() {
 		return _stringValue;
+	}
+
+	//
+
+	private boolean checkDatatype(String opDatatype) {
+		boolean datatypeMatch = opDatatype.equals(Datatype);
+		if (!datatypeMatch) {
+			System.out.println("Vital: " + Id + ", datatype mismatch! "
+					+ opDatatype + "/" + Datatype);
+		}
+		return datatypeMatch;
 	}
 }
