@@ -53,6 +53,7 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 				Object extension = configurationElement
 						.createExecutableExtension("implementation");
 				IVitals vitals = (IVitals) extension;
+				vitals.init(configurationElement);
 				_idToVitals.put(vitalsId, vitals);
 			} catch (ClassCastException ex) {
 				ex.printStackTrace();

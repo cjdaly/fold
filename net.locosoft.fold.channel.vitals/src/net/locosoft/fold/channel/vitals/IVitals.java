@@ -11,6 +11,8 @@
 
 package net.locosoft.fold.channel.vitals;
 
+import org.eclipse.core.runtime.IConfigurationElement;
+
 public interface IVitals {
 
 	// predefined vital attributes
@@ -25,6 +27,10 @@ public interface IVitals {
 	String[] ATTRS_ALL = new String[0];
 	String[] ATTRS_DEFAULT = new String[] { ATTR_ID, ATTR_VALUE };
 
-	String readVitalsAsJson(String[] attributes);
+	void init(IConfigurationElement configurationElement);
+
+	boolean isCheckTime(long currentTimeMillis);
+
+	void checkVitals();
 
 }

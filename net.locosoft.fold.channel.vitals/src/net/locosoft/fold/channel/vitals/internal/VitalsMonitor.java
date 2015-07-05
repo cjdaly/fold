@@ -16,6 +16,7 @@ import net.locosoft.fold.channel.vitals.IVitals;
 public class VitalsMonitor implements Runnable {
 
 	private VitalsChannel _vitalsChannel;
+
 	private Thread _thread;
 	private boolean _stopping = false;
 	private boolean _stopped = true;
@@ -42,18 +43,21 @@ public class VitalsMonitor implements Runnable {
 		while (!_stopping) {
 			try {
 				String[] vitalsIds = _vitalsChannel.getVitalsIds();
+				long currentTimeMillis = System.currentTimeMillis();
 				for (String vitalsId : vitalsIds) {
-					IVitals vitals = _vitalsChannel.getVitals(vitalsId);
 					try {
-						String vitalsAsJson = vitals.readVitalsAsJson(null);
-						System.out.println("vitals: " + vitalsId);
-						System.out.println("  " + vitalsAsJson);
+						IVitals vitals = _vitalsChannel.getVitals(vitalsId);
+						if (vitals.isCheckTime(currentTimeMillis)) {
+							vitals.checkVitals();
+							System.out.println("vitals: " + vitalsId);
+							// System.out.println("  " + vitalsAsJson);
+						}
 					} catch (Exception ex) {
 						ex.printStackTrace();
 					}
 				}
 
-				Thread.sleep(10 * 1000);
+				Thread.sleep(5 * 1000);
 			} catch (InterruptedException ex) {
 				ex.printStackTrace();
 			} catch (Exception ex) {

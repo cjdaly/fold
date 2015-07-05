@@ -11,42 +11,94 @@
 
 package net.locosoft.fold.channel.vitals;
 
-import com.eclipsesource.json.JsonObject;
+import java.util.TreeMap;
+
+import net.locosoft.fold.channel.vitals.internal.Vital;
+
+import org.eclipse.core.runtime.IConfigurationElement;
 
 public abstract class AbstractVitals implements IVitals {
 
 	public abstract void readVitals();
 
-	private JsonObject _vitals;
+	private String _id;
+	private int _checkInterval;
+	private long _lastCheckTime;
 
-	public String readVitalsAsJson(String[] attributes) {
-		_vitals = new JsonObject();
+	private TreeMap<String, Vital> _idToVital = new TreeMap<String, Vital>();
+
+	public void init(IConfigurationElement configurationElement) {
+		_id = configurationElement.getAttribute("id");
+		String checkIntervalText = configurationElement
+				.getAttribute("checkInterval");
+		_checkInterval = Integer.parseInt(checkIntervalText);
+
+		IConfigurationElement[] vitalElements = configurationElement
+				.getChildren("vital");
+		for (IConfigurationElement vitalElement : vitalElements) {
+			Vital vital = new Vital(vitalElement);
+			_idToVital.put(vital.Id, vital);
+		}
+
+	}
+
+	public String getId() {
+		return _id;
+	}
+
+	public boolean isCheckTime(long currentTimeMillis) {
+		long nextCheckTime = _lastCheckTime + (_checkInterval * 1000);
+		return (currentTimeMillis >= nextCheckTime);
+	}
+
+	public void checkVitals() {
+		for (Vital vital : _idToVital.values()) {
+			vital.clear();
+		}
 		readVitals();
-		return _vitals.toString();
+		_lastCheckTime = System.currentTimeMillis();
 	}
 
 	protected void recordVital(String id, int value) {
-		_vitals.add(id, value);
+		Vital vital = _idToVital.get(id);
+		if (vital != null) {
+			vital.setValue(value);
+		}
 	}
 
 	protected void recordVital(String id, long value) {
-		_vitals.add(id, value);
+		Vital vital = _idToVital.get(id);
+		if (vital != null) {
+			vital.setValue(value);
+		}
 	}
 
 	protected void recordVital(String id, float value) {
-		_vitals.add(id, value);
+		Vital vital = _idToVital.get(id);
+		if (vital != null) {
+			vital.setValue(value);
+		}
 	}
 
 	protected void recordVital(String id, double value) {
-		_vitals.add(id, value);
+		Vital vital = _idToVital.get(id);
+		if (vital != null) {
+			vital.setValue(value);
+		}
 	}
 
 	protected void recordVital(String id, boolean value) {
-		_vitals.add(id, value);
+		Vital vital = _idToVital.get(id);
+		if (vital != null) {
+			vital.setValue(value);
+		}
 	}
 
 	protected void recordVital(String id, String value) {
-		_vitals.add(id, value);
+		Vital vital = _idToVital.get(id);
+		if (vital != null) {
+			vital.setValue(value);
+		}
 	}
 
 }
