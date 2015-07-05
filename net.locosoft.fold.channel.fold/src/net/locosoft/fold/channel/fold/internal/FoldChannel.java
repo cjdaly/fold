@@ -21,9 +21,7 @@ import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.fold.IFoldChannel;
-import net.locosoft.fold.sketch.ISketchService;
-import net.locosoft.fold.sketch.SketchUtil;
-import net.locosoft.fold.sketch.pad.neo4j.INeo4jCounterProperty;
+import net.locosoft.fold.sketch.pad.neo4j.CounterPropertyNode;
 import net.locosoft.fold.util.MarkdownComposer;
 
 import org.eclipse.core.runtime.Path;
@@ -43,13 +41,9 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 	}
 
 	public void init() {
-		ISketchService sketchService = SketchUtil.getSketchService();
-		INeo4jCounterProperty neo4jCounterProperty = sketchService
-				.constructSketch(INeo4jCounterProperty.class);
-
-		long channelNodeId = getChannelNodeId();
-		neo4jCounterProperty.init(channelNodeId);
-		_startCount = neo4jCounterProperty.incrementCounter("fold_startCount");
+		CounterPropertyNode foldStartCount = new CounterPropertyNode(
+				getChannelNodeId());
+		_startCount = foldStartCount.incrementCounter("fold_startCount");
 	}
 
 	public void channelHttp(HttpServletRequest request,

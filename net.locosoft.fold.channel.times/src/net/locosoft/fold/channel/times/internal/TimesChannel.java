@@ -17,16 +17,13 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.Path;
-
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
-import net.locosoft.fold.channel.times.INeo4jTimes;
 import net.locosoft.fold.channel.times.ITimesChannel;
-import net.locosoft.fold.sketch.ISketchService;
-import net.locosoft.fold.sketch.SketchUtil;
-import net.locosoft.fold.sketch.pad.neo4j.INeo4jHierarchyNode;
+import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.util.MarkdownComposer;
+
+import org.eclipse.core.runtime.Path;
 
 public class TimesChannel extends AbstractChannel implements ITimesChannel {
 
@@ -38,21 +35,15 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 
 	public long getEpochNodeId() {
 		if (_epochNodeId == -1) {
-			ISketchService sketchService = SketchUtil.getSketchService();
-			INeo4jHierarchyNode neo4jHierarchyNode = sketchService
-					.constructSketch(INeo4jHierarchyNode.class);
-			neo4jHierarchyNode.init(getChannelNodeId());
-			_epochNodeId = neo4jHierarchyNode.getSubId("ce", true);
+			HierarchyNode sketch = new HierarchyNode(getChannelNodeId());
+			_epochNodeId = sketch.getSubId("ce", true);
 		}
 		return _epochNodeId;
 	}
 
 	public long getMinuteNodeId(long timeMillis, boolean createIfAbsent) {
-		ISketchService sketchService = SketchUtil.getSketchService();
-		INeo4jTimes neo4jTimes = sketchService
-				.constructSketch(INeo4jTimes.class);
-		neo4jTimes.init(getEpochNodeId());
-		return neo4jTimes.getMinuteNodeId(timeMillis, createIfAbsent);
+		GetTimesNode sketch = new GetTimesNode(getEpochNodeId());
+		return sketch.getMinuteNodeId(timeMillis, createIfAbsent);
 	}
 
 	public void init() {
@@ -74,26 +65,23 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 		Path path = new Path(request.getPathInfo());
 		long currNodeId = getChannelNodeId();
 
-		ISketchService sketchService = SketchUtil.getSketchService();
-		INeo4jHierarchyNode neo4jHierarchyNode = sketchService
-				.constructSketch(INeo4jHierarchyNode.class);
-		neo4jHierarchyNode.init(currNodeId);
+		HierarchyNode sketch = new HierarchyNode(currNodeId);
 
 		for (int index = 1; index < path.segmentCount(); index++) {
 			String segment = path.segment(index);
 			md.line("    segment(" + index + ")= " + segment);
 
-			currNodeId = neo4jHierarchyNode.getSubId(segment, false);
+			currNodeId = sketch.getSubId(segment, false);
 			if (currNodeId != -1) {
-				neo4jHierarchyNode.init(currNodeId);
-				long[] subIds = neo4jHierarchyNode.getSubIds();
+				sketch.setNodeId(currNodeId);
+				long[] subIds = sketch.getSubIds();
 				String subIdList = "";
 				for (long subId : subIds) {
 					subIdList += subId + ",";
 				}
 				md.line("      subIds: " + subIdList);
 
-				String[] subSegments = neo4jHierarchyNode.getSubSegments();
+				String[] subSegments = sketch.getSubSegments();
 				String subSegmentList = "";
 				for (String subSegment : subSegments) {
 					subSegmentList += subSegment + ",";

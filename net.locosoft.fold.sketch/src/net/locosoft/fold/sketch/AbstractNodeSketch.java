@@ -9,36 +9,26 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.sketch.pad.neo4j;
+package net.locosoft.fold.sketch;
 
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.neo4j.Neo4jUtil;
-import net.locosoft.fold.sketch.AbstractSketch;
-import net.locosoft.fold.sketch.ISketch;
 
-public interface INeo4jNodeSketch extends ISketch {
+public abstract class AbstractNodeSketch implements INodeSketch {
 
-	void init(long nodeId);
+	protected long _nodeId = -1;
 
-	public abstract class Impl extends AbstractSketch implements
-			INeo4jNodeSketch {
-
-		private long _nodeId;
-		private INeo4jService _neo4jService;
-
-		public void init(long nodeId) {
-			_nodeId = nodeId;
-		}
-
-		public long getNodeId() {
-			return _nodeId;
-		}
-
-		public INeo4jService getNeo4jService() {
-			if (_neo4jService == null) {
-				_neo4jService = Neo4jUtil.getNeo4jService();
-			}
-			return _neo4jService;
-		}
+	public long getNodeId() {
+		return _nodeId;
 	}
+
+	private INeo4jService _neo4jService;
+
+	public INeo4jService getNeo4jService() {
+		if (_neo4jService == null) {
+			_neo4jService = Neo4jUtil.getNeo4jService();
+		}
+		return _neo4jService;
+	}
+
 }

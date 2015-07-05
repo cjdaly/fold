@@ -13,8 +13,4 @@ package net.locosoft.fold.sketch;
 
 public interface ISketch {
 
-	String getSketchId();
-
-	Class<? extends ISketch> getSketchInterface();
-
 }

@@ -11,12 +11,8 @@
 
 package net.locosoft.fold.sketch;
 
-import net.locosoft.fold.util.FoldUtil;
+public interface I2NodeSketch extends INodeSketch {
 
-public class SketchUtil {
-
-	public static ISketchService getSketchService() {
-		return FoldUtil.getService(ISketchService.class);
-	}
+	long getNode2Id();
 
 }

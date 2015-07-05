@@ -11,13 +11,13 @@
 
 package net.locosoft.fold.sketch;
 
-public interface IPoint {
+public abstract class Abstract2NodeSketch extends AbstractNodeSketch implements
+		I2NodeSketch {
 
-	// IStoragePoint (abstract)
-	//   IFilePoint, IDirectoryPoint, (resource, filesystem)?
-	//   INodePoint
-	// ISketchPoint
-	// ILogicPoint (algo, code)?
-	// IChannelPoint??  (cyclic dependency problems)
-	
+	protected long _node2Id = -1;
+
+	public long getNode2Id() {
+		return _node2Id;
+	}
+
 }
