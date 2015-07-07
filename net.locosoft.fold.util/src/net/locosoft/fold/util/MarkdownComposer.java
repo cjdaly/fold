@@ -11,6 +11,8 @@
 
 package net.locosoft.fold.util;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.WriterConfig;
 import com.github.rjeschke.txtmark.Processor;
 
 public class MarkdownComposer {
@@ -52,6 +54,12 @@ public class MarkdownComposer {
 			_markdown.append("</td>");
 		}
 		_markdown.append("</tr>\n");
+	}
+
+	public void json(JsonObject jsonObject) {
+		_markdown.append("<pre>");
+		_markdown.append(jsonObject.toString(WriterConfig.PRETTY_PRINT));
+		_markdown.append("</pre>\n\n");
 	}
 
 	public String makeA(String href, String linkText) {

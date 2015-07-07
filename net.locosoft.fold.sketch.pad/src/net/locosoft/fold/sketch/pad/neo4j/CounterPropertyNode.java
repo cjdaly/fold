@@ -45,4 +45,9 @@ public class CounterPropertyNode extends AbstractNodeSketch {
 		return crementCounter(counterPropertyName, false);
 	}
 
+	public long getCounter(String counterPropertyName) {
+		PropertyAccessNode sketch = new PropertyAccessNode(getNodeId());
+		return sketch.getLongValue(counterPropertyName);
+	}
+
 }

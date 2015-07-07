@@ -11,6 +11,7 @@
 
 package net.locosoft.fold.sketch.pad.neo4j;
 
+import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 import net.locosoft.fold.neo4j.ICypher;
@@ -38,6 +39,10 @@ public class OrdinalNode extends AbstractNodeSketch {
 
 	protected String getIndexPropertyName() {
 		return "fold_OrdinalIndex_" + getOrdinalLabel();
+	}
+
+	public long getOrdinal() {
+		return _ordinalCounter.getCounter(getCounterPropertyName());
 	}
 
 	public long nextOrdinalNodeId() {
@@ -76,7 +81,27 @@ public class OrdinalNode extends AbstractNodeSketch {
 
 		neo4jService.invokeCypher(cypher);
 		JsonValue jsonValue = cypher.getResultDataRow(0);
-		return jsonValue.asLong();
+		if (jsonValue == null)
+			return -1;
+		else
+			return jsonValue.asLong();
+	}
+
+	public JsonObject getOrdinalNode(long ordinalIndex) {
+		INeo4jService neo4jService = getNeo4jService();
+
+		String cypherText = "MATCH (ordinal:" + getOrdinalLabel() + " { `"
+				+ getIndexPropertyName() + "`: {ordinalIndex} })"
+				+ " RETURN ordinal";
+		ICypher cypher = neo4jService.constructCypher(cypherText);
+		cypher.addParameter("ordinalIndex", ordinalIndex);
+
+		neo4jService.invokeCypher(cypher);
+		JsonValue jsonValue = cypher.getResultDataRow(0);
+		if ((jsonValue == null) || (!jsonValue.isObject()))
+			return null;
+		else
+			return jsonValue.asObject();
 	}
 
 }

@@ -15,9 +15,16 @@ import net.locosoft.fold.channel.IChannelInternal;
 
 public class ChannelItemNode extends OrdinalNode {
 
+	private String _itemLabel;
+
 	public ChannelItemNode(IChannelInternal channel, String itemLabel) {
 		super(channel.getChannelNodeId(), channel.getChannelId() + "_"
 				+ itemLabel);
+		_itemLabel = itemLabel;
+	}
+
+	public String getItemLabel() {
+		return _itemLabel;
 	}
 
 }
