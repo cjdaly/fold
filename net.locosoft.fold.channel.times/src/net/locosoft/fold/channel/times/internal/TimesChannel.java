@@ -46,6 +46,22 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 		return sketch.getMinuteNodeId(timeMillis, createIfAbsent);
 	}
 
+	public void createTimesRef(long timeMillis, long refNodeId) {
+		long minuteNodeId = getMinuteNodeId(timeMillis, true);
+		RefTimesNode sketch = new RefTimesNode(minuteNodeId);
+		sketch.createTimesRef(refNodeId);
+	}
+
+	public long[] getTimesRefNodeIds(long timeMillis, String refNodeLabel) {
+		long minuteNodeId = getMinuteNodeId(timeMillis, false);
+		if (minuteNodeId == -1) {
+			return new long[0];
+		} else {
+			RefTimesNode sketch = new RefTimesNode(minuteNodeId);
+			return sketch.getTimesRefNodeIds(refNodeLabel);
+		}
+	}
+
 	public void init() {
 		long currentTimeMillis = System.currentTimeMillis();
 		System.out.println("times channel starting at: " + currentTimeMillis);

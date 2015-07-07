@@ -13,6 +13,9 @@ package net.locosoft.fold.channel.vitals;
 
 import java.util.TreeMap;
 
+import net.locosoft.fold.channel.ChannelUtil;
+import net.locosoft.fold.channel.IChannelService;
+import net.locosoft.fold.channel.times.ITimesChannel;
 import net.locosoft.fold.channel.vitals.internal.Vital;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 
@@ -70,6 +73,11 @@ public abstract class AbstractVitals implements IVitals {
 				vital.addTo(sketch);
 			}
 			sketch.setProperties();
+
+			IChannelService channelService = ChannelUtil.getChannelService();
+			ITimesChannel timesChannel = channelService
+					.getChannel(ITimesChannel.class);
+			timesChannel.createTimesRef(_lastCheckTime, vitalsItemNodeId);
 		}
 	}
 

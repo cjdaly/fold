@@ -19,4 +19,8 @@ public interface ITimesChannel extends IChannel {
 
 	long getMinuteNodeId(long timeMillis, boolean createIfAbsent);
 
+	void createTimesRef(long timeMillis, long refNodeId);
+
+	long[] getTimesRefNodeIds(long timeMillis, String refNodeLabel);
+
 }

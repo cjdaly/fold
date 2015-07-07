@@ -43,7 +43,6 @@ public class OrdinalNode extends AbstractNodeSketch {
 	public long nextOrdinalNodeId() {
 		long ordinalIndex = _ordinalCounter
 				.incrementCounter(getCounterPropertyName());
-
 		INeo4jService neo4jService = getNeo4jService();
 
 		if (ordinalIndex == 1) {
@@ -66,11 +65,18 @@ public class OrdinalNode extends AbstractNodeSketch {
 		return jsonValue.asLong();
 	}
 
-	public long getOrdinalNodeId(long index) {
+	public long getOrdinalNodeId(long ordinalIndex) {
+		INeo4jService neo4jService = getNeo4jService();
 
-		// TODO:...
+		String cypherText = "MATCH (ordinal:" + getOrdinalLabel() + " { `"
+				+ getIndexPropertyName() + "`: {ordinalIndex} })"
+				+ " RETURN ID(ordinal)";
+		ICypher cypher = neo4jService.constructCypher(cypherText);
+		cypher.addParameter("ordinalIndex", ordinalIndex);
 
-		return -1;
+		neo4jService.invokeCypher(cypher);
+		JsonValue jsonValue = cypher.getResultDataRow(0);
+		return jsonValue.asLong();
 	}
 
 }

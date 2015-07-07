@@ -13,8 +13,6 @@ package net.locosoft.fold.channel.times.internal;
 
 import java.util.Calendar;
 
-import com.eclipsesource.json.JsonValue;
-
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.sketch.AbstractNodeSketch;
@@ -65,8 +63,10 @@ public class GetTimesNode extends AbstractNodeSketch {
 				String.valueOf(calendar.get(Calendar.MINUTE)));
 
 		neo4jService.invokeCypher(cypher);
-		JsonValue jsonValue = cypher.getResultDataRow(0);
-		return jsonValue.asLong();
+		if (cypher.getResultDataRowCount() < 1)
+			return -1;
+		else
+			return cypher.getResultDataRow(0).asLong();
 	}
 
 }

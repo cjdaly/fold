@@ -4,5 +4,6 @@ Bundle-Name: fold channel vitals
 Bundle-SymbolicName: net.locosoft.fold.channel.vitals;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: net.locosoft.fold.required
+Require-Bundle: net.locosoft.fold.required,
+ net.locosoft.fold.channel.times
 Export-Package: net.locosoft.fold.channel.vitals
