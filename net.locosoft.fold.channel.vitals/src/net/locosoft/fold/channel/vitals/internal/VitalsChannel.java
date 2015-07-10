@@ -23,16 +23,13 @@ import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.channel.vitals.IVitalsChannel;
-import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
-import net.locosoft.fold.util.MarkdownComposer;
+import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
-
-import com.eclipsesource.json.JsonObject;
 
 public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
@@ -83,21 +80,20 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
-		MarkdownComposer md = new MarkdownComposer();
-		md.line("# vitals", true);
-
-		ChannelItemNode sketch = new ChannelItemNode(this, "Vitals");
+		ChannelHeaderFooterHtml htmlHeaderFooterSketch = new ChannelHeaderFooterHtml(
+				this);
+		htmlHeaderFooterSketch.writeHeader(response.getWriter());
 
 		Path path = new Path(request.getPathInfo());
-		if (path.segmentCount() == 1) {
-			md.line("latest: " + sketch.getOrdinal(), true);
-		} else if (path.segmentCount() == 2) {
-			int vitalsOrdinal = Integer.parseInt(path.segment(1));
-			JsonObject jsonObject = sketch.getOrdinalNode(vitalsOrdinal);
-			md.json(jsonObject);
+		long vitalsOrdinal = -1; // latest
+		if (path.segmentCount() == 2) {
+			vitalsOrdinal = Integer.parseInt(path.segment(1));
 		}
+		VitalsHtml vitalsHtmlSketch = new VitalsHtml(this, "Vitals",
+				vitalsOrdinal);
+		vitalsHtmlSketch.writeBlock(response.getWriter());
 
-		response.getWriter().println(md.getHtml());
+		htmlHeaderFooterSketch.writeFooter(response.getWriter());
 	}
 
 }

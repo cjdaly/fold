@@ -57,9 +57,19 @@ public class MarkdownComposer {
 	}
 
 	public void json(JsonObject jsonObject) {
-		_markdown.append("<pre>");
-		_markdown.append(jsonObject.toString(WriterConfig.PRETTY_PRINT));
-		_markdown.append("</pre>\n\n");
+		json(jsonObject, true);
+	}
+
+	public void json(JsonObject jsonObject, boolean prettyPrint) {
+		if (prettyPrint) {
+			_markdown.append("<pre>");
+			_markdown.append(jsonObject.toString(WriterConfig.PRETTY_PRINT));
+			_markdown.append("</pre>\n\n");
+		} else {
+			_markdown.append("<code>");
+			_markdown.append(jsonObject.toString());
+			_markdown.append("</code>");
+		}
 	}
 
 	public String makeA(String href, String linkText) {

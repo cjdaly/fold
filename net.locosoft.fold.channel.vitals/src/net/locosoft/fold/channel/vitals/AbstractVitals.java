@@ -47,6 +47,10 @@ public abstract class AbstractVitals implements IVitals {
 		Vital checkTime = new Vital("Vitals_checkTime", "long", "millis",
 				"check time", "check time in milliseconds");
 		_idToVital.put(checkTime.Id, checkTime);
+
+		Vital vitalsId = new Vital("Vitals_id", "string", "id", "Id",
+				"Vitals Id");
+		_idToVital.put(vitalsId.Id, vitalsId);
 	}
 
 	public String getId() {
@@ -65,10 +69,11 @@ public abstract class AbstractVitals implements IVitals {
 		readVitals();
 		_lastCheckTime = System.currentTimeMillis();
 		recordVital("Vitals_checkTime", _lastCheckTime);
+		recordVital("Vitals_id", getId());
 
 		if (vitalsItemNodeId != -1) {
 			MultiPropertyAccessNode sketch = new MultiPropertyAccessNode(
-					vitalsItemNodeId, _id + "_");
+					vitalsItemNodeId);
 			for (Vital vital : _idToVital.values()) {
 				vital.addTo(sketch);
 			}

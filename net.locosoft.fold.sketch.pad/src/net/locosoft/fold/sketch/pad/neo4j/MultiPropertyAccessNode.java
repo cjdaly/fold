@@ -23,6 +23,10 @@ public class MultiPropertyAccessNode extends AbstractNodeSketch {
 	private StringBuilder _cypherStatement;
 	private boolean _firstProperty;
 
+	public MultiPropertyAccessNode(long nodeId) {
+		this(nodeId, "");
+	}
+
 	public MultiPropertyAccessNode(long nodeId, String propertyNamePrefix) {
 		_nodeId = nodeId;
 		_propertyNamePrefix = propertyNamePrefix == null ? ""
