@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Txtmark (Markdown processor)
 Bundle-SymbolicName: com.github.rjeschke.txtmark
-Bundle-Version: 0.0.13.fold-qualifier
+Bundle-Version: 0.0.13.fold
 Bundle-Vendor: https://github.com/rjeschke/txtmark
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Export-Package: com.github.rjeschke.txtmark,
