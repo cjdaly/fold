@@ -40,4 +40,5 @@ public interface ICypher {
 
 	JsonValue getResultDataRow(int index);
 
+	int getErrorCount();
 }

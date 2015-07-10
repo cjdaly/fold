@@ -93,6 +93,21 @@ public class Cypher implements ICypher {
 		return new JsonArray();
 	}
 
+	private JsonArray getErrors() {
+		try {
+			return getResponse().get("errors").asArray();
+		} catch (IndexOutOfBoundsException ex) {
+			// ex.printStackTrace();
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
+		return new JsonArray();
+	}
+
+	public int getErrorCount() {
+		return getErrors().size();
+	}
+
 	public int getResultDataRowCount() {
 		JsonArray resultData = getResultData();
 		return resultData.size();

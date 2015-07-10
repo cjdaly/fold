@@ -45,7 +45,11 @@ public class VitalsHtml extends ChannelItemHtml {
 			return;
 
 		MarkdownComposer md = new MarkdownComposer();
-		md.json(_itemJson);
+		if (_itemJson == null) {
+			md.line("_(no data)_", true);
+		} else {
+			md.json(_itemJson);
+		}
 		writer.append(md.getHtml());
 	}
 
@@ -54,9 +58,11 @@ public class VitalsHtml extends ChannelItemHtml {
 		if (isSizeEmpty(sizeHint))
 			return;
 
-		MarkdownComposer md = new MarkdownComposer();
-		md.json(_itemJson, false);
-		writer.append(md.getHtml());
+		if (_itemJson == null) {
+			writer.append("<em>(no data)</em>");
+		} else {
+			writer.append(_itemJson.toString());
+		}
 	}
 
 }
