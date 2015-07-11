@@ -3,7 +3,6 @@
 
 <product name="fold" uid="net.locosoft.fold" id="net.locosoft.fold.packaging.product" application="net.locosoft.fold.packaging.application" version="0.1.0" useFeatures="false" includeLaunchers="false">
 
-
    <configIni use="default">
    </configIni>
 
@@ -14,7 +13,6 @@
 
    <windowImages/>
 
-
    <launcher>
       <solaris/>
       <win useIco="false">
@@ -22,10 +20,8 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
-
 
    <plugins>
       <plugin id="com.eclipsesource.json"/>
@@ -104,6 +100,7 @@
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
       <property name="eclipse.ignoreApp" value="true" />
+      <property name="net.locosoft.fold.internalVersion" value="0.1.0.1" />
       <property name="net.locosoft.fold.neo4j.version" value="2.2.2" />
       <property name="net.locosoft.fold.networkInterfaces" value="eth0" />
       <property name="org.osgi.service.http.port" value="8421" />
