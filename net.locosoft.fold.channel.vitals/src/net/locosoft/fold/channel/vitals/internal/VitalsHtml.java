@@ -13,23 +13,28 @@ package net.locosoft.fold.channel.vitals.internal;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 
-import com.eclipsesource.json.JsonObject;
-
-import net.locosoft.fold.channel.IChannelInternal;
+import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.sketch.pad.html.ChannelItemHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 import net.locosoft.fold.util.MarkdownComposer;
 
+import com.eclipsesource.json.JsonObject;
+
 public class VitalsHtml extends ChannelItemHtml {
 
+	private VitalsChannel _vitalsChannel;
 	private ChannelItemNode _nodeSketch;
 	private long _itemOrdinal;
 	private JsonObject _itemJson;
 
-	public VitalsHtml(IChannelInternal channel, String itemLabel,
-			long itemOrdinal) {
+	public VitalsHtml(VitalsChannel channel, String itemLabel, long itemOrdinal) {
 		super(channel, "Vitals");
+		_vitalsChannel = channel;
 		_nodeSketch = new ChannelItemNode(channel, itemLabel);
 
 		if (itemOrdinal == -1) {
@@ -48,7 +53,30 @@ public class VitalsHtml extends ChannelItemHtml {
 		if (_itemJson == null) {
 			md.line("_(no data)_", true);
 		} else {
-			md.json(_itemJson);
+			String vitalsId = _itemJson.getString(IVitals.NODE_PROPERTY_ID,
+					null);
+			long vitalsTime = _itemJson.getLong(
+					IVitals.NODE_PROPERTY_CHECK_TIME, 0);
+			Date date = new Date(vitalsTime);
+			DateFormat dateFormat = new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss");
+			String vitalsTimeText = dateFormat.format(date);
+
+			Calendar calendar = Calendar.getInstance();
+			calendar.setTimeInMillis(vitalsTime);
+
+			md.line("### Vitals " + _itemOrdinal + " at " + vitalsTimeText);
+
+			IVitals vitals = _vitalsChannel.getVitals(vitalsId);
+			if (vitals != null) {
+				md.table();
+				for (Vital vital : vitals.getAllVitals()) {
+					if (!vital.Internal) {
+						md.tr(vital.Id, _itemJson.get(vital.Id).toString(),
+								vital.Units);
+					}
+				}
+				md.table(false);
+			}
 		}
 		writer.append(md.getHtml());
 	}

@@ -11,6 +11,8 @@
 
 package net.locosoft.fold.channel.internal;
 
+import net.locosoft.fold.util.FoldUtil;
+
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
@@ -20,6 +22,13 @@ public class ChannelActivator implements BundleActivator {
 
 	public void start(BundleContext bundleContext) throws Exception {
 		System.out.println("starting ChannelActivator");
+
+		System.out.println("Apparent fold URLs:");
+		String[] foldUrls = FoldUtil.getFoldUrls();
+		for (String foldUrl : foldUrls) {
+			System.out.println("  " + foldUrl);
+		}
+
 		_channelService = new ChannelService(bundleContext);
 		_channelService.start();
 	}

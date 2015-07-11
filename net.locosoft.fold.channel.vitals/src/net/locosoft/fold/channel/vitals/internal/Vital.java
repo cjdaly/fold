@@ -22,6 +22,7 @@ public class Vital {
 	public final String Units;
 	public final String Name;
 	public final String Description;
+	public final boolean Internal;
 
 	public Vital(String id, String datatype, String units, String name,
 			String description) {
@@ -30,6 +31,7 @@ public class Vital {
 		Units = units;
 		Name = name;
 		Description = description;
+		Internal = true;
 	}
 
 	public Vital(IConfigurationElement vitalElement) {
@@ -38,6 +40,7 @@ public class Vital {
 		Units = vitalElement.getAttribute("units");
 		Name = vitalElement.getAttribute("name");
 		Description = vitalElement.getAttribute("description");
+		Internal = false;
 	}
 
 	//

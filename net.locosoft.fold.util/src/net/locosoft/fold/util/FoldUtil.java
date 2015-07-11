@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.Path;
@@ -27,6 +30,44 @@ import org.osgi.framework.FrameworkUtil;
 import org.osgi.framework.ServiceReference;
 
 public class FoldUtil {
+
+	private static final Pattern _ipPattern = Pattern
+			.compile("\\d+:\\s+(\\w+)\\s+inet\\s+(\\d+\\.\\d+\\.\\d+\\.\\d+)/");
+
+	public static String[] getFoldUrls() {
+		String foldPort = System.getProperty("org.osgi.service.http.port");
+		String[] foldIpAddrs = getFoldIpAddrs();
+		String[] foldUrls = new String[foldIpAddrs.length];
+		for (int i = 0; i < foldUrls.length; i++) {
+			foldUrls[i] = "http://" + foldIpAddrs[i] + ":" + foldPort + "/fold";
+		}
+		return foldUrls;
+	}
+
+	public static String[] getFoldIpAddrs() {
+		String foldNetworkInterfacesList = System
+				.getProperty("net.locosoft.fold.networkInterfaces");
+		String[] foldNetworkInterfaces = foldNetworkInterfacesList.split(",");
+
+		ArrayList<String> foldIpAddrs = new ArrayList<String>();
+
+		StringBuilder processOut = new StringBuilder();
+		String ipCommand = "ip -o -4 addr";
+		FoldUtil.execCommand(ipCommand, processOut);
+
+		Matcher matcher = _ipPattern.matcher(processOut);
+		while (matcher.find()) {
+			String networkInterface = matcher.group(1);
+			String ipAddr = matcher.group(2);
+			for (String foldNetworkInterface : foldNetworkInterfaces) {
+				if (networkInterface.equals(foldNetworkInterface)) {
+					foldIpAddrs.add(ipAddr);
+				}
+			}
+		}
+
+		return foldIpAddrs.toArray(new String[0]);
+	}
 
 	public static String getFoldHomeDir() {
 		try {

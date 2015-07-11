@@ -44,17 +44,25 @@ public abstract class AbstractVitals implements IVitals {
 			_idToVital.put(vital.Id, vital);
 		}
 
-		Vital checkTime = new Vital("Vitals_checkTime", "long", "millis",
-				"check time", "check time in milliseconds");
+		Vital checkTime = new Vital(IVitals.NODE_PROPERTY_CHECK_TIME, "long",
+				"millis", "check time", "check time in milliseconds");
 		_idToVital.put(checkTime.Id, checkTime);
 
-		Vital vitalsId = new Vital("Vitals_id", "string", "id", "Id",
-				"Vitals Id");
+		Vital vitalsId = new Vital(IVitals.NODE_PROPERTY_ID, "string", "id",
+				"Id", "Vitals Id");
 		_idToVital.put(vitalsId.Id, vitalsId);
 	}
 
 	public String getId() {
 		return _id;
+	}
+
+	public Vital getVital(String id) {
+		return _idToVital.get(id);
+	}
+
+	public Vital[] getAllVitals() {
+		return _idToVital.values().toArray(new Vital[0]);
 	}
 
 	public boolean isCheckTime(long currentTimeMillis) {
@@ -68,8 +76,8 @@ public abstract class AbstractVitals implements IVitals {
 		}
 		readVitals();
 		_lastCheckTime = System.currentTimeMillis();
-		recordVital("Vitals_checkTime", _lastCheckTime);
-		recordVital("Vitals_id", getId());
+		recordVital(IVitals.NODE_PROPERTY_CHECK_TIME, _lastCheckTime);
+		recordVital(IVitals.NODE_PROPERTY_ID, getId());
 
 		if (vitalsItemNodeId != -1) {
 			MultiPropertyAccessNode sketch = new MultiPropertyAccessNode(
