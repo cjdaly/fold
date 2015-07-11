@@ -54,7 +54,10 @@ public class Neo4jController implements Runnable {
 			try {
 				int pid = getNeo4jPID();
 				if (pid == -1) {
-					execNeo4jCommand("start");
+					System.out.println("Starting Neo4j...");
+					StringBuilder processOut = new StringBuilder();
+					execNeo4jCommand("start", processOut);
+					System.out.println(processOut);
 					Thread.sleep(10 * 1000);
 				} else {
 					_stopped = false;
@@ -87,10 +90,6 @@ public class Neo4jController implements Runnable {
 			ex.printStackTrace();
 		}
 		return pid;
-	}
-
-	private int execNeo4jCommand(String command) {
-		return execNeo4jCommand(command, null);
 	}
 
 	private int execNeo4jCommand(String command, StringBuilder processOut) {
