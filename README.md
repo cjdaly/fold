@@ -1,7 +1,7 @@
 # fold
 
 ##### LAN-centric IoT stack
-  * Eclipse (headless, RCP, Equinox, OSGi, ...)
+  * Eclipse (headless, RCP)
     * Jetty http server, Apache http client
     * Eclipse/OSGi modularity (plugins, extension-points, services, ...)
   * Neo4j graph database (separate Linux process)
