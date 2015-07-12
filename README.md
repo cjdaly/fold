@@ -1,6 +1,6 @@
 # fold
 
-##### LAN-centric IoT stack
+#### LAN-centric IoT stack
 
 * Eclipse (headless, RCP)
   * Jetty http server, Apache http client
