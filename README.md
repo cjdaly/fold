@@ -8,9 +8,11 @@
 * Neo4j graph database (separate Linux process)
 * runs on rPi2, ODroid(C1, U3), other ARM7 Linux, and x86 Linux
 
+#### getting started
+
 To get started using fold, see [fold-runtime](https://github.com/cjdaly/fold-runtime).
 
-#### Fold reference Things
+#### fold reference Things
 
 * [Marshall](https://github.com/cjdaly/fold/wiki/fold-Thing-Marshall) - rPi2
 * [Rubble](https://github.com/cjdaly/fold/wiki/fold-Thing-Rubble) - ODroid-C1
