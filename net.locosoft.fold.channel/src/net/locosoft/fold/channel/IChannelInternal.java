@@ -12,6 +12,7 @@
 package net.locosoft.fold.channel;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -21,7 +22,9 @@ import org.eclipse.core.resources.IProject;
 
 public interface IChannelInternal extends IChannel {
 
-	void setChannelId(String id);
+	IChannelService getChannelService();
+
+	void init(String channelId, IChannelService channelService);
 
 	void init();
 
@@ -32,6 +35,12 @@ public interface IChannelInternal extends IChannel {
 
 	void channelHttp(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException;
+
+	String getChannelData(String key);
+
+	String getChannelData(String channelId, String key);
+
+	Properties getChannelConfigProperties(String propertiesFilePrefix);
 
 	IProject getChannelProject();
 

@@ -15,6 +15,8 @@ import net.locosoft.fold.channel.IChannel;
 
 public interface IThingChannel extends IChannel {
 
+	String getThingProfileId();
+
 	String getThingName();
 
 	String getThingDescription();

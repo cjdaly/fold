@@ -12,6 +12,7 @@
 package net.locosoft.fold.channel;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -20,6 +21,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.neo4j.Neo4jUtil;
+import net.locosoft.fold.util.FoldUtil;
 
 import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IWorkspaceRoot;
@@ -27,7 +29,6 @@ import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.CoreException;
 
 import com.eclipsesource.json.JsonValue;
-import com.github.rjeschke.txtmark.Processor;
 
 public abstract class AbstractChannel implements IChannel, IChannelInternal {
 
@@ -40,6 +41,16 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 	//
 	// IChannelInternal
 	//
+	private IChannelService _channelService;
+
+	public IChannelService getChannelService() {
+		return _channelService;
+	}
+
+	public void init(String channelId, IChannelService channelService) {
+		_id = channelId;
+		_channelService = channelService;
+	}
 
 	public void init() {
 	}
@@ -54,15 +65,27 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 
 	public void channelHttp(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-		String htmlText = Processor.process("**fold** channel: "
-				+ getChannelId() + " / " + getChannelNodeId() + " ^ "
-				+ getChannelProject().getFullPath());
-		response.getWriter().println(htmlText);
+		response.setContentType("text/plain");
+
+		String thingName = getChannelData("thing", "name");
+		response.getWriter().println(
+				"fold / channel: " + getChannelId() + " / thing: " + thingName);
 	}
 
-	public final void setChannelId(String id) {
-		_id = id;
+	public String getChannelData(String key) {
+		return null;
+	}
+
+	public final String getChannelData(String channelId, String key) {
+		return getChannelService().getChannelData(channelId, key);
+	}
+
+	public final Properties getChannelConfigProperties(
+			String propertiesFilePrefix) {
+		String channelConfigFilePath = FoldUtil.getFoldConfigDir()
+				+ "/channel/" + getChannelId() + "/" + propertiesFilePrefix
+				+ ".properties";
+		return FoldUtil.loadPropertiesFile(channelConfigFilePath);
 	}
 
 	public final IProject getChannelProject() {

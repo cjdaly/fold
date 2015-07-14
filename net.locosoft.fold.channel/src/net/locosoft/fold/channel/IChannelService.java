@@ -25,6 +25,8 @@ public interface IChannelService {
 
 	<T extends IChannel> T getChannel(Class<T> channelInterface);
 
+	String getChannelData(String channelId, String key);
+
 	boolean channelSecurity(HttpServletRequest request,
 			HttpServletResponse response) throws IOException;
 

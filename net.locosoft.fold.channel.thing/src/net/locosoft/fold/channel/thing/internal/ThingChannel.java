@@ -12,6 +12,7 @@
 package net.locosoft.fold.channel.thing.internal;
 
 import java.io.IOException;
+import java.util.Properties;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,12 +28,42 @@ public class ThingChannel extends AbstractChannel implements IThingChannel {
 		return IThingChannel.class;
 	}
 
+	private String _thingProfileId;
+	private String _thingName;
+	private String _thingDescription;
+
+	public void init() {
+		_thingProfileId = System.getProperty(
+				"net.locosoft.fold.channel.thing.profile.id", "default");
+		Properties config = getChannelConfigProperties(_thingProfileId);
+		_thingName = config.getProperty("thing.name");
+		_thingDescription = config.getProperty("thing.description");
+
+		System.out.println("Thing profileId: " + _thingProfileId //
+				+ ", name: " + _thingName);
+	}
+
+	public String getThingProfileId() {
+		return _thingProfileId;
+	}
+
 	public String getThingName() {
-		return "thing1";
+		return _thingName;
 	}
 
 	public String getThingDescription() {
-		return "...";
+		return _thingDescription;
+	}
+
+	public String getChannelData(String key) {
+		switch (key) {
+		case "name":
+			return getThingName();
+		case "description":
+			return getThingDescription();
+		default:
+			return null;
+		}
 	}
 
 	public void channelHttp(HttpServletRequest request,

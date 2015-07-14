@@ -63,7 +63,7 @@ public class ChannelService implements IChannelService {
 				IChannel channel = (IChannel) extension;
 
 				IChannelInternal channelInternal = (IChannelInternal) channel;
-				channelInternal.setChannelId(channelId);
+				channelInternal.init(channelId, this);
 
 				// TODO: check for duplicates
 				_idToChannel.put(channelId, channel);
@@ -105,6 +105,14 @@ public class ChannelService implements IChannelService {
 	@SuppressWarnings("unchecked")
 	public <T extends IChannel> T getChannel(Class<T> channelInterface) {
 		return (T) _ifaceToChannel.get(channelInterface);
+	}
+
+	public String getChannelData(String channelId, String key) {
+		IChannelInternal channel = (IChannelInternal) getChannel(channelId);
+		if (channel == null)
+			return null;
+		else
+			return channel.getChannelData(key);
 	}
 
 	private IChannelInternal lookupChannel(String pathInfo) {

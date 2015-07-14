@@ -19,6 +19,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Properties;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -92,6 +93,14 @@ public class FoldUtil {
 			return null;
 	}
 
+	public static String getFoldConfigDir() {
+		String foldHomeDir = getFoldHomeDir();
+		if (foldHomeDir != null)
+			return foldHomeDir + "/config";
+		else
+			return null;
+	}
+
 	public static <T> T getService(Class<T> serviceType) {
 		Bundle bundle = FrameworkUtil.getBundle(serviceType);
 		BundleContext bundleContext = bundle.getBundleContext();
@@ -99,6 +108,20 @@ public class FoldUtil {
 				.getServiceReference(serviceType);
 		T service = bundleContext.getService(serviceReference);
 		return service;
+	}
+
+	public static Properties loadPropertiesFile(String path) {
+		Properties properties = new Properties();
+
+		try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
+			properties.load(reader);
+		} catch (FileNotFoundException ex) {
+			ex.printStackTrace();
+		} catch (IOException ex) {
+			ex.printStackTrace();
+		}
+
+		return properties;
 	}
 
 	public static String readFileToString(String path) {

@@ -38,8 +38,10 @@ public class ChannelHeaderFooterHtml extends AbstractChannelHtmlSketch {
 		writer.append("</title>\n</head>\n<body>\n");
 
 		MarkdownComposer md = new MarkdownComposer();
-		md.line("### fold", true);
-		md.line("# channel: " + getChannel().getChannelId(), true);
+		String channelId = getChannel().getChannelId();
+		String thingName = getChannel().getChannelData("thing", "name");
+		md.line("fold / channel: **" + channelId + //
+				"** / thing: **" + thingName + "**", true);
 		writer.append(md.getHtml());
 	}
 
@@ -52,10 +54,7 @@ public class ChannelHeaderFooterHtml extends AbstractChannelHtmlSketch {
 		if (isSizeEmpty(sizeHint))
 			return;
 
-		MarkdownComposer md = new MarkdownComposer();
-		md.line("#### fold", true);
-		writer.append(md.getHtml());
-
 		writer.append("\n</body>\n</html>\n");
 	}
+
 }
