@@ -11,9 +11,9 @@
 
 package net.locosoft.fold.channel.vitals.internal;
 
-import net.locosoft.fold.channel.vitals.AbstractVitals;
+import net.locosoft.fold.channel.vitals.StaticVitals;
 
-public class JavaRuntimeVitals extends AbstractVitals {
+public class JavaRuntimeVitals extends StaticVitals {
 
 	public void readVitals() {
 		Runtime runtime = Runtime.getRuntime();

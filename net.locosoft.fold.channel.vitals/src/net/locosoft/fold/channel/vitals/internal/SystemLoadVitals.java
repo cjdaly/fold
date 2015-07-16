@@ -11,10 +11,10 @@
 
 package net.locosoft.fold.channel.vitals.internal;
 
-import net.locosoft.fold.channel.vitals.AbstractVitals;
+import net.locosoft.fold.channel.vitals.StaticVitals;
 import net.locosoft.fold.util.FoldUtil;
 
-public class SystemLoadVitals extends AbstractVitals {
+public class SystemLoadVitals extends StaticVitals {
 
 	public void readVitals() {
 		String procLoadAvg = FoldUtil.readFileToString("/proc/loadavg");

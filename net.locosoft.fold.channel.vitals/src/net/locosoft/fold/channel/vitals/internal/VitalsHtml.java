@@ -18,12 +18,16 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import net.locosoft.fold.channel.vitals.DynamicVitals;
 import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.sketch.pad.html.ChannelItemHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
+import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.util.MarkdownComposer;
 
 import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+import com.eclipsesource.json.WriterConfig;
 
 public class VitalsHtml extends ChannelItemHtml {
 
@@ -38,7 +42,7 @@ public class VitalsHtml extends ChannelItemHtml {
 		_nodeSketch = new ChannelItemNode(channel, itemLabel);
 
 		if (itemOrdinal == -1) {
-			_itemOrdinal = _nodeSketch.getOrdinal();
+			_itemOrdinal = _nodeSketch.getLatestOrdinal();
 		} else {
 			_itemOrdinal = itemOrdinal;
 		}
@@ -55,6 +59,13 @@ public class VitalsHtml extends ChannelItemHtml {
 		} else {
 			String vitalsId = _itemJson.getString(IVitals.NODE_PROPERTY_ID,
 					null);
+			if (vitalsId == null) {
+				System.out.println("Error: null vitalsId in VitalsHtml!");
+				System.out.println(_itemJson
+						.toString(WriterConfig.PRETTY_PRINT));
+				// NPE in 3 2 1 ...
+			}
+
 			long vitalsTime = _itemJson.getLong(
 					IVitals.NODE_PROPERTY_CHECK_TIME, 0);
 			Date date = new Date(vitalsTime);
@@ -67,18 +78,37 @@ public class VitalsHtml extends ChannelItemHtml {
 			md.line("### Vitals " + _itemOrdinal + " at " + vitalsTimeText);
 
 			IVitals vitals = _vitalsChannel.getVitals(vitalsId);
+			if (vitals == null) {
+				vitals = getDynamicVitals(vitalsId);
+			}
 			if (vitals != null) {
 				md.table();
 				for (Vital vital : vitals.getAllVitals()) {
 					if (!vital.Internal) {
-						md.tr(vital.Id, _itemJson.get(vital.Id).toString(),
-								vital.Units);
+						JsonValue jsonValue = _itemJson.get(vital.Id);
+						String value = jsonValue == null ? "?" : jsonValue
+								.toString();
+						md.tr(vital.Id, value, vital.Units);
 					}
 				}
 				md.table(false);
 			}
 		}
 		writer.append(md.getHtml());
+	}
+
+	private IVitals getDynamicVitals(String vitalsId) {
+		DynamicVitals vitals = new DynamicVitals(vitalsId);
+
+		HierarchyNode channelNode = new HierarchyNode(
+				_vitalsChannel.getChannelNodeId());
+		long defsNodeId = channelNode.getSubId("defs", true);
+		HierarchyNode defsNode = new HierarchyNode(defsNodeId);
+		long vitalsNodeId = defsNode.getSubId(vitalsId, true);
+
+		vitals.loadVitals(vitalsId, vitalsNodeId);
+
+		return vitals;
 	}
 
 	public void writeInline(PrintWriter writer, int sizeHint)

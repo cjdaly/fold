@@ -68,7 +68,7 @@
                   
                </documentation>
                <appinfo>
-                  <meta.attribute kind="java" basedOn=":net.locosoft.fold.channel.vitals.IVitals"/>
+                  <meta.attribute kind="java" basedOn="net.locosoft.fold.channel.vitals.StaticVitals:"/>
                </appinfo>
             </annotation>
          </attribute>

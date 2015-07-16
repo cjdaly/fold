@@ -14,10 +14,10 @@ package net.locosoft.fold.channel.vitals.internal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.locosoft.fold.channel.vitals.AbstractVitals;
+import net.locosoft.fold.channel.vitals.StaticVitals;
 import net.locosoft.fold.util.FoldUtil;
 
-public class SystemMemoryVitals extends AbstractVitals {
+public class SystemMemoryVitals extends StaticVitals {
 
 	private Pattern _memFreePattern = Pattern
 			.compile("MemFree:\\s+(\\d+)\\s+kB");

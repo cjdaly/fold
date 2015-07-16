@@ -14,12 +14,12 @@ package net.locosoft.fold.channel.vitals.internal;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import net.locosoft.fold.channel.vitals.AbstractVitals;
+import net.locosoft.fold.channel.vitals.StaticVitals;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.neo4j.Neo4jUtil;
 import net.locosoft.fold.util.FoldUtil;
 
-public class Neo4jProcessVitals extends AbstractVitals {
+public class Neo4jProcessVitals extends StaticVitals {
 
 	private INeo4jService _neo4jService;
 

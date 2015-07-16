@@ -14,7 +14,7 @@ package net.locosoft.fold.sketch.pad.html;
 import net.locosoft.fold.channel.IChannelInternal;
 import net.locosoft.fold.sketch.AbstractHtmlSketch;
 
-public class AbstractChannelHtmlSketch extends AbstractHtmlSketch {
+public abstract class AbstractChannelHtmlSketch extends AbstractHtmlSketch {
 
 	private IChannelInternal _channel;
 

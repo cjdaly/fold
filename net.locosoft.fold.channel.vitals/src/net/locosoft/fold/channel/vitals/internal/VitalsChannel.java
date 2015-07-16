@@ -23,7 +23,11 @@ import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.channel.vitals.IVitalsChannel;
+import net.locosoft.fold.channel.vitals.StaticVitals;
 import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
+import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
+import net.locosoft.fold.sketch.pad.neo4j.PropertyAccessNode;
+import net.locosoft.fold.util.MarkdownComposer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -59,7 +63,7 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 				String vitalsId = configurationElement.getAttribute("id");
 				Object extension = configurationElement
 						.createExecutableExtension("implementation");
-				IVitals vitals = (IVitals) extension;
+				StaticVitals vitals = (StaticVitals) extension;
 				vitals.init(configurationElement);
 				_idToVitals.put(vitalsId, vitals);
 			} catch (ClassCastException ex) {
@@ -78,6 +82,21 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
 	public void channelHttp(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+
+		switch (request.getMethod()) {
+		case "GET":
+			channelHttpGet(request, response);
+			break;
+		case "POST":
+			channelHttpPost(request, response);
+			break;
+		default:
+			super.channelHttp(request, response);
+		}
+	}
+
+	private void channelHttpGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
 		ChannelHeaderFooterHtml htmlHeaderFooterSketch = new ChannelHeaderFooterHtml(
@@ -85,15 +104,68 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 		htmlHeaderFooterSketch.writeHeader(response.getWriter());
 
 		Path path = new Path(request.getPathInfo());
-		long vitalsOrdinal = -1; // latest
-		if (path.segmentCount() == 2) {
-			vitalsOrdinal = Integer.parseInt(path.segment(1));
+		if (path.segmentCount() == 1) {
+			VitalsHtml vitalsHtmlSketch = new VitalsHtml(this, "Vitals", -1); // latest
+			vitalsHtmlSketch.writeBlock(response.getWriter());
+		} else if (path.segmentCount() == 2) {
+			if ("defs".equals(path.segment(1))) {
+				// TODO
+			} else {
+				long vitalsOrdinal = Long.parseLong(path.segment(1));
+				VitalsHtml vitalsHtmlSketch = new VitalsHtml(this, "Vitals",
+						vitalsOrdinal);
+				vitalsHtmlSketch.writeBlock(response.getWriter());
+			}
+		} else if ((path.segmentCount() == 3)
+				&& ("defs".equals(path.segment(1)))) {
+			String vitalsId = path.segment(2);
+			HierarchyNode channelNode = new HierarchyNode(getChannelNodeId());
+			long defsNodeId = channelNode.getSubId("defs", true);
+			HierarchyNode defsNode = new HierarchyNode(defsNodeId);
+			long vitalsNodeId = defsNode.getSubId(vitalsId, true);
+			HierarchyNode vitalsNode = new HierarchyNode(vitalsNodeId);
+
+			MarkdownComposer md = new MarkdownComposer();
+			md.line("### VitalsDef " + vitalsId, true);
+			md.table();
+			md.tr("id", "datatype", "units", "name", "description");
+
+			long[] subIds = vitalsNode.getSubIds();
+			for (long subId : subIds) {
+				PropertyAccessNode props = new PropertyAccessNode(subId);
+				String id = props.getStringValue("fold_Hierarchy_segment");
+				String datatype = props.getStringValue("datatype");
+				String units = props.getStringValue("units");
+				String name = props.getStringValue("name");
+				String description = props.getStringValue("description");
+				md.tr(id, datatype, units, name, description);
+			}
+			md.table(false);
+			response.getWriter().write(md.getHtml());
 		}
-		VitalsHtml vitalsHtmlSketch = new VitalsHtml(this, "Vitals",
-				vitalsOrdinal);
-		vitalsHtmlSketch.writeBlock(response.getWriter());
 
 		htmlHeaderFooterSketch.writeFooter(response.getWriter());
+	}
+
+	private void channelHttpPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/plain");
+
+		response.getWriter().println("Posting to vitals...");
+		VitalsPostHtml vitalsPost = new VitalsPostHtml(this);
+
+		switch (request.getPathInfo()) {
+		case "/vitals":
+			vitalsPost.postVitals(request, response);
+			break;
+		case "/vitals/defs":
+			vitalsPost.postVitalsDef(request, response);
+			break;
+		default:
+			response.getWriter().println(
+					"POST to invalid path: " + request.getPathInfo());
+			break;
+		}
 	}
 
 }

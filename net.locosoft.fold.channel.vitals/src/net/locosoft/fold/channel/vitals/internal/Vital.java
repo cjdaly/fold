@@ -34,6 +34,16 @@ public class Vital {
 		Internal = true;
 	}
 
+	public Vital(String id, String datatype, String units, String name,
+			String description, boolean internal) {
+		Id = id;
+		Datatype = datatype;
+		Units = units;
+		Name = name;
+		Description = description;
+		Internal = internal;
+	}
+
 	public Vital(IConfigurationElement vitalElement) {
 		Id = vitalElement.getAttribute("id");
 		Datatype = vitalElement.getAttribute("datatype");

@@ -13,23 +13,15 @@ package net.locosoft.fold.channel.vitals;
 
 import net.locosoft.fold.channel.vitals.internal.Vital;
 
-import org.eclipse.core.runtime.IConfigurationElement;
-
 public interface IVitals {
 
 	public static final String NODE_PROPERTY_ID = "Vitals_id";
 	public static final String NODE_PROPERTY_CHECK_TIME = "Vitals_checkTime";
-
-	void init(IConfigurationElement configurationElement);
 
 	String getId();
 
 	Vital getVital(String id);
 
 	Vital[] getAllVitals();
-
-	boolean isCheckTime(long currentTimeMillis);
-
-	void checkVitals(long vitalsItemNodeId);
 
 }

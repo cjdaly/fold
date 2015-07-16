@@ -11,6 +11,6 @@
 
 package net.locosoft.fold.sketch;
 
-public class AbstractHtmlSketch implements IHtmlSketch {
+public abstract class AbstractHtmlSketch implements IHtmlSketch {
 
 }

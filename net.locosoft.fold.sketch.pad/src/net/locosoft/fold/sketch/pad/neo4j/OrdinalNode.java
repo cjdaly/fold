@@ -41,8 +41,13 @@ public class OrdinalNode extends AbstractNodeSketch {
 		return "fold_OrdinalIndex_" + getOrdinalLabel();
 	}
 
-	public long getOrdinal() {
+	public long getLatestOrdinal() {
 		return _ordinalCounter.getCounter(getCounterPropertyName());
+	}
+
+	public long getOrdinalIndex(long ordinalNodeId) {
+		PropertyAccessNode props = new PropertyAccessNode(ordinalNodeId);
+		return props.getLongValue(getIndexPropertyName());
 	}
 
 	public long nextOrdinalNodeId() {
