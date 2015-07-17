@@ -30,6 +30,7 @@
       <plugin id="javax.xml"/>
       <plugin id="net.locosoft.fold.channel"/>
       <plugin id="net.locosoft.fold.channel.fold"/>
+      <plugin id="net.locosoft.fold.channel.plot"/>
       <plugin id="net.locosoft.fold.channel.thing"/>
       <plugin id="net.locosoft.fold.channel.times"/>
       <plugin id="net.locosoft.fold.channel.vitals"/>
@@ -100,7 +101,7 @@
       <plugin id="org.eclipse.osgi" autoStart="true" startLevel="3" />
       <plugin id="org.eclipse.osgi.services" autoStart="true" startLevel="0" />
       <property name="eclipse.ignoreApp" value="true" />
-      <property name="net.locosoft.fold.internalVersion" value="0.1.0.1" />
+      <property name="net.locosoft.fold.internalVersion" value="0.1.0.2" />
       <property name="net.locosoft.fold.neo4j.version" value="2.2.2" />
       <property name="net.locosoft.fold.networkInterfaces" value="eth0" />
       <property name="org.osgi.service.http.port" value="8421" />
