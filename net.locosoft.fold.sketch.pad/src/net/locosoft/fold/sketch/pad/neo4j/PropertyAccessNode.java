@@ -58,7 +58,10 @@ public class PropertyAccessNode extends AbstractNodeSketch {
 	}
 
 	public String getStringValue(String propertyName) {
-		return getValue(propertyName).asString();
+		JsonValue jsonValue = getValue(propertyName);
+		if (jsonValue.isNull())
+			return null;
+		return jsonValue.asString();
 	}
 
 	// setters
