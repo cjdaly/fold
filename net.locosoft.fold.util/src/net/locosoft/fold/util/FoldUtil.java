@@ -33,7 +33,7 @@ import org.osgi.framework.ServiceReference;
 public class FoldUtil {
 
 	private static final Pattern _ipPattern = Pattern
-			.compile("\\d+:\\s+(\\w+)\\s+inet\\s+(\\d+\\.\\d+\\.\\d+\\.\\d+)/");
+			.compile("\\d+:\\s+((eth|wlan)\\d+)\\s+inet\\s+(\\d+\\.\\d+\\.\\d+\\.\\d+)/");
 
 	public static String[] getFoldUrls() {
 		String foldPort = System.getProperty("org.osgi.service.http.port");
@@ -46,10 +46,6 @@ public class FoldUtil {
 	}
 
 	public static String[] getFoldIpAddrs() {
-		String foldNetworkInterfacesList = System
-				.getProperty("net.locosoft.fold.networkInterfaces");
-		String[] foldNetworkInterfaces = foldNetworkInterfacesList.split(",");
-
 		ArrayList<String> foldIpAddrs = new ArrayList<String>();
 
 		StringBuilder processOut = new StringBuilder();
@@ -58,13 +54,8 @@ public class FoldUtil {
 
 		Matcher matcher = _ipPattern.matcher(processOut);
 		while (matcher.find()) {
-			String networkInterface = matcher.group(1);
-			String ipAddr = matcher.group(2);
-			for (String foldNetworkInterface : foldNetworkInterfaces) {
-				if (networkInterface.equals(foldNetworkInterface)) {
-					foldIpAddrs.add(ipAddr);
-				}
-			}
+			String ipAddr = matcher.group(3);
+			foldIpAddrs.add(ipAddr);
 		}
 
 		return foldIpAddrs.toArray(new String[0]);
