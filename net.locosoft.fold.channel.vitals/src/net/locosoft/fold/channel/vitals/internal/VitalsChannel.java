@@ -80,22 +80,7 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 		_vitalsMonitor.stop();
 	}
 
-	public void channelHttp(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
-		switch (request.getMethod()) {
-		case "GET":
-			channelHttpGet(request, response);
-			break;
-		case "POST":
-			channelHttpPost(request, response);
-			break;
-		default:
-			super.channelHttp(request, response);
-		}
-	}
-
-	private void channelHttpGet(HttpServletRequest request,
+	protected void channelHttpGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
@@ -147,7 +132,7 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 		htmlHeaderFooterSketch.writeFooter(response.getWriter());
 	}
 
-	private void channelHttpPost(HttpServletRequest request,
+	protected void channelHttpPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/plain");
 

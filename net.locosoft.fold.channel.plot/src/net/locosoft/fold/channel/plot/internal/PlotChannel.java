@@ -31,7 +31,7 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 		return IPlotChannel.class;
 	}
 
-	public void channelHttp(HttpServletRequest request,
+	public void channelHttpGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("image/png");

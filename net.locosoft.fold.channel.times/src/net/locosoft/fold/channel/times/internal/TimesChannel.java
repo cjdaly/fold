@@ -62,15 +62,7 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 		}
 	}
 
-	public void init() {
-		long currentTimeMillis = System.currentTimeMillis();
-		System.out.println("times channel starting at: " + currentTimeMillis);
-
-		long minuteNodeId = getMinuteNodeId(currentTimeMillis, true);
-		System.out.println("minute node ID: " + minuteNodeId);
-	}
-
-	public void channelHttp(HttpServletRequest request,
+	public void channelHttpGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 
 		response.setContentType("text/html");

@@ -11,12 +11,7 @@
 
 package net.locosoft.fold.channel.thing.internal;
 
-import java.io.IOException;
 import java.util.Properties;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
@@ -78,11 +73,6 @@ public class ThingChannel extends AbstractChannel implements IThingChannel {
 		default:
 			return null;
 		}
-	}
-
-	public void channelHttp(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		super.channelHttp(request, response);
 	}
 
 }

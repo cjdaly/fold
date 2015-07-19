@@ -46,7 +46,7 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 		_startCount = foldStartCount.incrementCounter("fold_startCount");
 	}
 
-	public void channelHttp(HttpServletRequest request,
+	public void channelHttpGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		String pathInfo = request.getPathInfo();
 		if ((pathInfo == null) || ("".equals(pathInfo))

@@ -12,6 +12,7 @@
 package net.locosoft.fold.channel;
 
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.Properties;
 
 import javax.servlet.ServletException;
@@ -65,11 +66,60 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 
 	public void channelHttp(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/plain");
 
+		switch (request.getMethod()) {
+		case "GET":
+			channelHttpGet(request, response);
+			break;
+		case "POST":
+			channelHttpPost(request, response);
+			break;
+		case "PUT":
+			channelHttpPut(request, response);
+			break;
+		case "DELETE":
+			channelHttpDelete(request, response);
+			break;
+		}
+	}
+
+	protected void channelHttpGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		channelHttpNotImplemented(request, response);
+	}
+
+	protected void channelHttpPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		channelHttpNotImplemented(request, response);
+	}
+
+	protected void channelHttpPut(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		channelHttpNotImplemented(request, response);
+	}
+
+	protected void channelHttpDelete(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		channelHttpNotImplemented(request, response);
+	}
+
+	private void channelHttpNotImplemented(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+
+		PrintWriter writer = response.getWriter();
+
+		String channelId = getChannelId();
 		String thingName = getChannelData("thing", "name");
-		response.getWriter().println(
-				"fold / channel: " + getChannelId() + " / thing: " + thingName);
+		writer.append("<html>\n<head>\n<title>");
+		writer.append("fold: " + thingName + " / " + channelId);
+		writer.append("</title>\n</head>\n<body>\n");
+
+		writer.append("<p>");
+		writer.append("Method " + request.getMethod() + " not implemented!");
+		writer.append("</p>\n");
+
+		writer.append("\n</body>\n</html>\n");
 	}
 
 	public String getChannelData(String key) {
