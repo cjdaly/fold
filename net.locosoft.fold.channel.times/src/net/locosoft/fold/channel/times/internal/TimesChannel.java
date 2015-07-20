@@ -53,12 +53,18 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 	}
 
 	public long[] getTimesRefNodeIds(long timeMillis, String refNodeLabel) {
+		return getTimesRefNodeIds(timeMillis, refNodeLabel, null, null);
+	}
+
+	public long[] getTimesRefNodeIds(long timeMillis, String refNodeLabel,
+			String refNodeKey, String refNodeValue) {
 		long minuteNodeId = getMinuteNodeId(timeMillis, false);
 		if (minuteNodeId == -1) {
 			return new long[0];
 		} else {
 			RefTimesNode sketch = new RefTimesNode(minuteNodeId);
-			return sketch.getTimesRefNodeIds(refNodeLabel);
+			return sketch.getTimesRefNodeIds(refNodeLabel, refNodeKey,
+					refNodeValue);
 		}
 	}
 

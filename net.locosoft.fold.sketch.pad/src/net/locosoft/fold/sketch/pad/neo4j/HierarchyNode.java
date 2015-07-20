@@ -11,11 +11,11 @@
 
 package net.locosoft.fold.sketch.pad.neo4j;
 
-import com.eclipsesource.json.JsonValue;
-
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.sketch.AbstractNodeSketch;
+
+import com.eclipsesource.json.JsonValue;
 
 public class HierarchyNode extends AbstractNodeSketch {
 
@@ -100,5 +100,15 @@ public class HierarchyNode extends AbstractNodeSketch {
 		}
 		return subSegments;
 	}
+
+	// TODO:
+	// public long[] getPathNodeIds(Path path) {
+	//
+	// }
+	//
+	// TODO:
+	// public long getPathEndNodeId(Path path) {
+	// return -1;
+	// }
 
 }

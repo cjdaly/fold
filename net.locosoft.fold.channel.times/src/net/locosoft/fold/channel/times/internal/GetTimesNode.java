@@ -23,6 +23,25 @@ public class GetTimesNode extends AbstractNodeSketch {
 		_nodeId = nodeId;
 	}
 
+	private static final String CYPHER_CREATE_MINUTE = "MATCH epochNode" //
+			+ " WHERE id(epochNode)={epochNodeId}" //
+			+ " CREATE UNIQUE (epochNode)-[:fold_Hierarchy]->"
+			+ "(yearNode { fold_Hierarchy_segment:{year} })-[:fold_Hierarchy]->"
+			+ "(monthNode { fold_Hierarchy_segment:{month} })-[:fold_Hierarchy]->"
+			+ "(dayNode { fold_Hierarchy_segment:{day} })-[:fold_Hierarchy]->"
+			+ "(hourNode { fold_Hierarchy_segment:{hour} })-[:fold_Hierarchy]->" //
+			+ "(minuteNode { fold_Hierarchy_segment:{minute} })" //
+			+ " RETURN ID(minuteNode)";
+
+	private static final String CYPHER_FIND_MINUTE = "MATCH (epochNode)-[:fold_Hierarchy]->" //
+			+ "(yearNode { fold_Hierarchy_segment:{year} })-[:fold_Hierarchy]->"
+			+ "(monthNode { fold_Hierarchy_segment:{month} })-[:fold_Hierarchy]->"
+			+ "(dayNode { fold_Hierarchy_segment:{day} })-[:fold_Hierarchy]->"
+			+ "(hourNode { fold_Hierarchy_segment:{hour} })-[:fold_Hierarchy]->" //
+			+ "(minuteNode { fold_Hierarchy_segment:{minute} })" //
+			+ " WHERE id(epochNode)={epochNodeId}" //
+			+ " RETURN ID(minuteNode)";
+
 	public long getMinuteNodeId(long timeMillis, boolean createIfAbsent) {
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTimeInMillis(timeMillis);
@@ -30,24 +49,9 @@ public class GetTimesNode extends AbstractNodeSketch {
 		INeo4jService neo4jService = getNeo4jService();
 		String cypherText;
 		if (createIfAbsent) {
-			cypherText = "MATCH epochNode" //
-					+ " WHERE id(epochNode)={epochNodeId}" //
-					+ " CREATE UNIQUE (epochNode)-[:fold_Hierarchy]->"
-					+ "(yearNode { fold_Hierarchy_segment:{year} })-[:fold_Hierarchy]->"
-					+ "(monthNode { fold_Hierarchy_segment:{month} })-[:fold_Hierarchy]->"
-					+ "(dayNode { fold_Hierarchy_segment:{day} })-[:fold_Hierarchy]->"
-					+ "(hourNode { fold_Hierarchy_segment:{hour} })-[:fold_Hierarchy]->" //
-					+ "(minuteNode { fold_Hierarchy_segment:{minute} })" //
-					+ " RETURN ID(minuteNode)";
+			cypherText = CYPHER_CREATE_MINUTE;
 		} else {
-			cypherText = "MATCH (epochNode)-[:fold_Hierarchy]->" //
-					+ "(yearNode { fold_Hierarchy_segment:{year} })-[:fold_Hierarchy]->"
-					+ "(monthNode { fold_Hierarchy_segment:{month} })-[:fold_Hierarchy]->"
-					+ "(dayNode { fold_Hierarchy_segment:{day} })-[:fold_Hierarchy]->"
-					+ "(hourNode { fold_Hierarchy_segment:{hour} })-[:fold_Hierarchy]->" //
-					+ "(minuteNode { fold_Hierarchy_segment:{minute} })" //
-					+ " WHERE id(epochNode)={epochNodeId}" //
-					+ " RETURN ID(minuteNode)";
+			cypherText = CYPHER_FIND_MINUTE;
 		}
 		ICypher cypher = neo4jService.constructCypher(cypherText);
 
@@ -63,7 +67,7 @@ public class GetTimesNode extends AbstractNodeSketch {
 				String.valueOf(calendar.get(Calendar.MINUTE)));
 
 		neo4jService.invokeCypher(cypher);
-		if (cypher.getResultDataRowCount() < 1)
+		if (cypher.getResultDataRowCount() != 1)
 			return -1;
 		else
 			return cypher.getResultDataRow(0).asLong();

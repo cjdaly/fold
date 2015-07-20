@@ -169,6 +169,23 @@ public class Vital {
 
 	//
 
+	public boolean isNumeric() {
+		switch (Datatype) {
+		case "int":
+			return true;
+		case "long":
+			return true;
+		case "float":
+			return true;
+		case "double":
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	//
+
 	private boolean checkDatatype(String opDatatype) {
 		boolean datatypeMatch = opDatatype.equals(Datatype);
 		if (!datatypeMatch) {

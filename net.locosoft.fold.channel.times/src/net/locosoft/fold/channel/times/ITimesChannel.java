@@ -23,4 +23,7 @@ public interface ITimesChannel extends IChannel {
 
 	long[] getTimesRefNodeIds(long timeMillis, String refNodeLabel);
 
+	long[] getTimesRefNodeIds(long timeMillis, String refNodeLabel,
+			String refNodeKey, String refNodeValue);
+
 }

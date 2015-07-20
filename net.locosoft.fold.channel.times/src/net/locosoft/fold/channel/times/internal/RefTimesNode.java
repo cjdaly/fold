@@ -23,11 +23,13 @@ public class RefTimesNode extends AbstractNodeSketch {
 		_nodeId = timesNodeId;
 	}
 
+	private static final String CYPHER_CREATE_TIMES_REF = "MATCH timesNode, refNode" //
+			+ " WHERE ID(timesNode)={timesNodeId} AND ID(refNode)={refNodeId}"
+			+ " CREATE (refNode)-[:times_Ref]->(timesNode)";
+
 	public void createTimesRef(long refNodeId) {
 		INeo4jService neo4jService = getNeo4jService();
-		String cypherText = "MATCH timesNode, refNode" //
-				+ " WHERE ID(timesNode)={timesNodeId} AND ID(refNode)={refNodeId}"
-				+ " CREATE (refNode)-[:times_Ref]->(timesNode)";
+		String cypherText = CYPHER_CREATE_TIMES_REF;
 		ICypher cypher = neo4jService.constructCypher(cypherText);
 		cypher.addParameter("timesNodeId", getNodeId());
 		cypher.addParameter("refNodeId", refNodeId);
@@ -35,20 +37,32 @@ public class RefTimesNode extends AbstractNodeSketch {
 	}
 
 	public long[] getTimesRefNodeIds(String refNodeLabel) {
+		return getTimesRefNodeIds(refNodeLabel, null, null);
+	}
+
+	public long[] getTimesRefNodeIds(String refNodeLabel, String refNodeKey,
+			String refNodeValue) {
 		INeo4jService neo4jService = getNeo4jService();
 
 		StringBuilder cypherText = new StringBuilder();
 		cypherText.append("MATCH (refNode");
-		if (refNodeLabel != null) {
+		if ((refNodeLabel != null) && !"".equals(refNodeLabel)) {
 			cypherText.append(":");
 			cypherText.append(refNodeLabel);
 		}
 		cypherText.append(")-[:times_Ref]->(timesNode) ");
 		cypherText.append("WHERE ID(timesNode)={timesNodeId} ");
+		if ((refNodeKey != null) && (refNodeValue != null)) {
+			cypherText.append(" AND refNode.`" + refNodeKey
+					+ "`={refNodeValue} ");
+		}
 		cypherText.append("RETURN ID(refNode)");
 
 		ICypher cypher = neo4jService.constructCypher(cypherText.toString());
 		cypher.addParameter("timesNodeId", getNodeId());
+		if ((refNodeKey != null) && (refNodeValue != null)) {
+			cypher.addParameter("refNodeValue", refNodeValue);
+		}
 		neo4jService.invokeCypher(cypher);
 
 		long[] refIds = new long[cypher.getResultDataRowCount()];

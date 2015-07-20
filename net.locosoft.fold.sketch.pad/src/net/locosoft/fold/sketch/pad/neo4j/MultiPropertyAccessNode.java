@@ -11,6 +11,9 @@
 
 package net.locosoft.fold.sketch.pad.neo4j;
 
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
+
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.sketch.AbstractNodeSketch;
@@ -40,6 +43,22 @@ public class MultiPropertyAccessNode extends AbstractNodeSketch {
 		_cypherStatement = new StringBuilder(
 				"MATCH node WHERE id(node)={nodeId} SET ");
 		_firstProperty = true;
+	}
+
+	public JsonObject getProperties() {
+		INeo4jService neo4jService = getNeo4jService();
+		String cypherText = "MATCH node" //
+				+ " WHERE id(node)={nodeId}" //
+				+ " RETURN node";
+
+		ICypher cypher = neo4jService.constructCypher(cypherText);
+		cypher.addParameter("nodeId", getNodeId());
+		neo4jService.invokeCypher(cypher);
+		JsonValue jsonValue = cypher.getResultDataRow(0);
+		if ((jsonValue == null) || (!jsonValue.isObject()))
+			return null;
+		else
+			return jsonValue.asObject();
 	}
 
 	private void addCypherSet(String name) {
