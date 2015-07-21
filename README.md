@@ -2,11 +2,12 @@
 
 #### LAN-centric IoT stack
 
-* Eclipse (headless, RCP)
-  * Jetty http server, Apache http client
-  * Eclipse/OSGi modularity (plugins, extension-points, services, ...)
-* Neo4j graph database (separate Linux process)
-* runs on rPi2, ODroid(C1, U3), other ARM7 Linux, and x86 Linux
+* Jetty server + Apache client = REST machine
+* local data stores: Neo4j graph database, Eclipse filesystem API
+* local chart generation, with gnuplot
+* Eclipse (headless, RCP) for modularity and extensibility
+* Java 7 or 8 runtime
+* runs on Raspberry Pi2, ODroid(C1, U3), other ARM7 Linux, and x86 Linux
 
 #### getting started
 
