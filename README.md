@@ -2,7 +2,7 @@
 
 #### LAN-centric IoT stack
 
-* Jetty server + Apache client = REST machine
+* REST machine with Jetty server and Apache client
 * local data stores: Neo4j graph database, Eclipse filesystem API
 * local chart generation, with gnuplot
 * Eclipse (headless, RCP) for modularity and extensibility
