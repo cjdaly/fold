@@ -24,5 +24,5 @@ To get started using fold, see [fold-runtime](https://github.com/cjdaly/fold-run
 Channels are the primary unit of extensibility in fold.
 See the [channel guide](https://github.com/cjdaly/fold/wiki/fold-channel-guide) for details.
 
-See the [developement notes](https://github.com/cjdaly/fold/wiki/fold-development),
+See the [development notes](https://github.com/cjdaly/fold/wiki/fold-development),
 if you're into that sort of thing.
