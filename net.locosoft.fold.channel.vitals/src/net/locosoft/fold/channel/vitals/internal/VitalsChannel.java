@@ -110,16 +110,26 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 				htmlHeaderFooterSketch.writeHeader(response.getWriter());
 
 				MarkdownComposer md = new MarkdownComposer();
+				md.table();
 				for (String vitalsId : getVitalsIds()) {
 					IVitals vitals = getVitals(vitalsId);
 					for (Vital vital : vitals.getAllVitals()) {
 						if (vital.isNumeric() && !vital.Internal) {
-							String label = vitals.getId() + "/" + vital.Id;
-							md.line("* [" + label + "](/fold/vitals/plot/"
-									+ label + "/)", true);
+							String linkPath = "/fold/vitals/plot/"
+									+ vitals.getId() + "/" + vital.Id
+									+ "/?skip=";
+							md.tr(vitals.getId(), vital.Id,
+									md.makeA(linkPath + "1", "1 minute"),
+									md.makeA(linkPath + "5", "5 minutes"),
+									md.makeA(linkPath + "10", "10 minutes"),
+									md.makeA(linkPath + "15", "15 minutes"),
+									md.makeA(linkPath + "30", "30 minutes"),
+									md.makeA(linkPath + "60", "60 minutes"));
 						}
 					}
+
 				}
+				md.table(false);
 				response.getWriter().write(md.getHtml());
 
 				htmlHeaderFooterSketch.writeFooter(response.getWriter());
@@ -179,7 +189,8 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 			htmlHeaderFooterSketch.writeHeader(response.getWriter());
 
 			MarkdownComposer md = new MarkdownComposer();
-			md.line("![Vitals image](image.png)", true);
+			md.line("![Vitals image](image.png?skip="
+					+ request.getParameter("skip") + ")", true);
 			response.getWriter().write(md.getHtml());
 
 			htmlHeaderFooterSketch.writeFooter(response.getWriter());
@@ -199,7 +210,15 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
 			long currentTimeMillis = System.currentTimeMillis();
 			int sampleCount = 40;
-			int skipCount = 60 * 1000 * 5;
+
+			int skipParam;
+			try {
+				skipParam = Integer.parseInt(request.getParameter("skip"));
+			} catch (NumberFormatException ex) {
+				skipParam = 1;
+			}
+
+			int skipCount = 60 * 1000 * skipParam;
 			long[] timeNodeIds = new long[sampleCount];
 			for (int i = 0; i < timeNodeIds.length; i++) {
 				long[] refNodeIds = timesChannel.getTimesRefNodeIds(
