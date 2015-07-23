@@ -4,7 +4,7 @@
 
 * a REST machine with Jetty server, Apache client
 * local data stores: Neo4j graph database, Eclipse filesystem API
-* local chart generation, with gnuplot (graphviz coming soon)
+* local chart and diagram generation, with gnuplot and graphviz
 * Eclipse (headless, RCP) for modularity and extensibility
 * Java 7 or 8 runtime
 * runs on Raspberry Pi 2, ODroid(C1, U3), other ARM7 Linux, and x86 Linux
