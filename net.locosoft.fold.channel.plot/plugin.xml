@@ -5,7 +5,8 @@
          point="net.locosoft.fold.channel">
       <channel
             id="plot"
-            implementation="net.locosoft.fold.channel.plot.internal.PlotChannel">
+            implementation="net.locosoft.fold.channel.plot.internal.PlotChannel"
+            description="gnuplot support for data charting">
       </channel>
    </extension>
 

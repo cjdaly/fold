@@ -9,14 +9,22 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel;
+package net.locosoft.fold.util;
 
-public interface IChannel {
+import java.io.PrintWriter;
 
-	String getChannelId();
+public class HtmlComposer {
 
-	String getChannelData(String key);
+	private PrintWriter _writer;
 
-	Class<? extends IChannel> getChannelInterface();
+	public HtmlComposer(PrintWriter writer) {
+		_writer = writer;
+	}
+
+	public void p(String text) {
+		_writer.print("<p>");
+		_writer.print(text);
+		_writer.println("<p>");
+	}
 
 }

@@ -6,7 +6,8 @@
          point="net.locosoft.fold.channel">
       <channel
             id="vitals"
-            implementation="net.locosoft.fold.channel.vitals.internal.VitalsChannel">
+            implementation="net.locosoft.fold.channel.vitals.internal.VitalsChannel"
+            description="tracks system vital signs and sensor data">
       </channel>
    </extension>
    <extension

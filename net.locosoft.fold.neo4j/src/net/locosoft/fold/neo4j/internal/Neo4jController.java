@@ -12,16 +12,9 @@
 package net.locosoft.fold.neo4j.internal;
 
 import net.locosoft.fold.util.FoldUtil;
+import net.locosoft.fold.util.MonitorThread;
 
-public class Neo4jController implements Runnable {
-
-	private Thread _thread;
-	private boolean _stopping = false;
-	private boolean _stopped = true;
-
-	public Neo4jController() {
-		_thread = new Thread(this);
-	}
+public class Neo4jController {
 
 	public String getNeo4jHomeDir() {
 		try {
@@ -35,41 +28,6 @@ public class Neo4jController implements Runnable {
 			ex.printStackTrace();
 		}
 		return null;
-	}
-
-	public boolean isNeo4jReady() {
-		return !(_stopped || _stopping);
-	}
-
-	public void start() {
-		_thread.start();
-	}
-
-	public void stop() {
-		_stopping = true;
-	}
-
-	public void run() {
-		while (!_stopping) {
-			try {
-				int pid = getNeo4jPID();
-				if (pid == -1) {
-					System.out.println("Starting Neo4j...");
-					StringBuilder processOut = new StringBuilder();
-					execNeo4jCommand("start", processOut);
-					System.out.println(processOut);
-					Thread.sleep(10 * 1000);
-				} else {
-					_stopped = false;
-					Thread.sleep(60 * 1000);
-				}
-			} catch (InterruptedException ex) {
-				ex.printStackTrace();
-			} catch (Exception ex) {
-				ex.printStackTrace();
-			}
-		}
-		_stopped = true;
 	}
 
 	public int getNeo4jPID() {
@@ -91,6 +49,32 @@ public class Neo4jController implements Runnable {
 		}
 		return pid;
 	}
+
+	public boolean isNeo4jReady() {
+		return _neo4jMonitor.isRunning();
+	}
+
+	public void start() {
+		_neo4jMonitor.start();
+	}
+
+	public void stop() {
+		_neo4jMonitor.stop();
+	}
+
+	private MonitorThread _neo4jMonitor = new MonitorThread() {
+		public boolean cycle() {
+
+			int pid = getNeo4jPID();
+			if (pid == -1) {
+				System.out.println("starting Neo4j...");
+				StringBuilder processOut = new StringBuilder();
+				execNeo4jCommand("start", processOut);
+				System.out.println(processOut);
+			}
+			return true;
+		}
+	};
 
 	private int execNeo4jCommand(String command, StringBuilder processOut) {
 		String fullCommand = getNeo4jHomeDir() + "/bin/neo4j " + command;

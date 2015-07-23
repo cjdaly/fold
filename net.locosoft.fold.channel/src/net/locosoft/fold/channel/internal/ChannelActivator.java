@@ -21,9 +21,10 @@ public class ChannelActivator implements BundleActivator {
 	private ChannelService _channelService;
 
 	public void start(BundleContext bundleContext) throws Exception {
-		System.out.println("starting ChannelActivator");
+		System.out.println("fold internal version: "
+				+ FoldUtil.getFoldInternalVersion());
 
-		System.out.println("Apparent fold URLs:");
+		System.out.println("apparent fold URLs:");
 		String[] foldUrls = FoldUtil.getFoldUrls();
 		for (String foldUrl : foldUrls) {
 			System.out.println("  " + foldUrl);

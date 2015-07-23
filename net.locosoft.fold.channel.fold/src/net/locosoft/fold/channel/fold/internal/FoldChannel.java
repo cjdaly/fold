@@ -80,7 +80,7 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 		for (IChannel channel : channels) {
 			String channelLink = md.makeA("/fold/" + channel.getChannelId(),
 					channel.getChannelId());
-			md.tr(channelLink, channel.getChannelDescription());
+			md.tr(channelLink, channel.getChannelData("channel.description"));
 		}
 		md.table(false);
 

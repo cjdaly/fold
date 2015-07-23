@@ -39,9 +39,7 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 		return _id;
 	}
 
-	public String getChannelDescription() {
-		return "";
-	}
+	private String _description;
 
 	//
 	// IChannelInternal
@@ -52,8 +50,10 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 		return _channelService;
 	}
 
-	public void init(String channelId, IChannelService channelService) {
+	public void init(String channelId, IChannelService channelService,
+			String channelDescription) {
 		_id = channelId;
+		_description = channelDescription;
 		_channelService = channelService;
 	}
 
@@ -127,7 +127,12 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 	}
 
 	public String getChannelData(String key) {
-		return null;
+		switch (key) {
+		case "channel.description":
+			return _description;
+		default:
+			return null;
+		}
 	}
 
 	public final String getChannelData(String channelId, String key) {

@@ -5,7 +5,8 @@
          point="net.locosoft.fold.channel">
       <channel
             id="times"
-            implementation="net.locosoft.fold.channel.times.internal.TimesChannel">
+            implementation="net.locosoft.fold.channel.times.internal.TimesChannel"
+            description="time index data structure">
       </channel>
    </extension>
 </plugin>

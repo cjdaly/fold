@@ -58,12 +58,14 @@ public class ChannelService implements IChannelService {
 
 			try {
 				String channelId = configurationElement.getAttribute("id");
+				String channelDescription = configurationElement
+						.getAttribute("description");
 				Object extension = configurationElement
 						.createExecutableExtension("implementation");
 				IChannel channel = (IChannel) extension;
 
 				IChannelInternal channelInternal = (IChannelInternal) channel;
-				channelInternal.init(channelId, this);
+				channelInternal.init(channelId, this, channelDescription);
 
 				// TODO: check for duplicates
 				_idToChannel.put(channelId, channel);

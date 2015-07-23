@@ -5,7 +5,8 @@
          point="net.locosoft.fold.channel">
       <channel
             id="fold"
-            implementation="net.locosoft.fold.channel.fold.internal.FoldChannel">
+            implementation="net.locosoft.fold.channel.fold.internal.FoldChannel"
+            description="find other Things and join a fold">
       </channel>
    </extension>
 

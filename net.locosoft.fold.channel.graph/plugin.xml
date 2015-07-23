@@ -5,7 +5,8 @@
          point="net.locosoft.fold.channel">
       <channel
             id="graph"
-            implementation="net.locosoft.fold.channel.graph.internal.GraphChannel">
+            implementation="net.locosoft.fold.channel.graph.internal.GraphChannel"
+            description="graphviz support for diagramming nodes and relationships">
       </channel>
    </extension>
 

@@ -5,7 +5,8 @@
          point="net.locosoft.fold.channel">
       <channel
             id="thing"
-            implementation="net.locosoft.fold.channel.thing.internal.ThingChannel">
+            implementation="net.locosoft.fold.channel.thing.internal.ThingChannel"
+            description="details about this internet Thing">
       </channel>
    </extension>
 

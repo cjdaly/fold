@@ -24,7 +24,8 @@ public interface IChannelInternal extends IChannel {
 
 	IChannelService getChannelService();
 
-	void init(String channelId, IChannelService channelService);
+	void init(String channelId, IChannelService channelService,
+			String channelDescription);
 
 	void init();
 
@@ -35,8 +36,6 @@ public interface IChannelInternal extends IChannel {
 
 	void channelHttp(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException;
-
-	String getChannelData(String key);
 
 	String getChannelData(String channelId, String key);
 

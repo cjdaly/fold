@@ -35,6 +35,10 @@ import org.osgi.framework.ServiceReference;
 
 public class FoldUtil {
 
+	public static String getFoldInternalVersion() {
+		return System.getProperty("net.locosoft.fold.internalVersion");
+	}
+
 	private static final Pattern _ipPattern = Pattern
 			.compile("\\d+:\\s+((eth|wlan)\\d+)\\s+inet\\s+(\\d+\\.\\d+\\.\\d+\\.\\d+)/");
 
