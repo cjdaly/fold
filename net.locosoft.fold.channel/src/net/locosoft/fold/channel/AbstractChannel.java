@@ -39,6 +39,10 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 		return _id;
 	}
 
+	public String getChannelDescription() {
+		return "";
+	}
+
 	//
 	// IChannelInternal
 	//

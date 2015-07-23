@@ -9,14 +9,10 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel;
+package net.locosoft.fold.channel.graph;
 
-public interface IChannel {
+import net.locosoft.fold.channel.IChannel;
 
-	String getChannelId();
-
-	String getChannelDescription();
-
-	Class<? extends IChannel> getChannelInterface();
+public interface IGraphChannel extends IChannel {
 
 }

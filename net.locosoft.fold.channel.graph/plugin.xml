@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="net.locosoft.fold.channel">
+      <channel
+            id="graph"
+            implementation="net.locosoft.fold.channel.graph.internal.GraphChannel">
+      </channel>
+   </extension>
+
+</plugin>

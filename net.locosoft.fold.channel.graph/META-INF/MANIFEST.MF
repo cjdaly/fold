@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: fold channel graph
+Bundle-SymbolicName: net.locosoft.fold.channel.graph;singleton:=true
+Bundle-Version: 0.1.0
+Bundle-RequiredExecutionEnvironment: JavaSE-1.7
+Require-Bundle: net.locosoft.fold.required
+Export-Package: net.locosoft.fold.channel.graph

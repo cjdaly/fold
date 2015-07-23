@@ -11,24 +11,21 @@
 
 package net.locosoft.fold.channel.plot.internal;
 
-import java.io.BufferedOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStreamWriter;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
 import javax.servlet.ServletException;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import com.eclipsesource.json.JsonValue;
 
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.plot.IPlotChannel;
+import net.locosoft.fold.util.FoldUtil;
+
+import com.eclipsesource.json.JsonValue;
 
 public class PlotChannel extends AbstractChannel implements IPlotChannel {
 
@@ -41,24 +38,12 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 
 		response.setContentType("image/png");
 
-		Process process = Runtime.getRuntime().exec("/usr/bin/gnuplot");
+		StringBuilder plotInput = new StringBuilder();
+		plotInput.append("set terminal png size 800,600\n");
+		plotInput.append("plot sin(x)\n");
 
-		OutputStreamWriter outputStreamWriter = new OutputStreamWriter(
-				new BufferedOutputStream(process.getOutputStream()));
-		outputStreamWriter
-				.write("set terminal png size 800,600 enhanced font \"Helvetica,20\"\n");
-		outputStreamWriter.write("plot sin(x)\n");
-		outputStreamWriter.flush();
-		outputStreamWriter.close();
-
-		InputStream inputStream = process.getInputStream();
-		ServletOutputStream outputStream = response.getOutputStream();
-
-		byte[] buffer = new byte[1024];
-		int bytesRead;
-		while ((bytesRead = inputStream.read(buffer)) != -1) {
-			outputStream.write(buffer, 0, bytesRead);
-		}
+		FoldUtil.execCommand("/usr/bin/gnuplot", plotInput.toString(),
+				response.getOutputStream());
 	}
 
 	public void plotPngImage(String title, String xLabel, String yLabel,
@@ -66,38 +51,29 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("image/png");
 
-		Process process = Runtime.getRuntime().exec("/usr/bin/gnuplot");
-
-		OutputStreamWriter writer = new OutputStreamWriter(
-				new BufferedOutputStream(process.getOutputStream()));
-		writer.write("set terminal png size 800,400\n");
-		writer.write("set title '" + title + "'\n");
-		writer.write("set xlabel '" + xLabel + "'\n");
-		writer.write("set ylabel '" + yLabel + "'\n");
-		writer.write("set key left top\n");
-		writer.write("set grid\n");
-		writer.write("set xdata time\n");
-		writer.write("set timefmt '%s'\n");
-		writer.write("set format x '%m/%d'\n");
-		writer.write("plot '-' using 1:2 with lines title '" + keyLabel + "'\n");
-		writer.write("\n");
+		StringBuilder plotInput = new StringBuilder();
+		plotInput.append("set terminal png size 800,400\n");
+		plotInput.append("set title '" + title + "'\n");
+		plotInput.append("set xlabel '" + xLabel + "'\n");
+		plotInput.append("set ylabel '" + yLabel + "'\n");
+		plotInput.append("set key left top\n");
+		plotInput.append("set grid\n");
+		plotInput.append("set xdata time\n");
+		plotInput.append("set timefmt '%s'\n");
+		plotInput.append("set format x '%m/%d'\n");
+		plotInput.append("plot '-' using 1:2 with lines title '" + keyLabel
+				+ "'\n");
+		plotInput.append("\n");
 
 		Set<Entry<Long, JsonValue>> entrySet = timeSeriesDataMap.entrySet();
 		for (Entry<Long, JsonValue> entry : entrySet) {
-			writer.write("" + entry.getKey() + " " + entry.getValue() + "\n");
+			plotInput.append("" + entry.getKey() + " " + entry.getValue()
+					+ "\n");
 		}
-		writer.write("\n");
-		writer.flush();
-		writer.close();
+		plotInput.append("\n");
 
-		InputStream inputStream = process.getInputStream();
-		ServletOutputStream outputStream = response.getOutputStream();
-
-		byte[] buffer = new byte[1024];
-		int bytesRead;
-		while ((bytesRead = inputStream.read(buffer)) != -1) {
-			outputStream.write(buffer, 0, bytesRead);
-		}
+		FoldUtil.execCommand("/usr/bin/gnuplot", plotInput.toString(),
+				response.getOutputStream());
 
 	}
 }
