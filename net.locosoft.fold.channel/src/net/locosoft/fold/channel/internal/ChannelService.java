@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.IChannelInternal;
 import net.locosoft.fold.channel.IChannelService;
+import net.locosoft.fold.util.HtmlComposer;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -30,8 +31,6 @@ import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
-
-import com.github.rjeschke.txtmark.Processor;
 
 public class ChannelService implements IChannelService {
 
@@ -152,8 +151,10 @@ public class ChannelService implements IChannelService {
 			HttpServletResponse response) throws ServletException, IOException {
 		if (!_channelController.isChannelReady()) {
 			response.setContentType("text/html");
-			String htmlText = Processor.process("**fold** channel down! :-(");
-			response.getWriter().println(htmlText);
+			HtmlComposer html = new HtmlComposer(response.getWriter());
+			html.html_head("fold");
+			html.p("fold channel down! :-(");
+			html.html_body(false);
 		} else {
 			IChannelInternal channel = lookupChannel(request.getPathInfo());
 			if (channel != null)

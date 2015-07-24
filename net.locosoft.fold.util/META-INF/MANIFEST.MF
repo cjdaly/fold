@@ -8,5 +8,4 @@ Export-Package: net.locosoft.fold.util
 Require-Bundle: org.eclipse.osgi,
  org.eclipse.core.resources,
  org.eclipse.core.runtime,
- com.eclipsesource.json,
- com.github.rjeschke.txtmark
+ com.eclipsesource.json

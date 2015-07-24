@@ -29,26 +29,33 @@ public class ThingChannel extends AbstractChannel implements IThingChannel {
 	private String _thingDescription;
 
 	public void init() {
+
 		PropertyAccessNode sketch = new PropertyAccessNode(getChannelNodeId());
 		String savedProfileId = sketch.getStringValue("Thing_profileId");
-		if (savedProfileId != null) {
-			System.out.print("using saved Thing profileId: " + savedProfileId);
-			_thingProfileId = savedProfileId;
-		} else {
-			_thingProfileId = System.getProperty(
-					"net.locosoft.fold.channel.thing.profile.id", "default");
-			if (!"default".equals(_thingProfileId)) {
-				sketch.setValue("Thing_profileId", _thingProfileId);
-			}
 
-			System.out.print("using Thing profileId: " + _thingProfileId);
+		String startProfileId = System
+				.getProperty("net.locosoft.fold.channel.thing.profile.id");
+
+		String profileStatusMessage;
+		if (startProfileId != null && !"".equals(startProfileId)
+				&& !"default".equals(startProfileId)) {
+			sketch.setValue("Thing_profileId", startProfileId);
+			_thingProfileId = startProfileId;
+			profileStatusMessage = "saved ";
+		} else if (savedProfileId == null) {
+			_thingProfileId = "default";
+			profileStatusMessage = "";
+		} else {
+			_thingProfileId = savedProfileId;
+			profileStatusMessage = "loaded ";
 		}
 
 		Properties config = getChannelConfigProperties(_thingProfileId);
 		_thingName = config.getProperty("thing.name");
 		_thingDescription = config.getProperty("thing.description");
 
-		System.out.println(", name: " + getThingName());
+		System.out.println("fold Thing: " + getThingName() + " ("
+				+ profileStatusMessage + "profileId: " + _thingProfileId + ")");
 	}
 
 	public String getThingProfileId() {

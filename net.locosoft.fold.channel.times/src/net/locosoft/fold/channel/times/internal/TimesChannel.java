@@ -11,19 +11,10 @@
 
 package net.locosoft.fold.channel.times.internal;
 
-import java.io.IOException;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.times.ITimesChannel;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
-import net.locosoft.fold.util.MarkdownComposer;
-
-import org.eclipse.core.runtime.Path;
 
 public class TimesChannel extends AbstractChannel implements ITimesChannel {
 
@@ -66,47 +57,6 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 			return sketch.getTimesRefNodeIds(refNodeLabel, refNodeKey,
 					refNodeValue);
 		}
-	}
-
-	public void channelHttpGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-
-		response.setContentType("text/html");
-
-		MarkdownComposer md = new MarkdownComposer();
-		md.line("# times", true);
-
-		Path path = new Path(request.getPathInfo());
-		long currNodeId = getChannelNodeId();
-
-		HierarchyNode sketch = new HierarchyNode(currNodeId);
-
-		for (int index = 1; index < path.segmentCount(); index++) {
-			String segment = path.segment(index);
-			md.line("    segment(" + index + ")= " + segment);
-
-			currNodeId = sketch.getSubId(segment, false);
-			if (currNodeId != -1) {
-				sketch.setNodeId(currNodeId);
-				long[] subIds = sketch.getSubIds();
-				String subIdList = "";
-				for (long subId : subIds) {
-					subIdList += subId + ",";
-				}
-				md.line("      subIds: " + subIdList);
-
-				String[] subSegments = sketch.getSubSegments();
-				String subSegmentList = "";
-				for (String subSegment : subSegments) {
-					subSegmentList += subSegment + ",";
-				}
-				md.line("      subSegments: " + subSegmentList);
-			} else {
-				break;
-			}
-		}
-
-		response.getWriter().println(md.getHtml());
 	}
 
 }

@@ -22,11 +22,9 @@ import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.fold.IFoldChannel;
 import net.locosoft.fold.sketch.pad.neo4j.CounterPropertyNode;
-import net.locosoft.fold.util.MarkdownComposer;
+import net.locosoft.fold.util.HtmlComposer;
 
 import org.eclipse.core.runtime.Path;
-
-import com.github.rjeschke.txtmark.Processor;
 
 public class FoldChannel extends AbstractChannel implements IFoldChannel {
 
@@ -58,7 +56,7 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 			String channelSegment = path.segment(0);
 			if ("fold".equals(channelSegment)) {
 				// fold channel segment (/fold/fold)
-				channelHttpInternals(request, response);
+				channelHttpFold(request, response);
 			} else {
 				// everything else
 				channelHttpUndefined(request, response);
@@ -70,39 +68,61 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
-		MarkdownComposer md = new MarkdownComposer();
-		md.line("# fold", true);
-		md.line("startCount: " + getStartCount(), true);
-		md.line("### channels", true);
+		String thingName = getChannelData("thing", "name");
 
-		md.table();
+		HtmlComposer html = new HtmlComposer(response.getWriter());
+		html.html_head("fold: " + thingName);
+		html.h(2, "fold");
+
+		html.p();
+		html.text("Thing: ");
+		html.b(thingName);
+		html.br();
+		html.text("start count: ");
+		html.b(Long.toString(getStartCount()));
+		html.p(false);
+
+		html.h(3, "channels");
+
+		html.table();
 		IChannel[] channels = ChannelUtil.getChannelService().getAllChannels();
 		for (IChannel channel : channels) {
-			String channelLink = md.makeA("/fold/" + channel.getChannelId(),
+			String channelLink = html.A("/fold/" + channel.getChannelId(),
 					channel.getChannelId());
-			md.tr(channelLink, channel.getChannelData("channel.description"));
+			html.tr(channelLink, channel.getChannelData("channel.description"));
 		}
-		md.table(false);
-
-		response.getWriter().println(md.getHtml());
+		html.table(false);
+		html.html_body(false);
 	}
 
-	private void channelHttpInternals(HttpServletRequest request,
+	private void channelHttpFold(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
-		String htmlText = Processor.process("**fold** internals: "
-				+ getChannelId() + " / " + getChannelNodeId() + " * "
-				+ getChannelProject().getFullPath());
-		response.getWriter().println(htmlText);
+
+		String thingName = getChannelData("thing", "name");
+
+		HtmlComposer html = new HtmlComposer(response.getWriter());
+		html.html_head("fold: " + thingName);
+		html.h(2, "fold");
+
+		html.p("todo...");
+
+		html.html_body(false);
 	}
 
 	private void channelHttpUndefined(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
-		String htmlText = Processor.process("**fold** undefined: "
-				+ getChannelId() + " / " + getChannelNodeId() + " * "
-				+ getChannelProject().getFullPath());
-		response.getWriter().println(htmlText);
+
+		String thingName = getChannelData("thing", "name");
+
+		HtmlComposer html = new HtmlComposer(response.getWriter());
+		html.html_head("fold: " + thingName);
+		html.h(2, "fold");
+
+		html.p("...undefined...");
+
+		html.html_body(false);
 	}
 
 }

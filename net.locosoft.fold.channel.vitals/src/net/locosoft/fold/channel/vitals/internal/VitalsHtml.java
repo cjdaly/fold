@@ -23,7 +23,7 @@ import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.sketch.pad.html.ChannelItemHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
-import net.locosoft.fold.util.MarkdownComposer;
+import net.locosoft.fold.util.HtmlComposer;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -53,9 +53,10 @@ public class VitalsHtml extends ChannelItemHtml {
 		if (isSizeEmpty(sizeHint))
 			return;
 
-		MarkdownComposer md = new MarkdownComposer();
+		HtmlComposer html = new HtmlComposer(writer);
+
 		if (_itemJson == null) {
-			md.line("_(no data)_", true);
+			html.p("_(no data)_");
 		} else {
 			String vitalsId = _itemJson.getString(IVitals.NODE_PROPERTY_ID,
 					null);
@@ -75,26 +76,25 @@ public class VitalsHtml extends ChannelItemHtml {
 			Calendar calendar = Calendar.getInstance();
 			calendar.setTimeInMillis(vitalsTime);
 
-			md.line("### Vitals " + _itemOrdinal + " at " + vitalsTimeText);
+			html.p("Vitals " + _itemOrdinal + " at " + vitalsTimeText);
 
 			IVitals vitals = _vitalsChannel.getVitals(vitalsId);
 			if (vitals == null) {
 				vitals = getDynamicVitals(vitalsId);
 			}
 			if (vitals != null) {
-				md.table();
+				html.table();
 				for (Vital vital : vitals.getAllVitals()) {
 					if (!vital.Internal) {
 						JsonValue jsonValue = _itemJson.get(vital.Id);
 						String value = jsonValue == null ? "?" : jsonValue
 								.toString();
-						md.tr(vital.Id, value, vital.Units);
+						html.tr(vital.Id, value, vital.Units);
 					}
 				}
-				md.table(false);
+				html.table(false);
 			}
 		}
-		writer.append(md.getHtml());
 	}
 
 	private IVitals getDynamicVitals(String vitalsId) {
