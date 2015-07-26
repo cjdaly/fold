@@ -11,8 +11,17 @@
 
 package net.locosoft.fold.channel.graph;
 
+import java.io.IOException;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import net.locosoft.fold.channel.IChannel;
 
 public interface IGraphChannel extends IChannel {
+
+	void graphPngImage(String dotInput, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException;
 
 }

@@ -9,24 +9,10 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel.plot;
-
-import java.io.IOException;
-import java.util.TreeMap;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+package net.locosoft.fold.channel.chatter;
 
 import net.locosoft.fold.channel.IChannel;
 
-import com.eclipsesource.json.JsonValue;
-
-public interface IPlotChannel extends IChannel {
-
-	void plotPngImage(String title, String xLabel, String yLabel,
-			String keyLabel, TreeMap<Long, JsonValue> timeSeriesDataMap,
-			HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException;
+public interface IChatterChannel extends IChannel {
 
 }

@@ -4,5 +4,8 @@ Bundle-Name: fold channel
 Bundle-SymbolicName: net.locosoft.fold.channel.fold;singleton:=true
 Bundle-Version: 0.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: net.locosoft.fold.required
+Require-Bundle: org.apache.httpcomponents.httpcore,
+ org.apache.httpcomponents.httpclient,
+ net.locosoft.fold.required,
+ net.locosoft.fold.channel.chatter
 Export-Package: net.locosoft.fold.channel.fold

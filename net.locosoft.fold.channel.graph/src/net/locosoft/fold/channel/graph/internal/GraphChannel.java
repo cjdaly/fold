@@ -30,10 +30,14 @@ public class GraphChannel extends AbstractChannel implements IGraphChannel {
 
 	public void channelHttpGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
+		String dotInput = "digraph G { hello -> world; world -> foo; world -> bar; }";
+		graphPngImage(dotInput, request, response);
+	}
 
+	public void graphPngImage(String dotInput, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("image/png");
 
-		String dotInput = "digraph G { hello -> world; world -> foo; world -> bar; }";
 		FoldUtil.execCommand("/usr/bin/dot -Tpng", dotInput,
 				response.getOutputStream());
 	}

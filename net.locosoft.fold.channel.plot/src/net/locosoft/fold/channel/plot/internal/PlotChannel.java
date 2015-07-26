@@ -35,7 +35,6 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 
 	public void channelHttpGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
 		response.setContentType("image/png");
 
 		StringBuilder plotInput = new StringBuilder();
@@ -48,7 +47,8 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 
 	public void plotPngImage(String title, String xLabel, String yLabel,
 			String keyLabel, TreeMap<Long, JsonValue> timeSeriesDataMap,
-			HttpServletResponse response) throws ServletException, IOException {
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
 		response.setContentType("image/png");
 
 		StringBuilder plotInput = new StringBuilder();

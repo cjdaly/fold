@@ -16,7 +16,7 @@ import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClients;
+import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.util.EntityUtils;
 
 import com.eclipsesource.json.JsonObject;
@@ -28,7 +28,8 @@ public class Neo4jRestUtil {
 	public static final String CYPHER_URI = DATA_URI + "/transaction/commit";
 
 	public static JsonObject doGetJson(String uri) {
-		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create()
+				.build()) {
 			CloseableHttpResponse response = httpClient
 					.execute(new HttpGet(uri));
 
@@ -42,7 +43,8 @@ public class Neo4jRestUtil {
 	}
 
 	public static JsonObject doPostJson(String uri, JsonObject content) {
-		try (CloseableHttpClient httpClient = HttpClients.createDefault()) {
+		try (CloseableHttpClient httpClient = HttpClientBuilder.create()
+				.build()) {
 			HttpPost httpPost = new HttpPost(uri);
 			httpPost.addHeader("Content-Type", "application/json");
 			StringEntity stringEntity = new StringEntity(content.toString(),

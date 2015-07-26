@@ -28,6 +28,8 @@ import org.eclipse.core.runtime.Path;
 
 public class FoldChannel extends AbstractChannel implements IFoldChannel {
 
+	private FoldFinder _foldFinder = new FoldFinder(this);
+
 	private long _startCount = -1;
 
 	public long getStartCount() {
@@ -42,6 +44,12 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 		CounterPropertyNode foldStartCount = new CounterPropertyNode(
 				getChannelNodeId());
 		_startCount = foldStartCount.incrementCounter("fold_startCount");
+
+		_foldFinder.start();
+	}
+
+	public void fini() {
+		_foldFinder.stop();
 	}
 
 	public void channelHttpGet(HttpServletRequest request,
@@ -50,21 +58,21 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 		if ((pathInfo == null) || ("".equals(pathInfo))
 				|| ("/".equals(pathInfo))) {
 			// empty channel segment (/fold)
-			channelHttpDashboard(request, response);
+			channelHttpGetDashboard(request, response);
 		} else {
 			Path path = new Path(pathInfo);
 			String channelSegment = path.segment(0);
 			if ("fold".equals(channelSegment)) {
 				// fold channel segment (/fold/fold)
-				channelHttpFold(request, response);
+				channelHttpGetFold(request, response);
 			} else {
 				// everything else
-				channelHttpUndefined(request, response);
+				channelHttpGetUndefined(request, response);
 			}
 		}
 	}
 
-	private void channelHttpDashboard(HttpServletRequest request,
+	private void channelHttpGetDashboard(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
@@ -95,7 +103,7 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 		html.html_body(false);
 	}
 
-	private void channelHttpFold(HttpServletRequest request,
+	private void channelHttpGetFold(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
@@ -110,7 +118,7 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 		html.html_body(false);
 	}
 
-	private void channelHttpUndefined(HttpServletRequest request,
+	private void channelHttpGetUndefined(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
 
@@ -123,6 +131,22 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 		html.p("...undefined...");
 
 		html.html_body(false);
+	}
+
+	protected void channelHttpPost(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/plain");
+
+		response.getWriter().println("Posting to fold...");
+
+		switch (request.getPathInfo()) {
+		case "/fold":
+			_foldFinder.receiveFoldPost(request, response);
+			break;
+		default:
+			super.channelHttpPost(request, response);
+			break;
+		}
 	}
 
 }

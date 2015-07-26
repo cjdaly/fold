@@ -28,6 +28,7 @@
       <plugin id="javax.servlet"/>
       <plugin id="javax.xml"/>
       <plugin id="net.locosoft.fold.channel"/>
+      <plugin id="net.locosoft.fold.channel.chatter"/>
       <plugin id="net.locosoft.fold.channel.fold"/>
       <plugin id="net.locosoft.fold.channel.graph"/>
       <plugin id="net.locosoft.fold.channel.plot"/>

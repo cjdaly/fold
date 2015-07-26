@@ -24,6 +24,8 @@ import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.channel.vitals.IVitalsChannel;
 import net.locosoft.fold.channel.vitals.StaticVitals;
+import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
+import net.locosoft.fold.util.MonitorThread;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -32,7 +34,6 @@ import org.eclipse.core.runtime.Platform;
 
 public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
-	private VitalsMonitor _vitalsMonitor = new VitalsMonitor(this);
 	private TreeMap<String, IVitals> _idToVitals = new TreeMap<String, IVitals>();
 
 	public Class<? extends IChannel> getChannelInterface() {
@@ -74,6 +75,40 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 	public void fini() {
 		_vitalsMonitor.stop();
 	}
+
+	private MonitorThread _vitalsMonitor = new MonitorThread() {
+
+		protected long getSleepTimePreCycle() {
+			return 2 * 1000;
+		}
+
+		protected long getSleepTimePostCycle() {
+			return 2 * 1000;
+		}
+
+		public boolean cycle() {
+			String[] vitalsIds = getVitalsIds();
+			long currentTimeMillis = System.currentTimeMillis();
+			for (String vitalsId : vitalsIds) {
+				try {
+					IVitals vitals = getVitals(vitalsId);
+					if (vitals instanceof StaticVitals) {
+						StaticVitals staticVitals = (StaticVitals) vitals;
+						if (staticVitals.isCheckTime(currentTimeMillis)) {
+							ChannelItemNode vitalsNode = new ChannelItemNode(
+									VitalsChannel.this, "Vitals");
+							long vitalsNodeId = vitalsNode.nextOrdinalNodeId();
+							staticVitals.checkVitals(vitalsNodeId);
+						}
+					}
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
+			}
+
+			return true;
+		}
+	};
 
 	// protected void channelHttpGet(HttpServletRequest request,
 	// HttpServletResponse response) throws ServletException, IOException {
