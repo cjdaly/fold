@@ -15,6 +15,7 @@ import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.sketch.AbstractNodeSketch;
 
+import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
 
 public class HierarchyNode extends AbstractNodeSketch {
@@ -40,6 +41,22 @@ public class HierarchyNode extends AbstractNodeSketch {
 			return jsonValue.asLong();
 		else
 			return -1;
+	}
+
+	public JsonObject getSubNode(String segment) {
+		INeo4jService neo4jService = getNeo4jService();
+		String cypherText = "MATCH (sup)-[:fold_Hierarchy]->(sub)"
+				+ " WHERE ID(sup)={supId} AND sub.fold_Hierarchy_segment={segment}" //
+				+ " RETURN sub";
+		ICypher cypher = neo4jService.constructCypher(cypherText);
+		cypher.addParameter("supId", getNodeId());
+		cypher.addParameter("segment", segment);
+		neo4jService.invokeCypher(cypher);
+		JsonValue jsonValue = cypher.getResultDataRow(0);
+		if ((jsonValue == null) || (!jsonValue.isObject()))
+			return null;
+		else
+			return jsonValue.asObject();
 	}
 
 	public long getSubId(String segment, boolean createIfAbsent) {

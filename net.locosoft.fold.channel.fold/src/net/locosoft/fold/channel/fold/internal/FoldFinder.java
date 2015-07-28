@@ -18,6 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import net.locosoft.fold.channel.chatter.IChatterChannel;
+import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
+import net.locosoft.fold.sketch.pad.neo4j.PropertyAccessNode;
 import net.locosoft.fold.util.FoldUtil;
 import net.locosoft.fold.util.MonitorThread;
 
@@ -85,13 +87,26 @@ public class FoldFinder {
 		}
 	};
 
+	private String getIpAddrPrefix(String ipAddr) {
+		int lastDotIndex = ipAddr.lastIndexOf('.');
+		return ipAddr.substring(0, lastDotIndex);
+	}
+
+	private String getIpAddrSuffix(String ipAddr) {
+		int lastDotIndex = ipAddr.lastIndexOf('.');
+		return ipAddr.substring(lastDotIndex + 1, ipAddr.length());
+	}
+
 	void sendFoldPost(String ipAddr) {
 		JsonObject jsonObject = new JsonObject();
 		String thingName = _foldChannel.getChannelData("thing", "name");
-		jsonObject.add("sender", thingName);
+		jsonObject.add("senderName", thingName);
 		jsonObject.add("message", "hello");
 
 		String foldPostUrl = "http://" + ipAddr + ":8421/fold/fold";
+
+		boolean postError = false;
+		String postResponse = null;
 
 		try (CloseableHttpClient httpClient = HttpClientBuilder.create()
 				.disableAutomaticRetries().build()) {
@@ -102,34 +117,71 @@ public class FoldFinder {
 			httpPost.setEntity(stringEntity);
 			CloseableHttpResponse response = httpClient.execute(httpPost);
 
-			String bodyText = EntityUtils.toString(response.getEntity());
-			System.out.println("fold post: " + bodyText);
-
+			postResponse = EntityUtils.toString(response.getEntity());
 		} catch (Exception ex) {
-			System.out.println("fold post (" + ipAddr + ") ERR: "
-					+ ex.toString());
+			postResponse = ex.toString();
+			postError = true;
 		}
 
-		// TODO: record under /fold/subnetPrefix/subnetSuffix
+		IChatterChannel chatterChannel = _foldChannel.getChannelService()
+				.getChannel(IChatterChannel.class);
 
+		JsonObject chatterData = new JsonObject();
+		chatterData.add("postResponse", postResponse);
+		chatterData.add("postError", postError);
+		chatterData.add("postIpAddr", ipAddr);
+		long chatterItemOrdinal = chatterChannel.createChatterItem(
+				"sent FoldFinder post to ${postIpAddr}", "foldFinder",
+				chatterData);
+
+		HierarchyNode foldChannelNode = new HierarchyNode(
+				_foldChannel.getChannelNodeId());
+		long subnetsNodeId = foldChannelNode.getSubId("subnets", true);
+		HierarchyNode subnetsNode = new HierarchyNode(subnetsNodeId);
+		long ipAddrPrefixNodeId = subnetsNode.getSubId(getIpAddrPrefix(ipAddr),
+				true);
+		HierarchyNode ipAddrPrefixNode = new HierarchyNode(ipAddrPrefixNodeId);
+		long ipAddrSuffixNodeId = ipAddrPrefixNode.getSubId(
+				getIpAddrSuffix(ipAddr), true);
+		PropertyAccessNode props = new PropertyAccessNode(ipAddrSuffixNodeId);
+		props.setValue("lastSend_postError", postError);
+		props.setValue("lastSend_chatterItemOrdinal", chatterItemOrdinal);
 	}
 
 	void receiveFoldPost(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		JsonObject jsonObject = JsonObject.readFrom(request.getReader());
 
-		String sender = jsonObject.getString("sender", null);
+		String senderName = jsonObject.getString("senderName", null);
 		String message = jsonObject.getString("message", null);
 
-		if ((sender != null) && (message != null)) {
+		if ((senderName != null) && (message != null)) {
 			String senderIpAddr = request.getRemoteAddr();
 			IChatterChannel chatterChannel = _foldChannel.getChannelService()
 					.getChannel(IChatterChannel.class);
+			JsonObject chatterData = new JsonObject();
+			chatterData.add("senderIpAddr", senderIpAddr);
+			chatterData.add("senderName", senderName);
+			chatterData.add("message", message);
 
-			// TODO: create chatter node
+			long chatterItemOrdinal = chatterChannel.createChatterItem(
+					"received FoldFinder post from ${senderIpAddr}",
+					"foldFinder", chatterData);
 
-			// TODO: record under /fold/subnetPrefix/subnetSuffix
-
+			HierarchyNode foldChannelNode = new HierarchyNode(
+					_foldChannel.getChannelNodeId());
+			long subnetsNodeId = foldChannelNode.getSubId("subnets", true);
+			HierarchyNode subnetsNode = new HierarchyNode(subnetsNodeId);
+			long ipAddrPrefixNodeId = subnetsNode.getSubId(
+					getIpAddrPrefix(senderIpAddr), true);
+			HierarchyNode ipAddrPrefixNode = new HierarchyNode(
+					ipAddrPrefixNodeId);
+			long ipAddrSuffixNodeId = ipAddrPrefixNode.getSubId(
+					getIpAddrSuffix(senderIpAddr), true);
+			PropertyAccessNode props = new PropertyAccessNode(
+					ipAddrSuffixNodeId);
+			props.setValue("lastReceive_senderName", senderName);
+			props.setValue("lastReceive_chatterItemOrdinal", chatterItemOrdinal);
 		}
 	}
 }

@@ -11,8 +11,12 @@
 
 package net.locosoft.fold.channel.chatter;
 
+import com.eclipsesource.json.JsonObject;
+
 import net.locosoft.fold.channel.IChannel;
 
 public interface IChatterChannel extends IChannel {
+
+	long createChatterItem(String message, String category, JsonObject data);
 
 }

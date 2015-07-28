@@ -71,6 +71,11 @@ public class MultiPropertyAccessNode extends AbstractNodeSketch {
 				+ name + "}");
 	}
 
+	public void addProperty(String name, JsonValue value) {
+		addCypherSet(name);
+		_cypher.addParameter(name, value);
+	}
+
 	public void addProperty(String name, int value) {
 		addCypherSet(name);
 		_cypher.addParameter(name, value);

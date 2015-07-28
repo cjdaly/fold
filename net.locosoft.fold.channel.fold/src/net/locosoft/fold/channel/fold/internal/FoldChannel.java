@@ -22,9 +22,12 @@ import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.fold.IFoldChannel;
 import net.locosoft.fold.sketch.pad.neo4j.CounterPropertyNode;
+import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.util.HtmlComposer;
 
 import org.eclipse.core.runtime.Path;
+
+import com.eclipsesource.json.JsonObject;
 
 public class FoldChannel extends AbstractChannel implements IFoldChannel {
 
@@ -111,9 +114,54 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 
 		HtmlComposer html = new HtmlComposer(response.getWriter());
 		html.html_head("fold: " + thingName);
-		html.h(2, "fold");
+		html.h(2, "fold finder");
 
-		html.p("todo...");
+		HierarchyNode foldChannelNode = new HierarchyNode(getChannelNodeId());
+		long subnetsNodeId = foldChannelNode.getSubId("subnets", true);
+		HierarchyNode subnetsNode = new HierarchyNode(subnetsNodeId);
+
+		for (String subSegment : subnetsNode.getSubSegments()) {
+			html.h(4, "subnet prefix: " + subSegment);
+			long prefixNodeId = subnetsNode.getSubId(subSegment, false);
+			HierarchyNode prefixNode = new HierarchyNode(prefixNodeId);
+
+			html.table();
+			for (int i = 0; i < 32; i++) {
+				html.tr();
+				for (int j = 0; j < 8; j++) {
+					String segment = Integer.toString(i * 8 + j);
+					JsonObject jsonObject = prefixNode.getSubNode(segment);
+					if (jsonObject == null) {
+						html.td("?");
+					} else {
+						StringBuilder sb = new StringBuilder();
+						long lastSend_chatterItemOrdinal = jsonObject.getLong(
+								"lastSend_chatterItemOrdinal", -1);
+						if (lastSend_chatterItemOrdinal == -1) {
+							sb.append("out");
+						} else {
+							sb.append(html.A("/fold/chatter/"
+									+ lastSend_chatterItemOrdinal, "out"));
+						}
+
+						sb.append(",");
+
+						long lastReceive_chatterItemOrdinal = jsonObject
+								.getLong("lastReceive_chatterItemOrdinal", -1);
+						if (lastReceive_chatterItemOrdinal == -1) {
+							sb.append("in");
+						} else {
+							sb.append(html.A("/fold/chatter/"
+									+ lastReceive_chatterItemOrdinal, "in"));
+						}
+
+						html.td(sb.toString());
+					}
+				}
+				html.tr(false);
+			}
+			html.table(false);
+		}
 
 		html.html_body(false);
 	}

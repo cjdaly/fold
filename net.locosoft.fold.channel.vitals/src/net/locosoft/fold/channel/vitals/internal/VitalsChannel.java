@@ -25,12 +25,17 @@ import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.channel.vitals.IVitalsChannel;
 import net.locosoft.fold.channel.vitals.StaticVitals;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
+import net.locosoft.fold.util.HtmlComposer;
 import net.locosoft.fold.util.MonitorThread;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionRegistry;
+import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.WriterConfig;
 
 public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
@@ -109,6 +114,68 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 			return true;
 		}
 	};
+
+	protected void channelHttpGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		Path path = new Path(request.getPathInfo());
+		if (path.segmentCount() == 1) {
+			channelHttpGetVitals(request, response);
+		} else if (path.segmentCount() == 2) {
+			channelHttpGetVitalsItem(path.segment(1), request, response);
+		} else {
+			super.channelHttpGet(request, response);
+		}
+	}
+
+	protected void channelHttpGetVitals(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("text/html");
+
+		String thingName = getChannelData("thing", "name");
+
+		HtmlComposer html = new HtmlComposer(response.getWriter());
+		html.html_head("fold: " + thingName + " / " + getChannelId());
+
+		ChannelItemNode vitalsItemNode = new ChannelItemNode(this, "Vitals");
+		long latestVitalsOrdinal = vitalsItemNode.getLatestOrdinal();
+
+		html.p();
+		html.text("latest vitals: ");
+		html.a("/fold/vitals/" + latestVitalsOrdinal,
+				Long.toString(latestVitalsOrdinal));
+		html.p(false);
+		html.html_body(false);
+	}
+
+	protected void channelHttpGetVitalsItem(String vitalsItemSegment,
+			HttpServletRequest request, HttpServletResponse response)
+			throws ServletException, IOException {
+
+		response.setContentType("text/html");
+
+		String thingName = getChannelData("thing", "name");
+
+		HtmlComposer html = new HtmlComposer(response.getWriter());
+		html.html_head("fold: " + thingName + " / " + getChannelId());
+
+		html.h(3, "vitals " + vitalsItemSegment);
+
+		JsonObject vitalsItemJson = null;
+		try {
+			long vitalsItemOrdinal = Long.parseLong(vitalsItemSegment);
+			ChannelItemNode vitalsItemNode = new ChannelItemNode(this, "Vitals");
+			vitalsItemJson = vitalsItemNode.getOrdinalNode(vitalsItemOrdinal);
+		} catch (NumberFormatException ex) {
+			//
+		}
+		if (vitalsItemJson == null) {
+			html.p("item not found.");
+		} else {
+			html.pre(vitalsItemJson.toString(WriterConfig.PRETTY_PRINT));
+		}
+
+		html.html_body(false);
+	}
 
 	// protected void channelHttpGet(HttpServletRequest request,
 	// HttpServletResponse response) throws ServletException, IOException {
