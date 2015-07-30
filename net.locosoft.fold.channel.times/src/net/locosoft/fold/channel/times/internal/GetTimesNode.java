@@ -66,11 +66,21 @@ public class GetTimesNode extends AbstractNodeSketch {
 		cypher.addParameter("minute",
 				String.valueOf(calendar.get(Calendar.MINUTE)));
 
-		neo4jService.invokeCypher(cypher);
-		if (cypher.getResultDataRowCount() != 1)
-			return -1;
-		else
-			return cypher.getResultDataRow(0).asLong();
+		if (createIfAbsent) {
+			neo4jService.invokeCypher(cypher, false);
+			if (cypher.getErrorCount() == 0) {
+				return cypher.getResultDataRow(0).asLong();
+			} else {
+				System.out.println("retry getMinuteNodeId");
+				return getMinuteNodeId(timeMillis, false);
+			}
+		} else {
+			neo4jService.invokeCypher(cypher);
+			if (cypher.getResultDataRowCount() != 1)
+				return -1;
+			else
+				return cypher.getResultDataRow(0).asLong();
+		}
 	}
 
 }

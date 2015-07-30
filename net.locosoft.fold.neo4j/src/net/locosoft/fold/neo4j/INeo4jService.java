@@ -23,4 +23,6 @@ public interface INeo4jService {
 
 	void invokeCypher(ICypher cypher);
 
+	void invokeCypher(ICypher cypher, boolean logErrors);
+
 }

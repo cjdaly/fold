@@ -59,13 +59,17 @@ public class Neo4jService implements INeo4jService {
 	}
 
 	public void invokeCypher(ICypher cypher) {
+		invokeCypher(cypher, true);
+	}
+
+	public void invokeCypher(ICypher cypher, boolean logErrors) {
 		if (_neo4jController.isNeo4jReady()) {
 
 			JsonObject response = Neo4jRestUtil.doPostJson(
 					Neo4jRestUtil.CYPHER_URI, cypher.getRequest());
 			((Cypher) cypher).setResponse(response);
 
-			if (cypher.getErrorCount() > 0) {
+			if ((cypher.getErrorCount() > 0) && logErrors) {
 				System.out.println("------");
 				System.out.println("Cypher In:");
 				System.out.println(cypher.getRequest().toString(
