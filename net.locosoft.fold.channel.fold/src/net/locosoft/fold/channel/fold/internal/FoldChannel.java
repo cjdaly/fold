@@ -21,6 +21,7 @@ import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.fold.IFoldChannel;
+import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.CounterPropertyNode;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.util.HtmlComposer;
@@ -61,124 +62,128 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 		if ((pathInfo == null) || ("".equals(pathInfo))
 				|| ("/".equals(pathInfo))) {
 			// empty channel segment (/fold)
-			channelHttpGetDashboard(request, response);
+			new ChannelHttpGetDashboard()
+					.composeHtmlResponse(request, response);
 		} else {
 			Path path = new Path(pathInfo);
 			String channelSegment = path.segment(0);
 			if ("fold".equals(channelSegment)) {
 				// fold channel segment (/fold/fold)
-				channelHttpGetFold(request, response);
+				new ChannelHttpGetFold().composeHtmlResponse(request, response);
 			} else {
 				// everything else
-				channelHttpGetUndefined(request, response);
+				new ChannelHttpGetUndefined().composeHtmlResponse(request,
+						response);
 			}
 		}
 	}
 
-	private void channelHttpGetDashboard(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-
-		String thingName = getChannelData("thing", "name");
-
-		HtmlComposer html = new HtmlComposer(response.getWriter());
-		html.html_head("fold: " + thingName);
-		html.h(2, "fold");
-
-		html.p();
-		html.text("Thing: ");
-		html.b(thingName);
-		html.br();
-		html.text("start count: ");
-		html.b(Long.toString(getStartCount()));
-		html.p(false);
-
-		html.h(3, "channels");
-
-		html.table();
-		IChannel[] channels = ChannelUtil.getChannelService().getAllChannels();
-		for (IChannel channel : channels) {
-			String channelLink = html.A("/fold/" + channel.getChannelId(),
-					channel.getChannelId());
-			html.tr(channelLink, channel.getChannelData("channel.description"));
+	private class ChannelHttpGetDashboard extends ChannelHeaderFooterHtml {
+		ChannelHttpGetDashboard() {
+			super(FoldChannel.this);
 		}
-		html.table(false);
-		html.html_body(false);
-	}
 
-	private void channelHttpGetFold(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
+		protected void composeHtmlResponseBody(HttpServletRequest request,
+				HttpServletResponse response, HtmlComposer html)
+				throws ServletException, IOException {
+			html.h(2, "fold");
 
-		String thingName = getChannelData("thing", "name");
+			html.p();
+			html.text("Thing: ");
+			String thingName = getChannelData("thing", "name");
+			html.b(thingName);
+			html.br();
+			html.text("start count: ");
+			html.b(Long.toString(getStartCount()));
+			html.p(false);
 
-		HtmlComposer html = new HtmlComposer(response.getWriter());
-		html.html_head("fold: " + thingName);
-		html.h(2, "fold finder");
-
-		HierarchyNode foldChannelNode = new HierarchyNode(getChannelNodeId());
-		long subnetsNodeId = foldChannelNode.getSubId("subnets", true);
-		HierarchyNode subnetsNode = new HierarchyNode(subnetsNodeId);
-
-		for (String subSegment : subnetsNode.getSubSegments()) {
-			html.h(4, "subnet prefix: " + subSegment);
-			long prefixNodeId = subnetsNode.getSubId(subSegment, false);
-			HierarchyNode prefixNode = new HierarchyNode(prefixNodeId);
+			html.h(3, "channels");
 
 			html.table();
-			for (int i = 0; i < 32; i++) {
-				html.tr();
-				for (int j = 0; j < 8; j++) {
-					String segment = Integer.toString(i * 8 + j);
-					JsonObject jsonObject = prefixNode.getSubNode(segment);
-					if (jsonObject == null) {
-						html.td("?");
-					} else {
-						StringBuilder sb = new StringBuilder();
-						long lastSend_chatterItemOrdinal = jsonObject.getLong(
-								"lastSend_chatterItemOrdinal", -1);
-						if (lastSend_chatterItemOrdinal == -1) {
-							sb.append("out");
-						} else {
-							sb.append(html.A("/fold/chatter/"
-									+ lastSend_chatterItemOrdinal, "out"));
-						}
-
-						sb.append(",");
-
-						long lastReceive_chatterItemOrdinal = jsonObject
-								.getLong("lastReceive_chatterItemOrdinal", -1);
-						if (lastReceive_chatterItemOrdinal == -1) {
-							sb.append("in");
-						} else {
-							sb.append(html.A("/fold/chatter/"
-									+ lastReceive_chatterItemOrdinal, "in"));
-						}
-
-						html.td(sb.toString());
-					}
-				}
-				html.tr(false);
+			IChannel[] channels = ChannelUtil.getChannelService()
+					.getAllChannels();
+			for (IChannel channel : channels) {
+				String channelLink = html.A("/fold/" + channel.getChannelId(),
+						channel.getChannelId());
+				html.tr(channelLink,
+						channel.getChannelData("channel.description"));
 			}
 			html.table(false);
 		}
-
-		html.html_body(false);
 	}
 
-	private void channelHttpGetUndefined(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
+	private class ChannelHttpGetFold extends ChannelHeaderFooterHtml {
+		public ChannelHttpGetFold() {
+			super(FoldChannel.this);
+		}
 
-		String thingName = getChannelData("thing", "name");
+		protected void composeHtmlResponseBody(HttpServletRequest request,
+				HttpServletResponse response, HtmlComposer html)
+				throws ServletException, IOException {
+			html.h(2, "fold finder");
 
-		HtmlComposer html = new HtmlComposer(response.getWriter());
-		html.html_head("fold: " + thingName);
-		html.h(2, "fold");
+			HierarchyNode foldChannelNode = new HierarchyNode(
+					getChannelNodeId());
+			long subnetsNodeId = foldChannelNode.getSubId("subnets", true);
+			HierarchyNode subnetsNode = new HierarchyNode(subnetsNodeId);
 
-		html.p("...undefined...");
+			for (String subSegment : subnetsNode.getSubSegments()) {
+				html.h(4, "subnet prefix: " + subSegment);
+				long prefixNodeId = subnetsNode.getSubId(subSegment, false);
+				HierarchyNode prefixNode = new HierarchyNode(prefixNodeId);
 
-		html.html_body(false);
+				html.table();
+				for (int i = 0; i < 32; i++) {
+					html.tr();
+					for (int j = 0; j < 8; j++) {
+						String segment = Integer.toString(i * 8 + j);
+						JsonObject jsonObject = prefixNode.getSubNode(segment);
+						if (jsonObject == null) {
+							html.td("?");
+						} else {
+							StringBuilder sb = new StringBuilder();
+							long lastSend_chatterItemOrdinal = jsonObject
+									.getLong("lastSend_chatterItemOrdinal", -1);
+							if (lastSend_chatterItemOrdinal == -1) {
+								sb.append("out");
+							} else {
+								sb.append(html.A("/fold/chatter/"
+										+ lastSend_chatterItemOrdinal, "out"));
+							}
+
+							sb.append(",");
+
+							long lastReceive_chatterItemOrdinal = jsonObject
+									.getLong("lastReceive_chatterItemOrdinal",
+											-1);
+							if (lastReceive_chatterItemOrdinal == -1) {
+								sb.append("in");
+							} else {
+								sb.append(html.A("/fold/chatter/"
+										+ lastReceive_chatterItemOrdinal, "in"));
+							}
+
+							html.td(sb.toString());
+						}
+					}
+					html.tr(false);
+				}
+				html.table(false);
+			}
+		}
+	}
+
+	private class ChannelHttpGetUndefined extends ChannelHeaderFooterHtml {
+		public ChannelHttpGetUndefined() {
+			super(FoldChannel.this);
+		}
+
+		protected void composeHtmlResponseBody(HttpServletRequest request,
+				HttpServletResponse response, HtmlComposer html)
+				throws ServletException, IOException {
+			html.h(2, "fold");
+			html.p("...undefined...");
+		}
 	}
 
 	protected void channelHttpPost(HttpServletRequest request,

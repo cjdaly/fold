@@ -17,15 +17,16 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.eclipse.core.runtime.Path;
-
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.chatter.IChatterChannel;
 import net.locosoft.fold.channel.times.ITimesChannel;
+import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 import net.locosoft.fold.util.HtmlComposer;
+
+import org.eclipse.core.runtime.Path;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -77,63 +78,66 @@ public class ChatterChannel extends AbstractChannel implements IChatterChannel {
 			HttpServletResponse response) throws ServletException, IOException {
 		Path path = new Path(request.getPathInfo());
 		if (path.segmentCount() == 1) {
-			channelHttpGetChatter(request, response);
+			new ChannelHttpGetChatter().composeHtmlResponse(request, response);
 		} else if (path.segmentCount() == 2) {
-			channelHttpGetChatterItem(path.segment(1), request, response);
+			new ChannelHttpGetChatterItem(path.segment(1)).composeHtmlResponse(
+					request, response);
 		} else {
 			super.channelHttpGet(request, response);
 		}
 
 	}
 
-	private void channelHttpGetChatter(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("text/html");
-
-		String thingName = getChannelData("thing", "name");
-
-		HtmlComposer html = new HtmlComposer(response.getWriter());
-		html.html_head("fold: " + thingName + " / " + getChannelId());
-
-		ChannelItemNode chatterItemNode = new ChannelItemNode(this, "Chatter");
-		long latestChatterOrdinal = chatterItemNode.getLatestOrdinal();
-
-		html.p();
-		html.text("latest chatter: ");
-		html.a("/fold/chatter/" + latestChatterOrdinal,
-				Long.toString(latestChatterOrdinal));
-		html.p(false);
-		html.html_body(false);
-	}
-
-	private void channelHttpGetChatterItem(String chatterItemSegment,
-			HttpServletRequest request, HttpServletResponse response)
-			throws ServletException, IOException {
-		response.setContentType("text/html");
-
-		String thingName = getChannelData("thing", "name");
-
-		HtmlComposer html = new HtmlComposer(response.getWriter());
-		html.html_head("fold: " + thingName + " / " + getChannelId());
-
-		html.h(3, "chatter " + chatterItemSegment);
-
-		JsonObject chatterItemJson = null;
-		try {
-			long chatterItemOrdinal = Long.parseLong(chatterItemSegment);
-			ChannelItemNode chatterItemNode = new ChannelItemNode(this,
-					"Chatter");
-			chatterItemJson = chatterItemNode
-					.getOrdinalNode(chatterItemOrdinal);
-		} catch (NumberFormatException ex) {
-			//
-		}
-		if (chatterItemJson == null) {
-			html.p("item not found.");
-		} else {
-			html.pre(chatterItemJson.toString(WriterConfig.PRETTY_PRINT));
+	private class ChannelHttpGetChatter extends ChannelHeaderFooterHtml {
+		public ChannelHttpGetChatter() {
+			super(ChatterChannel.this);
 		}
 
-		html.html_body(false);
+		protected void composeHtmlResponseBody(HttpServletRequest request,
+				HttpServletResponse response, HtmlComposer html)
+				throws ServletException, IOException {
+			ChannelItemNode chatterItemNode = new ChannelItemNode(
+					ChatterChannel.this, "Chatter");
+			long latestChatterOrdinal = chatterItemNode.getLatestOrdinal();
+
+			html.p();
+			html.text("latest chatter: ");
+			html.a("/fold/chatter/" + latestChatterOrdinal,
+					Long.toString(latestChatterOrdinal));
+			html.p(false);
+		}
 	}
+
+	private class ChannelHttpGetChatterItem extends ChannelHeaderFooterHtml {
+		public ChannelHttpGetChatterItem(String chatterItemSegment) {
+			super(ChatterChannel.this);
+			_chatterItemSegment = chatterItemSegment;
+		}
+
+		private String _chatterItemSegment;
+
+		protected void composeHtmlResponseBody(HttpServletRequest request,
+				HttpServletResponse response, HtmlComposer html)
+				throws ServletException, IOException {
+
+			html.h(3, "chatter " + _chatterItemSegment);
+
+			JsonObject chatterItemJson = null;
+			try {
+				long chatterItemOrdinal = Long.parseLong(_chatterItemSegment);
+				ChannelItemNode chatterItemNode = new ChannelItemNode(
+						ChatterChannel.this, "Chatter");
+				chatterItemJson = chatterItemNode
+						.getOrdinalNode(chatterItemOrdinal);
+			} catch (NumberFormatException ex) {
+				//
+			}
+			if (chatterItemJson == null) {
+				html.p("item not found.");
+			} else {
+				html.pre(chatterItemJson.toString(WriterConfig.PRETTY_PRINT));
+			}
+		}
+	}
+
 }

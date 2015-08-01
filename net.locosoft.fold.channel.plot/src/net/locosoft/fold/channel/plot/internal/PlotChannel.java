@@ -20,10 +20,14 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.eclipse.core.runtime.Path;
+
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.plot.IPlotChannel;
+import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.util.FoldUtil;
+import net.locosoft.fold.util.HtmlComposer;
 
 import com.eclipsesource.json.JsonValue;
 
@@ -31,18 +35,6 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 
 	public Class<? extends IChannel> getChannelInterface() {
 		return IPlotChannel.class;
-	}
-
-	public void channelHttpGet(HttpServletRequest request,
-			HttpServletResponse response) throws ServletException, IOException {
-		response.setContentType("image/png");
-
-		StringBuilder plotInput = new StringBuilder();
-		plotInput.append("set terminal png size 800,600\n");
-		plotInput.append("plot sin(x)\n");
-
-		FoldUtil.execCommand("/usr/bin/gnuplot", plotInput.toString(),
-				response.getOutputStream());
 	}
 
 	public void plotPngImage(String title, String xLabel, String yLabel,
@@ -76,4 +68,36 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 				response.getOutputStream());
 
 	}
+
+	public void channelHttpGet(HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		Path path = new Path(request.getPathInfo());
+		if (path.segmentCount() == 1) {
+			new ChannelHttpGetPlot().composeHtmlResponse(request, response);
+		} else if ((path.segmentCount() == 2)
+				&& "test.png".equals(path.segment(1))) {
+			response.setContentType("image/png");
+			StringBuilder plotInput = new StringBuilder();
+			plotInput.append("set terminal png size 800,600\n");
+			plotInput.append("plot sin(x)\n");
+			FoldUtil.execCommand("/usr/bin/gnuplot", plotInput.toString(),
+					response.getOutputStream());
+		} else {
+			super.channelHttpGet(request, response);
+		}
+	}
+
+	private class ChannelHttpGetPlot extends ChannelHeaderFooterHtml {
+		public ChannelHttpGetPlot() {
+			super(PlotChannel.this);
+		}
+
+		protected void composeHtmlResponseBody(HttpServletRequest request,
+				HttpServletResponse response, HtmlComposer html)
+				throws ServletException, IOException {
+			html.p("test plot:");
+			html.img("/fold/plot/test.png", "test plot");
+		}
+	}
+
 }
