@@ -73,8 +73,12 @@ public class GetTimesNode extends AbstractNodeSketch {
 			if (cypher.getErrorCount() == 0) {
 				return cypher.getResultDataRow(0).asLong();
 			} else {
-				System.out.println("retry getMinuteNodeId");
-				return getMinuteNodeId(timeMillis, false);
+				long minuteNodeId = getMinuteNodeId(timeMillis, false);
+				if (minuteNodeId == -1) {
+					System.out.println("failed getMinuteNodeId! (time: "
+							+ timeMillis + ")");
+				}
+				return minuteNodeId;
 			}
 		} else {
 			neo4jService.invokeCypher(cypher);
