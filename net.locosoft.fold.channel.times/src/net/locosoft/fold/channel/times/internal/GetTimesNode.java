@@ -69,17 +69,7 @@ public class GetTimesNode extends AbstractNodeSketch {
 				String.valueOf(calendar.get(Calendar.MINUTE)));
 
 		if (createIfAbsent) {
-			neo4jService.invokeCypher(cypher, false);
-			if (cypher.getErrorCount() == 0) {
-				return cypher.getResultDataRow(0).asLong();
-			} else {
-				long minuteNodeId = getMinuteNodeId(timeMillis, false);
-				if (minuteNodeId == -1) {
-					System.out.println("failed getMinuteNodeId! (time: "
-							+ timeMillis + ")");
-				}
-				return minuteNodeId;
-			}
+			return retryCreateMinuteCypher(neo4jService, cypher, 8);
 		} else {
 			neo4jService.invokeCypher(cypher);
 			if (cypher.getResultDataRowCount() != 1)
@@ -87,6 +77,23 @@ public class GetTimesNode extends AbstractNodeSketch {
 			else
 				return cypher.getResultDataRow(0).asLong();
 		}
+	}
+
+	private long retryCreateMinuteCypher(INeo4jService neo4jService,
+			ICypher cypher, int retryCount) {
+		for (int i = 0; i < retryCount; i++) {
+			neo4jService.invokeCypher(cypher, false);
+			if (cypher.getErrorCount() == 0) {
+				System.out.println("retryCreateMinuteCypher: " + i);
+				return cypher.getResultDataRow(0).asLong();
+			}
+			try {
+				Thread.sleep(100 + 10 * i);
+			} catch (InterruptedException ex) {
+				//
+			}
+		}
+		return -1;
 	}
 
 	private static final String CYPHER_FIND_YEAR = "MATCH (epochNode)-[:fold_Hierarchy]->" //
