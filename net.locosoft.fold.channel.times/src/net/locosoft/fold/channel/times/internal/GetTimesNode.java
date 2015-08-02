@@ -71,7 +71,19 @@ public class GetTimesNode extends AbstractNodeSketch {
 				String.valueOf(calendar.get(Calendar.MINUTE)));
 
 		if (createIfAbsent) {
-			return retryCreateMinuteCypher(neo4jService, cypher, 8);
+			neo4jService.invokeCypher(cypher, false);
+			if (cypher.getErrorCount() == 0) {
+				return cypher.getResultDataRow(0).asLong();
+			} else {
+				long minuteNodeId = getMinuteNodeId(timeMillis, false);
+				System.out.println("getMinuteNodeId retried and got: "
+						+ minuteNodeId);
+				if (minuteNodeId == -1) {
+					System.out.println(cypher.getErrors().toString(
+							WriterConfig.PRETTY_PRINT));
+				}
+				return minuteNodeId;
+			}
 		} else {
 			neo4jService.invokeCypher(cypher);
 			if (cypher.getResultDataRowCount() != 1)
@@ -79,30 +91,6 @@ public class GetTimesNode extends AbstractNodeSketch {
 			else
 				return cypher.getResultDataRow(0).asLong();
 		}
-	}
-
-	private long retryCreateMinuteCypher(INeo4jService neo4jService,
-			ICypher cypher, int retryCount) {
-		for (int i = 0; i < retryCount; i++) {
-			neo4jService.invokeCypher(cypher, false);
-			if (cypher.getErrorCount() == 0) {
-				if (i > 2) {
-					System.out.println("retryCreateMinuteCypher: " + i);
-					System.out.println(cypher.getErrors().toString(
-							WriterConfig.PRETTY_PRINT));
-				}
-				return cypher.getResultDataRow(0).asLong();
-			}
-			try {
-				Thread.sleep(100 * i);
-			} catch (InterruptedException ex) {
-				//
-			}
-		}
-		System.out.println("retryCreateMinuteCypher: " + retryCount);
-		System.out.println(cypher.getErrors().toString(
-				WriterConfig.PRETTY_PRINT));
-		return -1;
 	}
 
 	private static final String CYPHER_FIND_YEAR = "MATCH (epochNode)-[:fold_Hierarchy]->" //
