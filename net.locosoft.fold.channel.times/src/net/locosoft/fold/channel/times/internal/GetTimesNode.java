@@ -84,15 +84,18 @@ public class GetTimesNode extends AbstractNodeSketch {
 		for (int i = 0; i < retryCount; i++) {
 			neo4jService.invokeCypher(cypher, false);
 			if (cypher.getErrorCount() == 0) {
-				System.out.println("retryCreateMinuteCypher: " + i);
+				if (i > 2) {
+					System.out.println("retryCreateMinuteCypher: " + i);
+				}
 				return cypher.getResultDataRow(0).asLong();
 			}
 			try {
-				Thread.sleep(100 + 10 * i);
+				Thread.sleep(100 * i);
 			} catch (InterruptedException ex) {
 				//
 			}
 		}
+		System.out.println("retryCreateMinuteCypher: " + retryCount);
 		return -1;
 	}
 
