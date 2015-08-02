@@ -19,6 +19,8 @@ import net.locosoft.fold.sketch.AbstractNodeSketch;
 
 import org.eclipse.core.runtime.Path;
 
+import com.eclipsesource.json.WriterConfig;
+
 public class GetTimesNode extends AbstractNodeSketch {
 
 	public GetTimesNode(long nodeId) {
@@ -86,6 +88,8 @@ public class GetTimesNode extends AbstractNodeSketch {
 			if (cypher.getErrorCount() == 0) {
 				if (i > 2) {
 					System.out.println("retryCreateMinuteCypher: " + i);
+					System.out.println(cypher.getErrors().toString(
+							WriterConfig.PRETTY_PRINT));
 				}
 				return cypher.getResultDataRow(0).asLong();
 			}
@@ -96,6 +100,8 @@ public class GetTimesNode extends AbstractNodeSketch {
 			}
 		}
 		System.out.println("retryCreateMinuteCypher: " + retryCount);
+		System.out.println(cypher.getErrors().toString(
+				WriterConfig.PRETTY_PRINT));
 		return -1;
 	}
 

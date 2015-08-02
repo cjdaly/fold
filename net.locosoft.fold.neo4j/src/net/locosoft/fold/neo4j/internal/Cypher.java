@@ -81,7 +81,7 @@ public class Cypher implements ICypher {
 		return _response;
 	}
 
-	private JsonArray getResultData() {
+	public JsonArray getResultData() {
 		try {
 			return getResponse().get("results").asArray().get(0).asObject()
 					.get("data").asArray();
@@ -93,7 +93,7 @@ public class Cypher implements ICypher {
 		return new JsonArray();
 	}
 
-	private JsonArray getErrors() {
+	public JsonArray getErrors() {
 		try {
 			return getResponse().get("errors").asArray();
 		} catch (IndexOutOfBoundsException ex) {
