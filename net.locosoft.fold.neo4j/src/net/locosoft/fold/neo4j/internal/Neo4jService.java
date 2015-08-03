@@ -98,10 +98,7 @@ public class Neo4jService implements INeo4jService {
 	private long getPreInvokeDelay(ICypher cypher) {
 		String cypherText = cypher.getStatementText();
 		if (cypherText.contains("CREATE CONSTRAINT ON")) {
-			return 2000;
-		}
-		if (cypherText.contains("CREATE UNIQUE")) {
-			return 100;
+			return 1000;
 		}
 
 		return 0;
@@ -110,10 +107,7 @@ public class Neo4jService implements INeo4jService {
 	private long getPostInvokeDelay(ICypher cypher) {
 		String cypherText = cypher.getStatementText();
 		if (cypherText.contains("CREATE CONSTRAINT ON")) {
-			return 8000;
-		}
-		if (cypherText.contains("CREATE UNIQUE")) {
-			return 300;
+			return 5000;
 		}
 
 		return 0;

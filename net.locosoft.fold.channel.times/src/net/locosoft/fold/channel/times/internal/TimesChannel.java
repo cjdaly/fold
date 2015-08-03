@@ -52,22 +52,20 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 			.createLruNodeCache(2048);
 
 	public long getMinuteNodeId(long timeMillis, boolean createIfAbsent) {
-		long timeMinutes = timeMillis / 60000;
-		Long minuteNodeIdLong = _minuteToNodeId.get(timeMinutes);
-		if ((minuteNodeIdLong == null) || (minuteNodeIdLong == -1)) {
-			GetTimesNode sketch = new GetTimesNode(getEpochNodeId());
-			long minuteNodeId = sketch.getMinuteNodeId(timeMillis,
-					createIfAbsent);
-			if (minuteNodeId != -1) {
-				System.out.println("to cache: " + timeMinutes + " -> "
-						+ minuteNodeId);
-				_minuteToNodeId.put(timeMinutes, minuteNodeId);
+		synchronized (_minuteToNodeId) {
+			long timeMinutes = timeMillis / 60000;
+			Long minuteNodeIdLong = _minuteToNodeId.get(timeMinutes);
+			if (minuteNodeIdLong == null) {
+				GetTimesNode sketch = new GetTimesNode(getEpochNodeId());
+				long minuteNodeId = sketch.getMinuteNodeId(timeMillis,
+						createIfAbsent);
+				if (minuteNodeId != -1) {
+					_minuteToNodeId.put(timeMinutes, minuteNodeId);
+				}
+				return minuteNodeId;
+			} else {
+				return minuteNodeIdLong.longValue();
 			}
-			return minuteNodeId;
-		} else {
-			System.out.println("from cache: " + timeMinutes + " -> "
-					+ minuteNodeIdLong);
-			return minuteNodeIdLong.longValue();
 		}
 	}
 
