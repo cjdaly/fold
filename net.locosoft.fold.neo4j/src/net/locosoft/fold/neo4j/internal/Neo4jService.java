@@ -65,9 +65,21 @@ public class Neo4jService implements INeo4jService {
 	public void invokeCypher(ICypher cypher, boolean logErrors) {
 		if (_neo4jController.isNeo4jReady()) {
 
+			try {
+				Thread.sleep(getPreInvokeDelay(cypher));
+			} catch (InterruptedException ex) {
+				//
+			}
+
 			JsonObject response = Neo4jRestUtil.doPostJson(
 					Neo4jRestUtil.CYPHER_URI, cypher.getRequest());
 			((Cypher) cypher).setResponse(response);
+
+			try {
+				Thread.sleep(getPostInvokeDelay(cypher));
+			} catch (InterruptedException ex) {
+				//
+			}
 
 			if ((cypher.getErrorCount() > 0) && logErrors) {
 				System.out.println("------");
@@ -81,6 +93,30 @@ public class Neo4jService implements INeo4jService {
 				System.out.println("------");
 			}
 		}
+	}
+
+	private long getPreInvokeDelay(ICypher cypher) {
+		String cypherText = cypher.getStatementText();
+		if (cypherText.contains("CREATE CONSTRAINT ON")) {
+			return 2000;
+		}
+		if (cypherText.contains("CREATE UNIQUE")) {
+			return 100;
+		}
+
+		return 0;
+	}
+
+	private long getPostInvokeDelay(ICypher cypher) {
+		String cypherText = cypher.getStatementText();
+		if (cypherText.contains("CREATE CONSTRAINT ON")) {
+			return 8000;
+		}
+		if (cypherText.contains("CREATE UNIQUE")) {
+			return 300;
+		}
+
+		return 0;
 	}
 
 }

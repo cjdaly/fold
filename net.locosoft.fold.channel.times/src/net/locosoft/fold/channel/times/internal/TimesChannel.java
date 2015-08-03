@@ -12,6 +12,7 @@
 package net.locosoft.fold.channel.times.internal;
 
 import java.io.IOException;
+import java.util.Map;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +25,7 @@ import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 import net.locosoft.fold.util.HtmlComposer;
+import net.locosoft.fold.util.LruNodeCache;
 
 import org.eclipse.core.runtime.Path;
 
@@ -46,9 +48,27 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 		return _epochNodeId;
 	}
 
+	private Map<Long, Long> _minuteToNodeId = LruNodeCache
+			.createLruNodeCache(2048);
+
 	public long getMinuteNodeId(long timeMillis, boolean createIfAbsent) {
-		GetTimesNode sketch = new GetTimesNode(getEpochNodeId());
-		return sketch.getMinuteNodeId(timeMillis, createIfAbsent);
+		long timeMinutes = timeMillis / 60000;
+		Long minuteNodeIdLong = _minuteToNodeId.get(timeMinutes);
+		if ((minuteNodeIdLong == null) || (minuteNodeIdLong == -1)) {
+			GetTimesNode sketch = new GetTimesNode(getEpochNodeId());
+			long minuteNodeId = sketch.getMinuteNodeId(timeMillis,
+					createIfAbsent);
+			if (minuteNodeId != -1) {
+				System.out.println("to cache: " + timeMinutes + " -> "
+						+ minuteNodeId);
+				_minuteToNodeId.put(timeMinutes, minuteNodeId);
+			}
+			return minuteNodeId;
+		} else {
+			System.out.println("from cache: " + timeMinutes + " -> "
+					+ minuteNodeIdLong);
+			return minuteNodeIdLong.longValue();
+		}
 	}
 
 	public void createTimesRef(long timeMillis, long refNodeId) {

@@ -65,7 +65,7 @@ public class HierarchyNode extends AbstractNodeSketch {
 		if (createIfAbsent) {
 			cypherText = "MATCH sup" //
 					+ " WHERE id(sup)={supId}" //
-					+ " CREATE UNIQUE (sup)-[:fold_Hierarchy]->"
+					+ " create  UNIQUE (sup)-[:fold_Hierarchy]->"
 					+ "(sub{ fold_Hierarchy_segment:{segment} }) "
 					+ " RETURN ID(sub)";
 		} else {

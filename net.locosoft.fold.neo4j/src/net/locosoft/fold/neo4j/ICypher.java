@@ -17,6 +17,8 @@ import com.eclipsesource.json.JsonValue;
 
 public interface ICypher {
 
+	String getStatementText();
+
 	JsonObject getRequest();
 
 	void addStatement(String statementText);

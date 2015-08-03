@@ -73,6 +73,10 @@ public class Cypher implements ICypher {
 		_parameters.add(name, value);
 	}
 
+	public String getStatementText() {
+		return _statement.getString("statement", null);
+	}
+
 	public JsonObject getRequest() {
 		return _request;
 	}
