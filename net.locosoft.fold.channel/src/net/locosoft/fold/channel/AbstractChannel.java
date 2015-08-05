@@ -33,6 +33,10 @@ import com.eclipsesource.json.JsonValue;
 
 public abstract class AbstractChannel implements IChannel, IChannelInternal {
 
+	//
+	// IChannel
+	//
+
 	private String _id;
 
 	public String getChannelId() {
@@ -41,9 +45,19 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 
 	private String _description;
 
+	public String getChannelData(String key, String... params) {
+		switch (key) {
+		case "channel.description":
+			return _description;
+		default:
+			return null;
+		}
+	}
+
 	//
 	// IChannelInternal
 	//
+
 	private IChannelService _channelService;
 
 	public IChannelService getChannelService() {
@@ -126,19 +140,6 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 		writer.append("\n</body>\n</html>\n");
 	}
 
-	public String getChannelData(String key) {
-		switch (key) {
-		case "channel.description":
-			return _description;
-		default:
-			return null;
-		}
-	}
-
-	public final String getChannelData(String channelId, String key) {
-		return getChannelService().getChannelData(channelId, key);
-	}
-
 	public final Properties getChannelConfigProperties(
 			String propertiesFilePrefix) {
 		String channelConfigFilePath = FoldUtil.getFoldConfigDir()
@@ -180,11 +181,6 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 	public final long getChannelNodeId() {
 		if (_channelNodeId == -1) {
 			INeo4jService neo4jService = Neo4jUtil.getNeo4jService();
-
-			// TODO: move this bit to a less frequent spot
-			ICypher cypherConstraint = neo4jService
-					.constructCypher("CREATE CONSTRAINT ON (channel:fold_Channel) ASSERT channel.fold_channelId IS UNIQUE");
-			neo4jService.invokeCypher(cypherConstraint);
 
 			ICypher cypher = neo4jService
 					.constructCypher("MERGE (channel:fold_Channel {fold_channelId : {channelId}}) RETURN ID(channel)");

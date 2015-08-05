@@ -9,14 +9,20 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel;
+package net.locosoft.fold.util;
 
-public interface IChannel {
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.ParseException;
 
-	String getChannelId();
+public class JsonUtil {
 
-	String getChannelData(String key, String... params);
-
-	Class<? extends IChannel> getChannelInterface();
-
+	public static JsonObject readJsonObject(String jsonText) {
+		try {
+			return JsonObject.readFrom(jsonText);
+		} catch (ParseException ex) {
+			return null;
+		} catch (UnsupportedOperationException ex) {
+			return null;
+		}
+	}
 }

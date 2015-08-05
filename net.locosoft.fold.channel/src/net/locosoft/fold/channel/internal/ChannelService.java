@@ -108,12 +108,12 @@ public class ChannelService implements IChannelService {
 		return (T) _ifaceToChannel.get(channelInterface);
 	}
 
-	public String getChannelData(String channelId, String key) {
+	public String getChannelData(String channelId, String key, String... params) {
 		IChannelInternal channel = (IChannelInternal) getChannel(channelId);
 		if (channel == null)
 			return null;
 		else
-			return channel.getChannelData(key);
+			return channel.getChannelData(key, params);
 	}
 
 	private IChannelInternal lookupChannel(String pathInfo) {

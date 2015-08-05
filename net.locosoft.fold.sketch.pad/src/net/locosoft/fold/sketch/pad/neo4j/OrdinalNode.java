@@ -20,6 +20,9 @@ import net.locosoft.fold.sketch.AbstractNodeSketch;
 
 public class OrdinalNode extends AbstractNodeSketch {
 
+	public static String PREFIX_ORDINAL_COUNTER = "fold_OrdinalCounter_";
+	public static String PREFIX_ORDINAL_INDEX = "fold_OrdinalIndex_";
+
 	private String _ordinalLabel;
 	private CounterPropertyNode _ordinalCounter;
 
@@ -34,11 +37,11 @@ public class OrdinalNode extends AbstractNodeSketch {
 	}
 
 	protected String getCounterPropertyName() {
-		return "fold_OrdinalCounter_" + getOrdinalLabel();
+		return PREFIX_ORDINAL_COUNTER + getOrdinalLabel();
 	}
 
 	protected String getIndexPropertyName() {
-		return "fold_OrdinalIndex_" + getOrdinalLabel();
+		return PREFIX_ORDINAL_INDEX + getOrdinalLabel();
 	}
 
 	public long getLatestOrdinal() {
@@ -48,6 +51,10 @@ public class OrdinalNode extends AbstractNodeSketch {
 	public long getOrdinalIndex(long ordinalNodeId) {
 		PropertyAccessNode props = new PropertyAccessNode(ordinalNodeId);
 		return props.getLongValue(getIndexPropertyName());
+	}
+
+	public long getOrdinalIndex(JsonObject jsonNode) {
+		return jsonNode.getLong(getIndexPropertyName(), -1);
 	}
 
 	public long nextOrdinalNodeId() {

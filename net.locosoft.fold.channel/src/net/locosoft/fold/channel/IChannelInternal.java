@@ -37,8 +37,6 @@ public interface IChannelInternal extends IChannel {
 	void channelHttp(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException;
 
-	String getChannelData(String channelId, String key);
-
 	Properties getChannelConfigProperties(String propertiesFilePrefix);
 
 	IProject getChannelProject();

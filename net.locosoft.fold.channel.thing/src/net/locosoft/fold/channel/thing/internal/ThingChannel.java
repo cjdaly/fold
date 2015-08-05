@@ -79,14 +79,14 @@ public class ThingChannel extends AbstractChannel implements IThingChannel {
 		return _thingDescription;
 	}
 
-	public String getChannelData(String key) {
+	public String getChannelData(String key, String... params) {
 		switch (key) {
 		case "name":
 			return getThingName();
 		case "description":
 			return getThingDescription();
 		default:
-			return super.getChannelData(key);
+			return super.getChannelData(key, params);
 		}
 	}
 

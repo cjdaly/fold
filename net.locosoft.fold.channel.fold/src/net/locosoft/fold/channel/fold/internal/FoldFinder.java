@@ -99,7 +99,8 @@ public class FoldFinder {
 
 	void sendFoldPost(String ipAddr) {
 		JsonObject jsonObject = new JsonObject();
-		String thingName = _foldChannel.getChannelData("thing", "name");
+		String thingName = _foldChannel.getChannelService().getChannelData(
+				"thing", "name");
 		jsonObject.add("senderName", thingName);
 		jsonObject.add("message", "hello");
 

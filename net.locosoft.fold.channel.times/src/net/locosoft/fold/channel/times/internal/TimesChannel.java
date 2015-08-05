@@ -13,6 +13,10 @@ package net.locosoft.fold.channel.times.internal;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,6 +28,7 @@ import net.locosoft.fold.channel.times.ITimesChannel;
 import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
+import net.locosoft.fold.sketch.pad.neo4j.OrdinalNode;
 import net.locosoft.fold.util.HtmlComposer;
 import net.locosoft.fold.util.LruNodeCache;
 
@@ -173,6 +178,67 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 							+ segment, segment));
 				}
 				html.ul(false);
+
+				TreeMap<String, TreeMap<Long, String>> refNodeMap = new TreeMap<String, TreeMap<Long, String>>();
+
+				RefTimesNode refNodes = new RefTimesNode(timeNodeId);
+				JsonObject[] jsonNodes = refNodes.getTimesRefNodes();
+				populateRefNodeMap(refNodeMap, jsonNodes);
+
+				for (Entry<String, TreeMap<Long, String>> channelEntry : refNodeMap
+						.entrySet()) {
+					html.h(4, channelEntry.getKey());
+					html.ul();
+					for (Entry<Long, String> channelItemEntry : channelEntry
+							.getValue().entrySet()) {
+						html.li(html.A(channelItemEntry.getValue(),
+								channelItemEntry.getKey().toString()));
+					}
+					html.ul(false);
+				}
+			}
+		}
+
+		private void populateRefNodeMap(
+				TreeMap<String, TreeMap<Long, String>> refNodeMap,
+				JsonObject[] jsonNodes) {
+			for (JsonObject jsonNode : jsonNodes) {
+				for (String name : jsonNode.names()) {
+					if (name.startsWith(OrdinalNode.PREFIX_ORDINAL_INDEX)) {
+						addRefNodeMapEntry(refNodeMap, jsonNode, name);
+					}
+				}
+			}
+		}
+
+		private Pattern _channelIdPattern = Pattern
+				.compile(OrdinalNode.PREFIX_ORDINAL_INDEX + "([^_]+)_");
+
+		private void addRefNodeMapEntry(
+				TreeMap<String, TreeMap<Long, String>> refNodeMap,
+				JsonObject jsonNode, String ordinalIndexKeyName) {
+			Matcher matcher = _channelIdPattern.matcher(ordinalIndexKeyName);
+			if (matcher.find()) {
+				String channelId = matcher.group(1);
+				IChannel channel = getChannelService().getChannel(channelId);
+				if (channel != null) {
+					long channelItemOrdinalIndex = jsonNode.getLong(
+							ordinalIndexKeyName, -1);
+					if (channelItemOrdinalIndex != -1) {
+						String channelItemUrlPath = channel.getChannelData(
+								"channelItem.urlPath", jsonNode.toString());
+						if (channelItemUrlPath != null) {
+							TreeMap<Long, String> channelMap = refNodeMap
+									.get(channelId);
+							if (channelMap == null) {
+								channelMap = new TreeMap<Long, String>();
+								refNodeMap.put(channelId, channelMap);
+							}
+							channelMap.put(channelItemOrdinalIndex,
+									channelItemUrlPath);
+						}
+					}
+				}
 			}
 		}
 	}

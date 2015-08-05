@@ -39,7 +39,7 @@ public class MultiPropertyAccessNode extends AbstractNodeSketch {
 
 	public void reset() {
 		INeo4jService neo4jService = getNeo4jService();
-		_cypher = neo4jService.constructCypher();
+		_cypher = neo4jService.constructCypher("...placeholder...");
 		_cypherStatement = new StringBuilder(
 				"MATCH node WHERE id(node)={nodeId} SET ");
 		_firstProperty = true;
@@ -109,7 +109,7 @@ public class MultiPropertyAccessNode extends AbstractNodeSketch {
 	public void setProperties() {
 		INeo4jService neo4jService = getNeo4jService();
 		_cypher.addParameter("nodeId", getNodeId());
-		_cypher.addStatement(_cypherStatement.toString());
+		_cypher.setStatementText(_cypherStatement.toString());
 		neo4jService.invokeCypher(_cypher);
 	}
 }

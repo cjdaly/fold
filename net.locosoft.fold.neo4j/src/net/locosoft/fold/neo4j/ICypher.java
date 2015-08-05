@@ -19,6 +19,8 @@ public interface ICypher {
 
 	String getStatementText();
 
+	void setStatementText(String statementText);
+
 	JsonObject getRequest();
 
 	void addStatement(String statementText);
@@ -41,9 +43,15 @@ public interface ICypher {
 
 	JsonArray getResultData();
 
+	JsonArray getResultData(int resultSet);
+
 	int getResultDataRowCount();
 
+	int getResultDataRowCount(int resultSet);
+
 	JsonValue getResultDataRow(int index);
+
+	JsonValue getResultDataRow(int resultSet, int index);
 
 	JsonArray getErrors();
 

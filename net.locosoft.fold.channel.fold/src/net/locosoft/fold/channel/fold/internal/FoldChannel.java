@@ -90,7 +90,8 @@ public class FoldChannel extends AbstractChannel implements IFoldChannel {
 
 			html.p();
 			html.text("Thing: ");
-			String thingName = getChannelData("thing", "name");
+			String thingName = getChannelService().getChannelData("thing",
+					"name");
 			html.b(thingName);
 			html.br();
 			html.text("start count: ");

@@ -25,6 +25,7 @@ import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 import net.locosoft.fold.util.HtmlComposer;
+import net.locosoft.fold.util.JsonUtil;
 
 import org.eclipse.core.runtime.Path;
 
@@ -72,6 +73,26 @@ public class ChatterChannel extends AbstractChannel implements IChatterChannel {
 		timesChannel.createTimesRef(chatterTime, chatterNodeId);
 
 		return chatterNodeOrdinal;
+	}
+
+	public String getChannelData(String key, String... params) {
+		switch (key) {
+		case "channelItem.urlPath":
+			if (params.length != 1)
+				return null;
+			JsonObject jsonNode = JsonUtil.readJsonObject(params[0]);
+			if (jsonNode == null)
+				return null;
+			ChannelItemNode chatterItemNode = new ChannelItemNode(this,
+					"Chatter");
+			long ordinalIndex = chatterItemNode.getOrdinalIndex(jsonNode);
+			if (ordinalIndex == -1)
+				return null;
+			else
+				return "/fold/chatter/" + ordinalIndex;
+		default:
+			return super.getChannelData(key, params);
+		}
 	}
 
 	protected void channelHttpGet(HttpServletRequest request,

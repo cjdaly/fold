@@ -11,11 +11,12 @@
 
 package net.locosoft.fold.channel.times.internal;
 
-import com.eclipsesource.json.JsonValue;
-
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.sketch.AbstractNodeSketch;
+
+import com.eclipsesource.json.JsonObject;
+import com.eclipsesource.json.JsonValue;
 
 public class RefTimesNode extends AbstractNodeSketch {
 
@@ -71,6 +72,25 @@ public class RefTimesNode extends AbstractNodeSketch {
 			refIds[i] = jsonValue.asLong();
 		}
 		return refIds;
+	}
+
+	public JsonObject[] getTimesRefNodes() {
+		INeo4jService neo4jService = getNeo4jService();
+		StringBuilder cypherText = new StringBuilder();
+		cypherText.append("MATCH (refNodes)-[:times_Ref]->(timesNode) ");
+		cypherText.append("WHERE ID(timesNode)={timesNodeId} ");
+		cypherText.append("RETURN refNodes");
+
+		ICypher cypher = neo4jService.constructCypher(cypherText.toString());
+		cypher.addParameter("timesNodeId", getNodeId());
+		neo4jService.invokeCypher(cypher);
+
+		JsonObject[] jsonNodes = new JsonObject[cypher.getResultDataRowCount()];
+		for (int i = 0; i < cypher.getResultDataRowCount(); i++) {
+			JsonValue jsonValue = cypher.getResultDataRow(i);
+			jsonNodes[i] = jsonValue.asObject();
+		}
+		return jsonNodes;
 	}
 
 }

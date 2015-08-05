@@ -13,6 +13,8 @@ package net.locosoft.fold.channel.internal;
 
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.IChannelInternal;
+import net.locosoft.fold.neo4j.ICypher;
+import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.neo4j.Neo4jUtil;
 import net.locosoft.fold.util.MonitorThread;
 
@@ -55,6 +57,7 @@ public class ChannelController {
 		public boolean cycle() {
 			if (!_channelInit) {
 				if (Neo4jUtil.getNeo4jService().isNeo4jReady()) {
+					preInitChannels();
 					initChannels();
 					_channelInit = true;
 				}
@@ -62,6 +65,14 @@ public class ChannelController {
 			return _channelInit;
 		}
 	};
+
+	private void preInitChannels() {
+		// see AbstractChannel.getChannelNodeId()
+		INeo4jService neo4jService = Neo4jUtil.getNeo4jService();
+		ICypher cypherConstraint = neo4jService
+				.constructCypher("CREATE CONSTRAINT ON (channel:fold_Channel) ASSERT channel.fold_channelId IS UNIQUE");
+		neo4jService.invokeCypher(cypherConstraint);
+	}
 
 	private void initChannels() {
 		for (IChannel channel : _channelService.getAllChannels()) {

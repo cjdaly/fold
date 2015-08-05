@@ -25,7 +25,7 @@ public class PropertyAccessNode extends AbstractNodeSketch {
 
 	// getters
 
-	private JsonValue getValue(String propertyName) {
+	public JsonValue getValue(String propertyName) {
 		INeo4jService neo4jService = getNeo4jService();
 		String cypherText = "MATCH node" //
 				+ " WHERE id(node)={nodeId}" + " RETURN node.`"

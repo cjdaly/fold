@@ -29,7 +29,8 @@ public abstract class ChannelHeaderFooterHtml extends AbstractChannelHtmlSketch 
 	public void composeHtmlResponse(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
-		String thingName = getChannel().getChannelData("thing", "name");
+		String thingName = getChannel().getChannelService().getChannelData(
+				"thing", "name");
 
 		HtmlComposer html = new HtmlComposer(response.getWriter());
 		html.html_head("fold: " + thingName + " / "
