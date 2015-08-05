@@ -16,6 +16,7 @@ import net.locosoft.fold.channel.IChannelInternal;
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.neo4j.Neo4jUtil;
+import net.locosoft.fold.util.FoldUtil;
 import net.locosoft.fold.util.MonitorThread;
 
 public class ChannelController {
@@ -23,6 +24,7 @@ public class ChannelController {
 	private ChannelService _channelService;
 
 	private boolean _channelInit = false;
+	private boolean _channelFini = false;
 
 	public ChannelController(ChannelService channelService) {
 		_channelService = channelService;
@@ -38,31 +40,35 @@ public class ChannelController {
 
 	public void stop() {
 		_channelMonitor.stop();
-
-		if (_channelInit) {
-			finiChannels();
-			_channelInit = false;
-		}
 	}
 
 	private MonitorThread _channelMonitor = new MonitorThread() {
 		protected long getSleepTimePreCycle() {
-			return 2 * 1000;
+			return 1000;
 		}
 
 		protected long getSleepTimePostCycle() {
-			return 2 * 1000;
+			return 1000;
 		}
 
-		public boolean cycle() {
+		public boolean cycle() throws Exception {
 			if (!_channelInit) {
 				if (Neo4jUtil.getNeo4jService().isNeo4jReady()) {
 					preInitChannels();
 					initChannels();
 					_channelInit = true;
 				}
+			} else if (!_channelFini) {
+				int foldPid = FoldUtil.getFoldPid();
+				if (foldPid == -1) {
+					System.out.println("fold stopping...");
+					finiChannels();
+					_channelFini = true;
+					_channelService.getBundleContext().getBundle(0).stop();
+				}
 			}
-			return _channelInit;
+
+			return !_channelFini;
 		}
 	};
 

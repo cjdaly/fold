@@ -12,7 +12,6 @@
 package net.locosoft.fold.neo4j.internal;
 
 import net.locosoft.fold.util.FoldUtil;
-import net.locosoft.fold.util.MonitorThread;
 
 public class Neo4jController {
 
@@ -50,31 +49,30 @@ public class Neo4jController {
 		return pid;
 	}
 
+	private boolean _ready = false;
+
 	public boolean isNeo4jReady() {
-		return _neo4jMonitor.isRunning();
+		return _ready;
 	}
 
 	public void start() {
-		_neo4jMonitor.start();
+		int pid = getNeo4jPID();
+		if (pid == -1) {
+			System.out.println("starting Neo4j...");
+			StringBuilder processOut = new StringBuilder();
+			execNeo4jCommand("start", processOut);
+			System.out.println(processOut);
+		}
+		_ready = true;
 	}
 
 	public void stop() {
-		_neo4jMonitor.stop();
+		_ready = false;
+		System.out.println("stopping Neo4j...");
+		StringBuilder processOut = new StringBuilder();
+		execNeo4jCommand("stop", processOut);
+		System.out.println(processOut);
 	}
-
-	private MonitorThread _neo4jMonitor = new MonitorThread() {
-		public boolean cycle() {
-
-			int pid = getNeo4jPID();
-			if (pid == -1) {
-				System.out.println("starting Neo4j...");
-				StringBuilder processOut = new StringBuilder();
-				execNeo4jCommand("start", processOut);
-				System.out.println(processOut);
-			}
-			return true;
-		}
-	};
 
 	private int execNeo4jCommand(String command, StringBuilder processOut) {
 		String fullCommand = getNeo4jHomeDir() + "/bin/neo4j " + command;

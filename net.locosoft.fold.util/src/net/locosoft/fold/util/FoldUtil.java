@@ -99,6 +99,16 @@ public class FoldUtil {
 			return null;
 	}
 
+	public static int getFoldPid() {
+		String foldHomeDir = getFoldHomeDir();
+		String foldPIDFile = readFileToString(foldHomeDir + "/fold.PID", false);
+		try {
+			return Integer.parseInt(foldPIDFile.trim());
+		} catch (NumberFormatException ex) {
+			return -1;
+		}
+	}
+
 	public static <T> T getService(Class<T> serviceType) {
 		Bundle bundle = FrameworkUtil.getBundle(serviceType);
 		BundleContext bundleContext = bundle.getBundleContext();
@@ -123,6 +133,10 @@ public class FoldUtil {
 	}
 
 	public static String readFileToString(String path) {
+		return readFileToString(path, true);
+	}
+
+	public static String readFileToString(String path, boolean logErrors) {
 		StringBuilder outputText = new StringBuilder();
 		try (BufferedReader reader = new BufferedReader(new FileReader(path))) {
 			int readRaw = reader.read();
@@ -132,9 +146,11 @@ public class FoldUtil {
 				readRaw = reader.read();
 			}
 		} catch (FileNotFoundException ex) {
-			ex.printStackTrace();
+			if (logErrors)
+				ex.printStackTrace();
 		} catch (IOException ex) {
-			ex.printStackTrace();
+			if (logErrors)
+				ex.printStackTrace();
 		}
 		return outputText.toString();
 	}
@@ -209,4 +225,5 @@ public class FoldUtil {
 			}
 		}
 	}
+
 }

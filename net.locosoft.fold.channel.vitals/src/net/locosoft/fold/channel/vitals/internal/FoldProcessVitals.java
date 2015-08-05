@@ -22,11 +22,8 @@ public class FoldProcessVitals extends StaticVitals {
 	private int _foldPID = -1;
 
 	private int getFoldPid() {
-		if (_foldPID != -1)
-			return _foldPID;
-		String foldHomeDir = FoldUtil.getFoldHomeDir();
-		String foldPID = FoldUtil.readFileToString(foldHomeDir + "/fold.PID");
-		_foldPID = Integer.parseInt(foldPID.trim());
+		if (_foldPID == -1)
+			_foldPID = FoldUtil.getFoldPid();
 		return _foldPID;
 	}
 

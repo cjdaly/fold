@@ -35,8 +35,8 @@ public class ChannelActivator implements BundleActivator {
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
-		System.out.println("stopping ChannelActivator");
 		_channelService.stop();
+		System.out.println("fold channel stopped.");
 	}
 
 }

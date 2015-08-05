@@ -19,14 +19,13 @@ public class Neo4jActivator implements BundleActivator {
 	private Neo4jService _neo4jService;
 
 	public void start(BundleContext bundleContext) throws Exception {
-		System.out.println("starting Neo4jActivator");
 		_neo4jService = new Neo4jService(bundleContext);
 		_neo4jService.start();
 	}
 
 	public void stop(BundleContext bundleContext) throws Exception {
-		System.out.println("stopping Neo4jActivator");
 		_neo4jService.stop();
+		System.out.println("Neo4j stopped.");
 	}
 
 }

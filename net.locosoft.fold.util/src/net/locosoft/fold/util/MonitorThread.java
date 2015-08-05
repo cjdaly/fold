@@ -52,5 +52,5 @@ public abstract class MonitorThread implements Runnable {
 		_stopped = true;
 	}
 
-	public abstract boolean cycle();
+	public abstract boolean cycle() throws Exception;
 }

@@ -35,6 +35,11 @@ import org.osgi.framework.ServiceRegistration;
 public class ChannelService implements IChannelService {
 
 	private BundleContext _bundleContext;
+
+	BundleContext getBundleContext() {
+		return _bundleContext;
+	}
+
 	private ServiceRegistration<IChannelService> _serviceRegistration;
 
 	private TreeMap<String, IChannel> _idToChannel;
