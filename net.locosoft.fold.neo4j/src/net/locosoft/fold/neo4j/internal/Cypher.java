@@ -19,6 +19,7 @@ import com.eclipsesource.json.JsonValue;
 
 public class Cypher implements ICypher {
 
+	private boolean _parallelInvocation = false;
 	private JsonObject _request;
 	private JsonArray _statements;
 	private int _currentStatement = -1;
@@ -33,6 +34,14 @@ public class Cypher implements ICypher {
 		_statements = new JsonArray();
 		_request.add("statements", _statements);
 		addStatement(statementText);
+	}
+
+	public boolean allowParallelInvocation() {
+		return _parallelInvocation;
+	}
+
+	public void allowParallelInvocation(boolean parallelInvocation) {
+		_parallelInvocation = parallelInvocation;
 	}
 
 	public void addStatement(String statementText) {

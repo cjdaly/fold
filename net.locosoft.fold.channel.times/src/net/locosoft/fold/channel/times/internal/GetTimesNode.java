@@ -19,8 +19,6 @@ import net.locosoft.fold.sketch.AbstractNodeSketch;
 
 import org.eclipse.core.runtime.Path;
 
-import com.eclipsesource.json.WriterConfig;
-
 public class GetTimesNode extends AbstractNodeSketch {
 
 	public GetTimesNode(long nodeId) {
@@ -71,19 +69,8 @@ public class GetTimesNode extends AbstractNodeSketch {
 				String.valueOf(calendar.get(Calendar.MINUTE)));
 
 		if (createIfAbsent) {
-			neo4jService.invokeCypher(cypher, false);
-			if (cypher.getErrorCount() == 0) {
-				return cypher.getResultDataRow(0).asLong();
-			} else {
-				long minuteNodeId = getMinuteNodeId(timeMillis, false);
-				System.out.println("getMinuteNodeId retried and got: "
-						+ minuteNodeId);
-				if (minuteNodeId == -1) {
-					System.out.println(cypher.getErrors().toString(
-							WriterConfig.PRETTY_PRINT));
-				}
-				return minuteNodeId;
-			}
+			neo4jService.invokeCypher(cypher);
+			return cypher.getResultDataRow(0).asLong();
 		} else {
 			neo4jService.invokeCypher(cypher);
 			if (cypher.getResultDataRowCount() != 1)

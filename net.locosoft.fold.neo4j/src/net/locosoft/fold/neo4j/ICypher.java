@@ -17,6 +17,10 @@ import com.eclipsesource.json.JsonValue;
 
 public interface ICypher {
 
+	boolean allowParallelInvocation();
+
+	void allowParallelInvocation(boolean parallelInvocation);
+
 	String getStatementText();
 
 	void setStatementText(String statementText);

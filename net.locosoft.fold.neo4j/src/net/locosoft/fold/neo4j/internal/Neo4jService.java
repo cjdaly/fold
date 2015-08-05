@@ -65,21 +65,15 @@ public class Neo4jService implements INeo4jService {
 	public void invokeCypher(ICypher cypher, boolean logErrors) {
 		if (_neo4jController.isNeo4jReady()) {
 
-			try {
-				Thread.sleep(getPreInvokeDelay(cypher));
-			} catch (InterruptedException ex) {
-				//
+			JsonObject response;
+			if (cypher.allowParallelInvocation()) {
+				response = Neo4jRestUtil.doPostJson(Neo4jRestUtil.CYPHER_URI,
+						cypher.getRequest());
+			} else {
+				response = serialInvokeCypher(cypher, logErrors);
 			}
 
-			JsonObject response = Neo4jRestUtil.doPostJson(
-					Neo4jRestUtil.CYPHER_URI, cypher.getRequest());
 			((Cypher) cypher).setResponse(response);
-
-			try {
-				Thread.sleep(getPostInvokeDelay(cypher));
-			} catch (InterruptedException ex) {
-				//
-			}
 
 			if ((cypher.getErrorCount() > 0) && logErrors) {
 				System.out.println("------");
@@ -95,22 +89,10 @@ public class Neo4jService implements INeo4jService {
 		}
 	}
 
-	private long getPreInvokeDelay(ICypher cypher) {
-		String cypherText = cypher.getStatementText();
-		if (cypherText.contains("CREATE CONSTRAINT ON")) {
-			return 1000;
-		}
-
-		return 0;
-	}
-
-	private long getPostInvokeDelay(ICypher cypher) {
-		String cypherText = cypher.getStatementText();
-		if (cypherText.contains("CREATE CONSTRAINT ON")) {
-			return 5000;
-		}
-
-		return 0;
+	private synchronized JsonObject serialInvokeCypher(ICypher cypher,
+			boolean logErrors) {
+		return Neo4jRestUtil.doPostJson(Neo4jRestUtil.CYPHER_URI,
+				cypher.getRequest());
 	}
 
 }
