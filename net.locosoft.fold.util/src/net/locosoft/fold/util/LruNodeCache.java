@@ -21,7 +21,6 @@ public class LruNodeCache<T> extends LinkedHashMap<T, Long> {
 
 	public static <U> Map<U, Long> createLruNodeCache(int maxEntries) {
 		return Collections.synchronizedMap(new LruNodeCache<U>(maxEntries));
-		// return new LruNodeCache<U>(maxEntries);
 	}
 
 	private int _maxEntries;
