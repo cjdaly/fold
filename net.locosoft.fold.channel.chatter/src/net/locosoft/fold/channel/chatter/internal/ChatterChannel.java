@@ -75,6 +75,16 @@ public class ChatterChannel extends AbstractChannel implements IChatterChannel {
 		return chatterNodeOrdinal;
 	}
 
+	public long getLatestChatterOrdinal() {
+		ChannelItemNode chatterItemNode = new ChannelItemNode(this, "Chatter");
+		return chatterItemNode.getLatestOrdinal();
+	}
+
+	public JsonObject getChatterItem(long ordinal) {
+		ChannelItemNode chatterItemNode = new ChannelItemNode(this, "Chatter");
+		return chatterItemNode.getOrdinalNode(ordinal);
+	}
+
 	public String getChannelData(String key, String... params) {
 		switch (key) {
 		case "channelItem.urlPath":
@@ -117,9 +127,7 @@ public class ChatterChannel extends AbstractChannel implements IChatterChannel {
 		protected void composeHtmlResponseBody(HttpServletRequest request,
 				HttpServletResponse response, HtmlComposer html)
 				throws ServletException, IOException {
-			ChannelItemNode chatterItemNode = new ChannelItemNode(
-					ChatterChannel.this, "Chatter");
-			long latestChatterOrdinal = chatterItemNode.getLatestOrdinal();
+			long latestChatterOrdinal = getLatestChatterOrdinal();
 
 			html.p();
 			html.text("latest chatter: ");
@@ -146,10 +154,7 @@ public class ChatterChannel extends AbstractChannel implements IChatterChannel {
 			JsonObject chatterItemJson = null;
 			try {
 				long chatterItemOrdinal = Long.parseLong(_chatterItemSegment);
-				ChannelItemNode chatterItemNode = new ChannelItemNode(
-						ChatterChannel.this, "Chatter");
-				chatterItemJson = chatterItemNode
-						.getOrdinalNode(chatterItemOrdinal);
+				chatterItemJson = getChatterItem(chatterItemOrdinal);
 			} catch (NumberFormatException ex) {
 				//
 			}

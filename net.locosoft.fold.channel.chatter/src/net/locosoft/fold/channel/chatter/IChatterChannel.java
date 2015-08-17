@@ -19,4 +19,8 @@ public interface IChatterChannel extends IChannel {
 
 	long createChatterItem(String message, String category, JsonObject data);
 
+	long getLatestChatterOrdinal();
+
+	JsonObject getChatterItem(long ordinal);
+
 }

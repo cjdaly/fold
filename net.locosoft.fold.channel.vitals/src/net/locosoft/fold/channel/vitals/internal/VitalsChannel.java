@@ -47,6 +47,16 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 		return IVitalsChannel.class;
 	}
 
+	public long getLatestVitalsOrdinal() {
+		ChannelItemNode vitalsItemNode = new ChannelItemNode(this, "Vitals");
+		return vitalsItemNode.getLatestOrdinal();
+	}
+
+	public JsonObject getVitalsItem(long ordinal) {
+		ChannelItemNode vitalsItemNode = new ChannelItemNode(this, "Vitals");
+		return vitalsItemNode.getOrdinalNode(ordinal);
+	}
+
 	String[] getVitalsIds() {
 		Set<String> idSet = _idToVitals.keySet();
 		String[] ids = idSet.toArray(new String[] {});
