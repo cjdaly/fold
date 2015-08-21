@@ -11,14 +11,12 @@
 
 package net.locosoft.fold.channel.vitals;
 
-import com.eclipsesource.json.JsonObject;
-
 import net.locosoft.fold.channel.IChannel;
 
 public interface IVitalsChannel extends IChannel {
 
 	long getLatestVitalsOrdinal();
 
-	JsonObject getVitalsItem(long ordinal);
+	VitalsItemDetails getVitalsItemDetails(long ordinal);
 
 }

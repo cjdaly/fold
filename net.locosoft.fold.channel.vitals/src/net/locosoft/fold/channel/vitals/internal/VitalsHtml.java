@@ -20,6 +20,7 @@ import java.util.Date;
 
 import net.locosoft.fold.channel.vitals.DynamicVitals;
 import net.locosoft.fold.channel.vitals.IVitals;
+import net.locosoft.fold.channel.vitals.Vital;
 import net.locosoft.fold.sketch.pad.html.ChannelItemHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
@@ -84,13 +85,11 @@ public class VitalsHtml extends ChannelItemHtml {
 			}
 			if (vitals != null) {
 				html.table();
-				for (Vital vital : vitals.getAllVitals()) {
-					if (!vital.Internal) {
-						JsonValue jsonValue = _itemJson.get(vital.Id);
-						String value = jsonValue == null ? "?" : jsonValue
-								.toString();
-						html.tr(vital.Id, value, vital.Units);
-					}
+				for (Vital vital : vitals.getVitals()) {
+					JsonValue jsonValue = _itemJson.get(vital.Id);
+					String value = jsonValue == null ? "?" : jsonValue
+							.toString();
+					html.tr(vital.Id, value, vital.Units);
 				}
 				html.table(false);
 			}

@@ -16,7 +16,6 @@ import java.util.List;
 import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannelService;
 import net.locosoft.fold.channel.times.ITimesChannel;
-import net.locosoft.fold.channel.vitals.internal.Vital;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 import net.locosoft.fold.sketch.pad.neo4j.PropertyAccessNode;
@@ -73,7 +72,7 @@ public class DynamicVitals extends AbstractVitals {
 
 		MultiPropertyAccessNode sketch = new MultiPropertyAccessNode(
 				vitalsItemNodeId);
-		for (Vital vital : getVitals()) {
+		for (Vital vital : getVitalsCollection()) {
 			vital.addTo(sketch);
 		}
 		sketch.setProperties();

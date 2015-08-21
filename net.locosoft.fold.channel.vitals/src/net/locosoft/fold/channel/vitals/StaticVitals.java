@@ -14,7 +14,6 @@ package net.locosoft.fold.channel.vitals;
 import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannelService;
 import net.locosoft.fold.channel.times.ITimesChannel;
-import net.locosoft.fold.channel.vitals.internal.Vital;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 
 import org.eclipse.core.runtime.IConfigurationElement;
@@ -54,7 +53,7 @@ public abstract class StaticVitals extends AbstractVitals {
 	}
 
 	public void checkVitals(long vitalsItemNodeId) {
-		for (Vital vital : getVitals()) {
+		for (Vital vital : getVitalsCollection()) {
 			vital.clear();
 		}
 		readVitals();
@@ -65,7 +64,7 @@ public abstract class StaticVitals extends AbstractVitals {
 
 		MultiPropertyAccessNode sketch = new MultiPropertyAccessNode(
 				vitalsItemNodeId);
-		for (Vital vital : getVitals()) {
+		for (Vital vital : getVitalsCollection()) {
 			vital.addTo(sketch);
 		}
 		sketch.setProperties();

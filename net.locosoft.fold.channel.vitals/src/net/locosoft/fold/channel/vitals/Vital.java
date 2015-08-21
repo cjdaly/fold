@@ -9,7 +9,7 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.channel.vitals.internal;
+package net.locosoft.fold.channel.vitals;
 
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 
@@ -24,7 +24,25 @@ public class Vital {
 	public final String Description;
 	public final boolean Internal;
 
-	public Vital(String id, String datatype, String units, String name,
+	public boolean isNumeric() {
+		switch (Datatype) {
+		case "int":
+			return true;
+		case "long":
+			return true;
+		case "float":
+			return true;
+		case "double":
+			return true;
+		default:
+			return false;
+		}
+	}
+
+	//
+	//
+
+	Vital(String id, String datatype, String units, String name,
 			String description) {
 		Id = id;
 		Datatype = datatype;
@@ -34,7 +52,7 @@ public class Vital {
 		Internal = true;
 	}
 
-	public Vital(String id, String datatype, String units, String name,
+	Vital(String id, String datatype, String units, String name,
 			String description, boolean internal) {
 		Id = id;
 		Datatype = datatype;
@@ -44,7 +62,7 @@ public class Vital {
 		Internal = internal;
 	}
 
-	public Vital(IConfigurationElement vitalElement) {
+	Vital(IConfigurationElement vitalElement) {
 		Id = vitalElement.getAttribute("id");
 		Datatype = vitalElement.getAttribute("datatype");
 		Units = vitalElement.getAttribute("units");
@@ -55,7 +73,7 @@ public class Vital {
 
 	//
 
-	public void clear() {
+	void clear() {
 		_intValue = 0;
 		_longValue = 0;
 		_floatValue = 0;
@@ -66,7 +84,7 @@ public class Vital {
 
 	//
 
-	public void addTo(MultiPropertyAccessNode sketch) {
+	void addTo(MultiPropertyAccessNode sketch) {
 		switch (Datatype) {
 		case "int":
 			sketch.addProperty(Id, getIntValue());
@@ -93,12 +111,12 @@ public class Vital {
 
 	private int _intValue;
 
-	public void setValue(int value) {
+	void setValue(int value) {
 		checkDatatype("int");
 		_intValue = value;
 	}
 
-	public int getIntValue() {
+	int getIntValue() {
 		return _intValue;
 	}
 
@@ -106,12 +124,12 @@ public class Vital {
 
 	private long _longValue;
 
-	public void setValue(long value) {
+	void setValue(long value) {
 		checkDatatype("long");
 		_longValue = value;
 	}
 
-	public long getLongValue() {
+	long getLongValue() {
 		return _longValue;
 	}
 
@@ -119,12 +137,12 @@ public class Vital {
 
 	private float _floatValue;
 
-	public void setValue(float value) {
+	void setValue(float value) {
 		checkDatatype("float");
 		_floatValue = value;
 	}
 
-	public float getFloatValue() {
+	float getFloatValue() {
 		return _floatValue;
 	}
 
@@ -132,12 +150,12 @@ public class Vital {
 
 	private double _doubleValue;
 
-	public void setValue(double value) {
+	void setValue(double value) {
 		checkDatatype("double");
 		_doubleValue = value;
 	}
 
-	public double getDoubleValue() {
+	double getDoubleValue() {
 		return _doubleValue;
 	}
 
@@ -145,12 +163,12 @@ public class Vital {
 
 	private boolean _booleanValue;
 
-	public void setValue(boolean value) {
+	void setValue(boolean value) {
 		checkDatatype("boolean");
 		_booleanValue = value;
 	}
 
-	public boolean getBooleanValue() {
+	boolean getBooleanValue() {
 		return _booleanValue;
 	}
 
@@ -158,30 +176,13 @@ public class Vital {
 
 	private String _stringValue;
 
-	public void setValue(String value) {
+	void setValue(String value) {
 		checkDatatype("string");
 		_stringValue = value;
 	}
 
-	public String getStringValue() {
+	String getStringValue() {
 		return _stringValue;
-	}
-
-	//
-
-	public boolean isNumeric() {
-		switch (Datatype) {
-		case "int":
-			return true;
-		case "long":
-			return true;
-		case "float":
-			return true;
-		case "double":
-			return true;
-		default:
-			return false;
-		}
 	}
 
 	//

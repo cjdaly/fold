@@ -24,6 +24,7 @@ import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.channel.vitals.IVitalsChannel;
 import net.locosoft.fold.channel.vitals.StaticVitals;
+import net.locosoft.fold.channel.vitals.VitalsItemDetails;
 import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 import net.locosoft.fold.util.HtmlComposer;
@@ -52,9 +53,12 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 		return vitalsItemNode.getLatestOrdinal();
 	}
 
-	public JsonObject getVitalsItem(long ordinal) {
-		ChannelItemNode vitalsItemNode = new ChannelItemNode(this, "Vitals");
-		return vitalsItemNode.getOrdinalNode(ordinal);
+	public VitalsItemDetails getVitalsItemDetails(long ordinal) {
+		VitalsItemDetails vitalsItemDetails = new VitalsItemDetails(this);
+		if (vitalsItemDetails.load(ordinal))
+			return vitalsItemDetails;
+		else
+			return null;
 	}
 
 	String[] getVitalsIds() {
@@ -63,7 +67,7 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 		return ids;
 	}
 
-	IVitals getVitals(String id) {
+	public IVitals getVitals(String id) {
 		return _idToVitals.get(id);
 	}
 

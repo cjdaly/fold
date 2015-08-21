@@ -11,10 +11,9 @@
 
 package net.locosoft.fold.channel.vitals;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
-
-import net.locosoft.fold.channel.vitals.internal.Vital;
 
 import com.eclipsesource.json.JsonValue;
 
@@ -61,7 +60,7 @@ public abstract class AbstractVitals implements IVitals {
 
 	}
 
-	protected Collection<Vital> getVitals() {
+	protected Collection<Vital> getVitalsCollection() {
 		return _idToVital.values();
 	}
 
@@ -71,8 +70,22 @@ public abstract class AbstractVitals implements IVitals {
 		return _idToVital.get(id);
 	}
 
-	public Vital[] getAllVitals() {
-		return _idToVital.values().toArray(new Vital[0]);
+	public Vital[] getVitals() {
+		ArrayList<Vital> vitals = new ArrayList<Vital>();
+		for (Vital vital : _idToVital.values()) {
+			if (!vital.Internal) {
+				vitals.add(vital);
+			}
+		}
+		return vitals.toArray(new Vital[0]);
+	}
+
+	public Vital[] getVitals(boolean includeInternal) {
+		if (includeInternal) {
+			return _idToVital.values().toArray(new Vital[0]);
+		} else {
+			return getVitals();
+		}
 	}
 
 	protected void recordVital(String id, int value) {

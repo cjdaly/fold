@@ -58,7 +58,8 @@
             implementation="net.locosoft.fold.channel.vitals.internal.SystemLoadVitals">
          <vital
                datatype="float"
-               id="loadAvg1Min">
+               id="loadAvg1Min"
+               units="%">
          </vital>
       </vitals>
       <vitals

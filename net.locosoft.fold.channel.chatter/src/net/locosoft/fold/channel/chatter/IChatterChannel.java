@@ -21,6 +21,6 @@ public interface IChatterChannel extends IChannel {
 
 	long getLatestChatterOrdinal();
 
-	JsonObject getChatterItem(long ordinal);
+	ChatterItemDetails getChatterItemDetails(long ordinal);
 
 }

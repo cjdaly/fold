@@ -19,6 +19,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
+import net.locosoft.fold.channel.chatter.ChatterItemDetails;
 import net.locosoft.fold.channel.chatter.IChatterChannel;
 import net.locosoft.fold.channel.times.ITimesChannel;
 import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
@@ -80,9 +81,12 @@ public class ChatterChannel extends AbstractChannel implements IChatterChannel {
 		return chatterItemNode.getLatestOrdinal();
 	}
 
-	public JsonObject getChatterItem(long ordinal) {
-		ChannelItemNode chatterItemNode = new ChannelItemNode(this, "Chatter");
-		return chatterItemNode.getOrdinalNode(ordinal);
+	public ChatterItemDetails getChatterItemDetails(long ordinal) {
+		ChatterItemDetails chatterItemDetails = new ChatterItemDetails(this);
+		if (chatterItemDetails.load(ordinal))
+			return chatterItemDetails;
+		else
+			return null;
 	}
 
 	public String getChannelData(String key, String... params) {
@@ -154,7 +158,8 @@ public class ChatterChannel extends AbstractChannel implements IChatterChannel {
 			JsonObject chatterItemJson = null;
 			try {
 				long chatterItemOrdinal = Long.parseLong(_chatterItemSegment);
-				chatterItemJson = getChatterItem(chatterItemOrdinal);
+				ChatterItemDetails chatterItemDetails = getChatterItemDetails(chatterItemOrdinal);
+				chatterItemJson = chatterItemDetails.getJson();
 			} catch (NumberFormatException ex) {
 				//
 			}

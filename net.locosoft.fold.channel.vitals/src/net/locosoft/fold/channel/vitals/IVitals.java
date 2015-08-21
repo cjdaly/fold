@@ -11,8 +11,6 @@
 
 package net.locosoft.fold.channel.vitals;
 
-import net.locosoft.fold.channel.vitals.internal.Vital;
-
 public interface IVitals {
 
 	public static final String NODE_PROPERTY_ID = "Vitals_id";
@@ -22,6 +20,8 @@ public interface IVitals {
 
 	Vital getVital(String id);
 
-	Vital[] getAllVitals();
+	Vital[] getVitals();
+
+	Vital[] getVitals(boolean includeInternal);
 
 }
