@@ -83,9 +83,8 @@ public class DynamicVitals extends AbstractVitals {
 		timesChannel.createTimesRef(checkTime, vitalsItemNodeId);
 	}
 
-	public void loadVitals(String vitalsId, long vitalsNodeId) {
+	public void loadVitals(long vitalsNodeId) {
 		HierarchyNode vitalsNode = new HierarchyNode(vitalsNodeId);
-
 		long[] subIds = vitalsNode.getSubIds();
 		for (long subId : subIds) {
 			PropertyAccessNode props = new PropertyAccessNode(subId);

@@ -98,5 +98,6 @@ public class VitalsPostHtml extends AbstractChannelHtmlSketch {
 			props.setProperties();
 		}
 
+		response.getWriter().println("Posted vitals def: " + vitalsId);
 	}
 }

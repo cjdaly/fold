@@ -18,12 +18,10 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-import net.locosoft.fold.channel.vitals.DynamicVitals;
 import net.locosoft.fold.channel.vitals.IVitals;
 import net.locosoft.fold.channel.vitals.Vital;
 import net.locosoft.fold.sketch.pad.html.ChannelItemHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
-import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.util.HtmlComposer;
 
 import com.eclipsesource.json.JsonObject;
@@ -80,9 +78,6 @@ public class VitalsHtml extends ChannelItemHtml {
 			html.p("Vitals " + _itemOrdinal + " at " + vitalsTimeText);
 
 			IVitals vitals = _vitalsChannel.getVitals(vitalsId);
-			if (vitals == null) {
-				vitals = getDynamicVitals(vitalsId);
-			}
 			if (vitals != null) {
 				html.table();
 				for (Vital vital : vitals.getVitals()) {
@@ -94,20 +89,6 @@ public class VitalsHtml extends ChannelItemHtml {
 				html.table(false);
 			}
 		}
-	}
-
-	private IVitals getDynamicVitals(String vitalsId) {
-		DynamicVitals vitals = new DynamicVitals(vitalsId);
-
-		HierarchyNode channelNode = new HierarchyNode(
-				_vitalsChannel.getChannelNodeId());
-		long defsNodeId = channelNode.getSubId("defs", true);
-		HierarchyNode defsNode = new HierarchyNode(defsNodeId);
-		long vitalsNodeId = defsNode.getSubId(vitalsId, true);
-
-		vitals.loadVitals(vitalsId, vitalsNodeId);
-
-		return vitals;
 	}
 
 	public void writeInline(PrintWriter writer, int sizeHint)
