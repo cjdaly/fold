@@ -11,11 +11,15 @@
 
 package net.locosoft.fold.channel;
 
+import net.locosoft.fold.sketch.IChannelItemDetails;
+
 public interface IChannel {
 
 	String getChannelId();
 
 	String getChannelData(String key, String... params);
+
+	IChannelItemDetails getChannelItemDetails(String itemLabel, long itemOrdinal);
 
 	Class<? extends IChannel> getChannelInterface();
 

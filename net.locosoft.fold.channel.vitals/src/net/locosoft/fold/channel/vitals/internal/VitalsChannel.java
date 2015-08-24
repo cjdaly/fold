@@ -29,12 +29,12 @@ import net.locosoft.fold.channel.vitals.IVitalsChannel;
 import net.locosoft.fold.channel.vitals.StaticVitals;
 import net.locosoft.fold.channel.vitals.Vital;
 import net.locosoft.fold.channel.vitals.VitalsItemDetails;
+import net.locosoft.fold.sketch.IChannelItemDetails;
 import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 import net.locosoft.fold.util.HtmlComposer;
-import net.locosoft.fold.util.JsonUtil;
 import net.locosoft.fold.util.MonitorThread;
 
 import org.eclipse.core.runtime.CoreException;
@@ -66,6 +66,14 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 			return vitalsItemDetails;
 		else
 			return null;
+	}
+
+	public IChannelItemDetails getChannelItemDetails(String itemLabel,
+			long itemOrdinal) {
+		if ("Vitals".equals(itemLabel)) {
+			return getVitalsItemDetails(itemOrdinal);
+		}
+		return null;
 	}
 
 	String[] getVitalsIds() {
@@ -133,25 +141,6 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
 	public void fini() {
 		_vitalsMonitor.stop();
-	}
-
-	public String getChannelData(String key, String... params) {
-		switch (key) {
-		case "channelItem.urlPath":
-			if (params.length != 1)
-				return null;
-			JsonObject jsonNode = JsonUtil.readJsonObject(params[0]);
-			if (jsonNode == null)
-				return null;
-			ChannelItemNode vitalsItemNode = new ChannelItemNode(this, "Vitals");
-			long ordinalIndex = vitalsItemNode.getOrdinalIndex(jsonNode);
-			if (ordinalIndex == -1)
-				return null;
-			else
-				return "/fold/vitals/" + ordinalIndex;
-		default:
-			return super.getChannelData(key, params);
-		}
 	}
 
 	private MonitorThread _vitalsMonitor = new MonitorThread() {

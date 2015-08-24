@@ -14,8 +14,9 @@ package net.locosoft.fold.sketch.pad.neo4j;
 import com.eclipsesource.json.JsonObject;
 
 import net.locosoft.fold.channel.IChannelInternal;
+import net.locosoft.fold.sketch.IChannelItemDetails;
 
-public abstract class ChannelItemDetails {
+public abstract class ChannelItemDetails implements IChannelItemDetails {
 
 	private ChannelItemNode _channelItemNode;
 	private long _ordinal;
@@ -23,6 +24,10 @@ public abstract class ChannelItemDetails {
 
 	public ChannelItemDetails(IChannelInternal channel, String itemLabel) {
 		_channelItemNode = new ChannelItemNode(channel, itemLabel);
+	}
+
+	public String getItemLabel() {
+		return _channelItemNode.getItemLabel();
 	}
 
 	public long getOrdinal() {
@@ -43,6 +48,5 @@ public abstract class ChannelItemDetails {
 		return _jsonObject != null;
 	}
 
-	// TODO: remove channelItem.urlPath mess
 	public abstract String getUrlPath();
 }

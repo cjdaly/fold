@@ -9,21 +9,18 @@
  *   cjdaly - initial API and implementation
  ****************************************************************************/
 
-package net.locosoft.fold.sketch.pad.html;
+package net.locosoft.fold.sketch;
 
-import net.locosoft.fold.channel.IChannelInternal;
-import net.locosoft.fold.sketch.AbstractHtmlSketch;
+import com.eclipsesource.json.JsonObject;
 
-public abstract class AbstractChannelHtmlSketch extends AbstractHtmlSketch {
+public interface IChannelItemDetails extends ISketch {
 
-	private IChannelInternal _channel;
+	String getItemLabel();
 
-	public AbstractChannelHtmlSketch(IChannelInternal channel) {
-		_channel = channel;
-	}
+	long getOrdinal();
 
-	protected IChannelInternal getChannel() {
-		return _channel;
-	}
+	JsonObject getJson();
+
+	String getUrlPath();
 
 }

@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.neo4j.Neo4jUtil;
+import net.locosoft.fold.sketch.IChannelItemDetails;
 import net.locosoft.fold.util.FoldUtil;
 
 import org.eclipse.core.resources.IProject;
@@ -54,6 +55,11 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 		}
 	}
 
+	public IChannelItemDetails getChannelItemDetails(String itemLabel,
+			long itemOrdinal) {
+		return null;
+	}
+
 	//
 	// IChannelInternal
 	//
@@ -64,7 +70,7 @@ public abstract class AbstractChannel implements IChannel, IChannelInternal {
 		return _channelService;
 	}
 
-	public void init(String channelId, IChannelService channelService,
+	public final void init(String channelId, IChannelService channelService,
 			String channelDescription) {
 		_id = channelId;
 		_description = channelDescription;

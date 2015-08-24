@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.times.ITimesChannel;
+import net.locosoft.fold.sketch.IChannelItemDetails;
 import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
@@ -212,32 +213,37 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 		}
 
 		private Pattern _channelIdPattern = Pattern
-				.compile(OrdinalNode.PREFIX_ORDINAL_INDEX + "([^_]+)_");
+				.compile(OrdinalNode.PREFIX_ORDINAL_INDEX + "([^_]+)_([^_]+)");
 
 		private void addRefNodeMapEntry(
 				TreeMap<String, TreeMap<Long, String>> refNodeMap,
 				JsonObject jsonNode, String ordinalIndexKeyName) {
 			Matcher matcher = _channelIdPattern.matcher(ordinalIndexKeyName);
-			if (matcher.find()) {
-				String channelId = matcher.group(1);
-				IChannel channel = getChannelService().getChannel(channelId);
-				if (channel != null) {
-					long channelItemOrdinalIndex = jsonNode.getLong(
-							ordinalIndexKeyName, -1);
-					if (channelItemOrdinalIndex != -1) {
-						String channelItemUrlPath = channel.getChannelData(
-								"channelItem.urlPath", jsonNode.toString());
-						if (channelItemUrlPath != null) {
-							TreeMap<Long, String> channelMap = refNodeMap
-									.get(channelId);
-							if (channelMap == null) {
-								channelMap = new TreeMap<Long, String>();
-								refNodeMap.put(channelId, channelMap);
-							}
-							channelMap.put(channelItemOrdinalIndex,
-									channelItemUrlPath);
-						}
+			if (!matcher.find())
+				return;
+
+			String channelId = matcher.group(1);
+			String channelItemLabel = matcher.group(2);
+			IChannel channel = getChannelService().getChannel(channelId);
+			if (channel == null)
+				return;
+
+			long channelItemOrdinal = jsonNode.getLong(ordinalIndexKeyName, -1);
+			if (channelItemOrdinal == -1)
+				return;
+
+			IChannelItemDetails channelItemDetails = channel
+					.getChannelItemDetails(channelItemLabel, channelItemOrdinal);
+			if (channelItemDetails != null) {
+				String channelItemUrlPath = channelItemDetails.getUrlPath();
+				if (channelItemUrlPath != null) {
+					TreeMap<Long, String> channelMap = refNodeMap
+							.get(channelId);
+					if (channelMap == null) {
+						channelMap = new TreeMap<Long, String>();
+						refNodeMap.put(channelId, channelMap);
 					}
+					channelMap.put(channelItemOrdinal, channelItemUrlPath);
 				}
 			}
 		}
