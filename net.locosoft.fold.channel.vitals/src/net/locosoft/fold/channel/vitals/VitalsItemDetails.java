@@ -39,13 +39,17 @@ public class VitalsItemDetails extends ChannelItemDetails {
 		return getJson().get(vitalId);
 	}
 
-	public String getUrlPath() {
-		return "/fold/vitals/" + getOrdinal();
+	public String getItemKind() {
+		return getJson().getString(IVitals.NODE_PROPERTY_ID, null);
 	}
 
 	public long getTimestamp() {
 		return getJson().getLong(IVitals.NODE_PROPERTY_CHECK_TIME,
 				Long.MIN_VALUE);
+	}
+
+	public String getUrlPath() {
+		return "/fold/vitals/" + getOrdinal();
 	}
 
 	public String[] getDataLines() {

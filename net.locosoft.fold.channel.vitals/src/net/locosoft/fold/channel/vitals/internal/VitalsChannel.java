@@ -277,7 +277,13 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 			HttpServletResponse response) throws ServletException, IOException {
 
 		long currentTimeMillis = System.currentTimeMillis();
-		int sampleCount = 40;
+
+		int sampleCount;
+		try {
+			sampleCount = Integer.parseInt(request.getParameter("samples"));
+		} catch (NumberFormatException ex) {
+			sampleCount = 40;
+		}
 
 		int skipParam;
 		try {

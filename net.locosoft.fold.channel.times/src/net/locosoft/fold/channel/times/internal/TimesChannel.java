@@ -196,37 +196,45 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 					String nodeId = channelId + "_" + channelItemEntry.getKey();
 					String nodeLabel = channelId + " <b>"
 							+ channelItemEntry.getKey() + "</b>";
-					if (prevNodeId != null) {
-						dot.append(prevNodeId + " -> " + nodeId
-								+ " [arrowhead=none]; ");
-					}
 					IChannelItemDetails channelItemDetails = channelItemEntry
 							.getValue();
-					calendar.setTimeInMillis(channelItemDetails.getTimestamp());
-					int second = calendar.get(Calendar.SECOND);
 
-					dot.append(nodeId);
-					dot.append(" [shape=none, margin=0, URL=\""
-							+ channelItemDetails.getUrlPath()
-							+ "\", target=_top, ");
-					dot.append("label=<<table border='0' cellborder='1' cellspacing='0'><tr><td bgcolor='thistle'>");
-					dot.append(nodeLabel);
-					dot.append("</td></tr>");
-					dot.append("<tr><td bgcolor='lightsteelblue'>");
-					dot.append("Second: " + second);
-					dot.append("</td></tr>");
-					String[] dataLines = channelItemDetails.getDataLines();
-					for (String dataLine : dataLines) {
-						dot.append("<tr><td bgcolor='lightsteelblue'>");
-						dot.append(dataLine);
+					String kindParam = request.getParameter("kind");
+					if ((kindParam == null)
+							|| (kindParam.equals(channelItemDetails
+									.getItemKind()))) {
+						calendar.setTimeInMillis(channelItemDetails
+								.getTimestamp());
+						int second = calendar.get(Calendar.SECOND);
+
+						if (prevNodeId != null) {
+							dot.append(prevNodeId + " -> " + nodeId
+									+ " [arrowhead=none]; ");
+						}
+						dot.append(nodeId);
+						dot.append(" [shape=none, margin=0, URL=\""
+								+ channelItemDetails.getUrlPath()
+								+ "\", target=_top, ");
+						dot.append("label=<<table border='0' cellborder='1' cellspacing='0'><tr><td bgcolor='burlywood'>");
+						dot.append("Second: " + second);
 						dot.append("</td></tr>");
+						dot.append("<tr><td bgcolor='thistle'>");
+						dot.append(nodeLabel);
+						dot.append("</td></tr>");
+						dot.append("<tr><td bgcolor='lightsteelblue'>");
+						dot.append("kind: " + channelItemDetails.getItemKind());
+						dot.append("</td></tr>");
+						String[] dataLines = channelItemDetails.getDataLines();
+						for (String dataLine : dataLines) {
+							dot.append("<tr><td bgcolor='lightsteelblue'>");
+							dot.append(dataLine);
+							dot.append("</td></tr>");
+						}
+						dot.append("</table>>]; ");
+
+						dot.append(nodeId + " -> minute; ");
+						prevNodeId = nodeId;
 					}
-
-					dot.append("</table>>]; ");
-
-					dot.append(nodeId + " -> minute; ");
-
-					prevNodeId = nodeId;
 				}
 			}
 		}
