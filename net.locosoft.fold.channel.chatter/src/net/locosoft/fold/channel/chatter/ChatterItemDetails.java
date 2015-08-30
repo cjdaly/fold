@@ -23,7 +23,7 @@ public class ChatterItemDetails extends ChannelItemDetails {
 		return "/fold/chatter/" + getOrdinal();
 	}
 
-	public long getTime() {
+	public long getTimestamp() {
 		return getJson().getLong("Chatter_time", Long.MIN_VALUE);
 	}
 

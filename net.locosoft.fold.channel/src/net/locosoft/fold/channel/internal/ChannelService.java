@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletResponse;
 import net.locosoft.fold.channel.IChannel;
 import net.locosoft.fold.channel.IChannelInternal;
 import net.locosoft.fold.channel.IChannelService;
+import net.locosoft.fold.sketch.IChannelItemDetails;
 import net.locosoft.fold.util.HtmlComposer;
 
 import org.eclipse.core.runtime.CoreException;
@@ -119,6 +120,16 @@ public class ChannelService implements IChannelService {
 			return null;
 		else
 			return channel.getChannelData(key, params);
+	}
+
+	public IChannelItemDetails getChannelItemDetails(String channelId,
+			String channelItemLabel, long channelItemOrdinal) {
+		IChannelInternal channel = (IChannelInternal) getChannel(channelId);
+		if (channel == null)
+			return null;
+		else
+			return channel.getChannelItemDetails(channelItemLabel,
+					channelItemOrdinal);
 	}
 
 	private IChannelInternal lookupChannel(String pathInfo) {

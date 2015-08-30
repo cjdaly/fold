@@ -11,9 +11,17 @@
 
 package net.locosoft.fold.channel.times.internal;
 
+import java.util.TreeMap;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import net.locosoft.fold.channel.IChannel;
+import net.locosoft.fold.channel.IChannelService;
 import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.sketch.AbstractNodeSketch;
+import net.locosoft.fold.sketch.IChannelItemDetails;
+import net.locosoft.fold.sketch.pad.neo4j.OrdinalNode;
 
 import com.eclipsesource.json.JsonObject;
 import com.eclipsesource.json.JsonValue;
@@ -91,6 +99,64 @@ public class RefTimesNode extends AbstractNodeSketch {
 			jsonNodes[i] = jsonValue.asObject();
 		}
 		return jsonNodes;
+	}
+
+	public TreeMap<String, TreeMap<Long, IChannelItemDetails>> populateMinuteMap(
+			IChannelService channelService) {
+		TreeMap<String, TreeMap<Long, IChannelItemDetails>> refNodeMap = new TreeMap<String, TreeMap<Long, IChannelItemDetails>>();
+		RefTimesNode refNodes = new RefTimesNode(getNodeId());
+		JsonObject[] jsonNodes = refNodes.getTimesRefNodes();
+		populateRefNodeMap(channelService, refNodeMap, jsonNodes);
+		return refNodeMap;
+	}
+
+	private void populateRefNodeMap(IChannelService channelService,
+			TreeMap<String, TreeMap<Long, IChannelItemDetails>> refNodeMap,
+			JsonObject[] jsonNodes) {
+		for (JsonObject jsonNode : jsonNodes) {
+			for (String name : jsonNode.names()) {
+				if (name.startsWith(OrdinalNode.PREFIX_ORDINAL_INDEX)) {
+					addRefNodeMapEntry(channelService, refNodeMap, jsonNode,
+							name);
+				}
+			}
+		}
+	}
+
+	private Pattern _channelIdPattern = Pattern
+			.compile(OrdinalNode.PREFIX_ORDINAL_INDEX + "([^_]+)_([^_]+)");
+
+	private void addRefNodeMapEntry(IChannelService channelService,
+			TreeMap<String, TreeMap<Long, IChannelItemDetails>> refNodeMap,
+			JsonObject jsonNode, String ordinalIndexKeyName) {
+		Matcher matcher = _channelIdPattern.matcher(ordinalIndexKeyName);
+		if (!matcher.find())
+			return;
+
+		long channelItemOrdinal = jsonNode.getLong(ordinalIndexKeyName, -1);
+		if (channelItemOrdinal == -1)
+			return;
+
+		String channelId = matcher.group(1);
+		String channelItemLabel = matcher.group(2);
+
+		IChannel channel = channelService.getChannel(channelId);
+		if (channel == null)
+			return;
+
+		IChannelItemDetails channelItemDetails = channelService
+				.getChannelItemDetails(channelId, channelItemLabel,
+						channelItemOrdinal);
+
+		if (channelItemDetails != null) {
+			TreeMap<Long, IChannelItemDetails> channelMap = refNodeMap
+					.get(channelId);
+			if (channelMap == null) {
+				channelMap = new TreeMap<Long, IChannelItemDetails>();
+				refNodeMap.put(channelId, channelMap);
+			}
+			channelMap.put(channelItemOrdinal, channelItemDetails);
+		}
 	}
 
 }

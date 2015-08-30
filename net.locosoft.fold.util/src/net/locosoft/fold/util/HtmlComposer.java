@@ -152,6 +152,14 @@ public class HtmlComposer {
 		simpleTag("li", text);
 	}
 
+	public void object(String data, String type) {
+		_writer.print("<object data='");
+		_writer.print(data);
+		_writer.print("' type='");
+		_writer.print(type);
+		_writer.print("'></object>");
+	}
+
 	public void ol() {
 		ol(true);
 	}

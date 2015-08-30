@@ -4,5 +4,6 @@ Bundle-Name: fold channel times
 Bundle-SymbolicName: net.locosoft.fold.channel.times;singleton:=true
 Bundle-Version: 0.1.0
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
-Require-Bundle: net.locosoft.fold.required
+Require-Bundle: net.locosoft.fold.required,
+ net.locosoft.fold.channel.graph
 Export-Package: net.locosoft.fold.channel.times

@@ -17,6 +17,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import net.locosoft.fold.sketch.IChannelItemDetails;
+
 public interface IChannelService {
 
 	IChannel[] getAllChannels();
@@ -26,6 +28,9 @@ public interface IChannelService {
 	<T extends IChannel> T getChannel(Class<T> channelInterface);
 
 	String getChannelData(String channelId, String key, String... params);
+
+	IChannelItemDetails getChannelItemDetails(String channelId,
+			String channelItemLabel, long channelItemOrdinal);
 
 	boolean channelSecurity(HttpServletRequest request,
 			HttpServletResponse response) throws IOException;

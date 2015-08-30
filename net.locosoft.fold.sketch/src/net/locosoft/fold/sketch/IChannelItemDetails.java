@@ -17,10 +17,15 @@ public interface IChannelItemDetails extends ISketch {
 
 	String getItemLabel();
 
+	String getItemKind();
+
+	long getTimestamp();
+
 	long getOrdinal();
 
 	JsonObject getJson();
 
 	String getUrlPath();
 
+	String[] getDataLines();
 }

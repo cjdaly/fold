@@ -12,11 +12,12 @@
 package net.locosoft.fold.channel.times.internal;
 
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.TreeMap;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -24,12 +25,12 @@ import javax.servlet.http.HttpServletResponse;
 
 import net.locosoft.fold.channel.AbstractChannel;
 import net.locosoft.fold.channel.IChannel;
+import net.locosoft.fold.channel.graph.IGraphChannel;
 import net.locosoft.fold.channel.times.ITimesChannel;
 import net.locosoft.fold.sketch.IChannelItemDetails;
 import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
 import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
-import net.locosoft.fold.sketch.pad.neo4j.OrdinalNode;
 import net.locosoft.fold.util.HtmlComposer;
 import net.locosoft.fold.util.LruNodeCache;
 
@@ -105,9 +106,133 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 		} else if ((path.segmentCount() > 1) && (path.segmentCount() < 8)) {
 			new ChannelHttpGetTimesSegment(path).composeHtmlResponse(request,
 					response);
+		} else if ((path.segmentCount() == 8)
+				&& "time-tree-slice.svg".equals(path.segment(7))) {
+			createGraphSvg(path, request, response);
+		} else if ((path.segmentCount() == 8)
+				&& "time-tree-slice.png".equals(path.segment(7))) {
+			createGraphPng(path, request, response);
 		} else {
 			super.channelHttpGet(request, response);
 		}
+	}
+
+	private String attrsHelper(String label, String value, String url) {
+		return "[shape=box, style=filled, fillcolor=burlywood, label=\""
+				+ label + "\\n" + value + "\", URL=\"" + url
+				+ "\", target=_top]; ";
+	}
+
+	private void createGraphPng(Path path, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String dot = createGraphDot(path, request, response);
+		IGraphChannel graphChannel = getChannelService().getChannel(
+				IGraphChannel.class);
+		graphChannel.graphPngImage(dot.toString(), request, response);
+	}
+
+	private void createGraphSvg(Path path, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		String dot = createGraphDot(path, request, response);
+		IGraphChannel graphChannel = getChannelService().getChannel(
+				IGraphChannel.class);
+		graphChannel.graphSvgImage(dot.toString(), request, response);
+	}
+
+	private String createGraphDot(Path path, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		StringBuilder dot = new StringBuilder();
+		dot.append("digraph Times { pack=true; rankdir=LR; subgraph clusterTimes { ");
+		for (int i = 2; i < 7; i++) {
+			String segment = path.segment(i);
+			switch (i) {
+			case 2:
+				dot.append("year ");
+				dot.append(attrsHelper("Year", segment,
+						"/fold" + path.uptoSegment(i + 1)));
+				dot.append("year -> month; ");
+				break;
+			case 3:
+				dot.append("month ");
+				dot.append(attrsHelper("Month", segment,
+						"/fold" + path.uptoSegment(i + 1)));
+				dot.append("month -> day; ");
+				break;
+			case 4:
+				dot.append("day ");
+				dot.append(attrsHelper("Day", segment,
+						"/fold" + path.uptoSegment(i + 1)));
+				dot.append("day -> hour; ");
+				break;
+			case 5:
+				dot.append("hour ");
+				dot.append(attrsHelper("Hour", segment,
+						"/fold" + path.uptoSegment(i + 1)));
+				dot.append("hour -> minute; ");
+				break;
+			case 6:
+				dot.append("minute ");
+				dot.append(attrsHelper("Minute", segment,
+						"/fold" + path.uptoSegment(i + 1)));
+				break;
+			}
+		}
+
+		dot.append(" } subgraph clusterEvents { ");
+
+		GetTimesNode minuteNode = new GetTimesNode(getEpochNodeId());
+		long timeNodeId = minuteNode.getTimeNodeId(path.removeLastSegments(1));
+		if (timeNodeId != -1) {
+			Calendar calendar = Calendar.getInstance();
+			RefTimesNode refNodes = new RefTimesNode(timeNodeId);
+			TreeMap<String, TreeMap<Long, IChannelItemDetails>> minuteMap = refNodes
+					.populateMinuteMap(getChannelService());
+			for (Entry<String, TreeMap<Long, IChannelItemDetails>> channelEntry : minuteMap
+					.entrySet()) {
+				String channelId = channelEntry.getKey();
+				String prevNodeId = null;
+				for (Entry<Long, IChannelItemDetails> channelItemEntry : channelEntry
+						.getValue().entrySet()) {
+					String nodeId = channelId + "_" + channelItemEntry.getKey();
+					String nodeLabel = channelId + " <b>"
+							+ channelItemEntry.getKey() + "</b>";
+					if (prevNodeId != null) {
+						dot.append(prevNodeId + " -> " + nodeId
+								+ " [arrowhead=none]; ");
+					}
+					IChannelItemDetails channelItemDetails = channelItemEntry
+							.getValue();
+					calendar.setTimeInMillis(channelItemDetails.getTimestamp());
+					int second = calendar.get(Calendar.SECOND);
+
+					dot.append(nodeId);
+					dot.append(" [shape=none, margin=0, URL=\""
+							+ channelItemDetails.getUrlPath()
+							+ "\", target=_top, ");
+					dot.append("label=<<table border='0' cellborder='1' cellspacing='0'><tr><td bgcolor='thistle'>");
+					dot.append(nodeLabel);
+					dot.append("</td></tr>");
+					dot.append("<tr><td bgcolor='lightsteelblue'>");
+					dot.append("Second: " + second);
+					dot.append("</td></tr>");
+					String[] dataLines = channelItemDetails.getDataLines();
+					for (String dataLine : dataLines) {
+						dot.append("<tr><td bgcolor='lightsteelblue'>");
+						dot.append(dataLine);
+						dot.append("</td></tr>");
+					}
+
+					dot.append("</table>>]; ");
+
+					dot.append(nodeId + " -> minute; ");
+
+					prevNodeId = nodeId;
+				}
+			}
+		}
+
+		dot.append(" } } ");
+		return dot.toString();
 	}
 
 	private class ChannelHttpGetTimes extends ChannelHeaderFooterHtml {
@@ -118,6 +243,14 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 		protected void composeHtmlResponseBody(HttpServletRequest request,
 				HttpServletResponse response, HtmlComposer html)
 				throws ServletException, IOException {
+			Date now = new Date();
+			SimpleDateFormat timeFormat = new SimpleDateFormat("hh:mm a");
+			String time = timeFormat.format(now);
+			GetTimesNode sketchy = new GetTimesNode(getEpochNodeId());
+			sketchy.getMinuteNodeId(now.getTime(), true);
+			html.p("current minute: "
+					+ html.A(TimesUtil.getUrlPath(now.getTime()), time));
+
 			html.p("epochs:");
 			HierarchyNode sketch = new HierarchyNode(getChannelNodeId());
 			String[] segments = sketch.getSubSegments();
@@ -168,84 +301,42 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 				case 6: // hour
 					html.p("minutes: ");
 					break;
+				case 7: // minute
+					String imageUrl = "/fold"
+							+ _path.removeTrailingSeparator().toString()
+							+ "/time-tree-slice.svg";
+					html.object(imageUrl, "image/svg+xml");
 				}
 
 				HierarchyNode hierNode = new HierarchyNode(timeNodeId);
 				String[] segments = hierNode.getSubSegments();
-				html.ul();
-				for (String segment : segments) {
-					html.li(html.A("/fold"
-							+ _path.removeTrailingSeparator().toString() + "/"
-							+ segment, segment));
+				if (segments.length > 0) {
+					html.ul();
+					for (String segment : segments) {
+						html.li(html.A("/fold"
+								+ _path.removeTrailingSeparator().toString()
+								+ "/" + segment, segment));
+					}
+					html.ul(false);
 				}
-				html.ul(false);
-
-				TreeMap<String, TreeMap<Long, String>> refNodeMap = new TreeMap<String, TreeMap<Long, String>>();
 
 				RefTimesNode refNodes = new RefTimesNode(timeNodeId);
-				JsonObject[] jsonNodes = refNodes.getTimesRefNodes();
-				populateRefNodeMap(refNodeMap, jsonNodes);
-
-				for (Entry<String, TreeMap<Long, String>> channelEntry : refNodeMap
+				TreeMap<String, TreeMap<Long, IChannelItemDetails>> minuteMap = refNodes
+						.populateMinuteMap(getChannelService());
+				for (Entry<String, TreeMap<Long, IChannelItemDetails>> channelEntry : minuteMap
 						.entrySet()) {
 					html.h(4, channelEntry.getKey());
 					html.ul();
-					for (Entry<Long, String> channelItemEntry : channelEntry
+					for (Entry<Long, IChannelItemDetails> channelItemEntry : channelEntry
 							.getValue().entrySet()) {
-						html.li(html.A(channelItemEntry.getValue(),
+						html.li(html.A(
+								channelItemEntry.getValue().getUrlPath(),
 								channelItemEntry.getKey().toString()));
 					}
 					html.ul(false);
 				}
 			}
 		}
-
-		private void populateRefNodeMap(
-				TreeMap<String, TreeMap<Long, String>> refNodeMap,
-				JsonObject[] jsonNodes) {
-			for (JsonObject jsonNode : jsonNodes) {
-				for (String name : jsonNode.names()) {
-					if (name.startsWith(OrdinalNode.PREFIX_ORDINAL_INDEX)) {
-						addRefNodeMapEntry(refNodeMap, jsonNode, name);
-					}
-				}
-			}
-		}
-
-		private Pattern _channelIdPattern = Pattern
-				.compile(OrdinalNode.PREFIX_ORDINAL_INDEX + "([^_]+)_([^_]+)");
-
-		private void addRefNodeMapEntry(
-				TreeMap<String, TreeMap<Long, String>> refNodeMap,
-				JsonObject jsonNode, String ordinalIndexKeyName) {
-			Matcher matcher = _channelIdPattern.matcher(ordinalIndexKeyName);
-			if (!matcher.find())
-				return;
-
-			String channelId = matcher.group(1);
-			String channelItemLabel = matcher.group(2);
-			IChannel channel = getChannelService().getChannel(channelId);
-			if (channel == null)
-				return;
-
-			long channelItemOrdinal = jsonNode.getLong(ordinalIndexKeyName, -1);
-			if (channelItemOrdinal == -1)
-				return;
-
-			IChannelItemDetails channelItemDetails = channel
-					.getChannelItemDetails(channelItemLabel, channelItemOrdinal);
-			if (channelItemDetails != null) {
-				String channelItemUrlPath = channelItemDetails.getUrlPath();
-				if (channelItemUrlPath != null) {
-					TreeMap<Long, String> channelMap = refNodeMap
-							.get(channelId);
-					if (channelMap == null) {
-						channelMap = new TreeMap<Long, String>();
-						refNodeMap.put(channelId, channelMap);
-					}
-					channelMap.put(channelItemOrdinal, channelItemUrlPath);
-				}
-			}
-		}
 	}
+
 }

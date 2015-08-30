@@ -26,18 +26,6 @@ public abstract class ChannelItemDetails implements IChannelItemDetails {
 		_channelItemNode = new ChannelItemNode(channel, itemLabel);
 	}
 
-	public String getItemLabel() {
-		return _channelItemNode.getItemLabel();
-	}
-
-	public long getOrdinal() {
-		return _ordinal;
-	}
-
-	public JsonObject getJson() {
-		return _jsonObject;
-	}
-
 	public boolean load(long ordinal) {
 		if (ordinal == -1) {
 			_ordinal = _channelItemNode.getLatestOrdinal();
@@ -48,5 +36,31 @@ public abstract class ChannelItemDetails implements IChannelItemDetails {
 		return _jsonObject != null;
 	}
 
-	public abstract String getUrlPath();
+	public String getItemLabel() {
+		return _channelItemNode.getItemLabel();
+	}
+
+	public String getItemKind() {
+		return null;
+	}
+
+	public long getTimestamp() {
+		return Long.MIN_VALUE;
+	}
+
+	public long getOrdinal() {
+		return _ordinal;
+	}
+
+	public JsonObject getJson() {
+		return _jsonObject;
+	}
+
+	public String getUrlPath() {
+		return null;
+	}
+
+	public String[] getDataLines() {
+		return new String[0];
+	}
 }

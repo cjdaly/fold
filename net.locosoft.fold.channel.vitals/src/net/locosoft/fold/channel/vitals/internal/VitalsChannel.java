@@ -234,7 +234,7 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 				for (Vital vital : vitals.getVitals()) {
 					if (vital.isNumeric() && !vital.Internal) {
 						String linkPath = "/fold/vitals/plot/" + vitals.getId()
-								+ "/" + vital.Id + "/?skip=";
+								+ "/" + vital.Id + "?skip=";
 						html.tr(vitals.getId(), vital.Id,
 								html.A(linkPath + "1", "1 minute"),
 								html.A(linkPath + "5", "5 minutes"),
@@ -264,6 +264,10 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 				throws ServletException, IOException {
 			String imagePath = "/fold/vitals/plot/" + _vitalsId + "/"
 					+ _vitalId + "/image.png";
+			String queryString = request.getQueryString();
+			if (queryString != null) {
+				imagePath += "?" + queryString;
+			}
 			String altText = "plot of " + _vitalId + ":" + _vitalId;
 			html.img(imagePath, altText);
 		}
@@ -271,17 +275,6 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
 	private void plotVitalsImage(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
-
-		IPlotChannel plotChannel = getChannelService().getChannel(
-				IPlotChannel.class);
-		ITimesChannel timesChannel = getChannelService().getChannel(
-				ITimesChannel.class);
-
-		Path path = new Path(request.getPathInfo());
-		String vitalsId = path.segment(2);
-		String vitalId = path.segment(3);
-
-		TreeMap<Long, JsonValue> timeSeriesDataMap = new TreeMap<Long, JsonValue>();
 
 		long currentTimeMillis = System.currentTimeMillis();
 		int sampleCount = 40;
@@ -293,7 +286,17 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 			skipParam = 1;
 		}
 
-		int skipCount = 60 * 1000 * skipParam;
+		Path path = new Path(request.getPathInfo());
+		String vitalsId = path.segment(2);
+		String vitalId = path.segment(3);
+
+		IPlotChannel plotChannel = getChannelService().getChannel(
+				IPlotChannel.class);
+		ITimesChannel timesChannel = getChannelService().getChannel(
+				ITimesChannel.class);
+		TreeMap<Long, JsonValue> timeSeriesDataMap = new TreeMap<Long, JsonValue>();
+
+		long skipCount = 60 * 1000 * skipParam;
 		long[] timeNodeIds = new long[sampleCount];
 		for (int i = 0; i < timeNodeIds.length; i++) {
 			long[] refNodeIds = timesChannel.getTimesRefNodeIds(

@@ -11,10 +11,12 @@
 
 package net.locosoft.fold.channel.vitals;
 
-import com.eclipsesource.json.JsonValue;
+import java.util.ArrayList;
 
 import net.locosoft.fold.channel.vitals.internal.VitalsChannel;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemDetails;
+
+import com.eclipsesource.json.JsonValue;
 
 public class VitalsItemDetails extends ChannelItemDetails {
 
@@ -41,9 +43,21 @@ public class VitalsItemDetails extends ChannelItemDetails {
 		return "/fold/vitals/" + getOrdinal();
 	}
 
-	public long getTime() {
+	public long getTimestamp() {
 		return getJson().getLong(IVitals.NODE_PROPERTY_CHECK_TIME,
 				Long.MIN_VALUE);
+	}
+
+	public String[] getDataLines() {
+		ArrayList<String> dataLines = new ArrayList<String>();
+		for (Vital vital : getVitals()) {
+			String name = vital.Name == null ? vital.Id : vital.Name;
+			JsonValue jsonValue = getValue(vital.Id);
+			String dataLine = name + ": " + jsonValue + " (" + vital.Units
+					+ ")";
+			dataLines.add(dataLine);
+		}
+		return dataLines.toArray(new String[0]);
 	}
 
 	private IVitals getIVitals() {

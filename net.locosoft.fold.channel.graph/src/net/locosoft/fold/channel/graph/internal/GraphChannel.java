@@ -40,6 +40,14 @@ public class GraphChannel extends AbstractChannel implements IGraphChannel {
 				response.getOutputStream());
 	}
 
+	public void graphSvgImage(String dotInput, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException {
+		response.setContentType("image/svg+xml");
+
+		FoldUtil.execCommand("/usr/bin/dot -Tsvg", dotInput,
+				response.getOutputStream());
+	}
+
 	public void channelHttpGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 

@@ -17,7 +17,7 @@ import net.locosoft.fold.neo4j.ICypher;
 import net.locosoft.fold.neo4j.INeo4jService;
 import net.locosoft.fold.sketch.AbstractNodeSketch;
 
-import org.eclipse.core.runtime.Path;
+import org.eclipse.core.runtime.IPath;
 
 public class GetTimesNode extends AbstractNodeSketch {
 
@@ -106,7 +106,7 @@ public class GetTimesNode extends AbstractNodeSketch {
 			+ " WHERE id(epochNode)={epochNodeId}" //
 			+ " RETURN ID(hourNode)";
 
-	public long getTimeNodeId(Path path) {
+	public long getTimeNodeId(IPath path) {
 		INeo4jService neo4jService = getNeo4jService();
 
 		ICypher cypher = null;
@@ -158,4 +158,5 @@ public class GetTimesNode extends AbstractNodeSketch {
 		else
 			return cypher.getResultDataRow(0).asLong();
 	}
+
 }

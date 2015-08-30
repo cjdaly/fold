@@ -24,4 +24,7 @@ public interface IGraphChannel extends IChannel {
 	void graphPngImage(String dotInput, HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException;
 
+	void graphSvgImage(String dotInput, HttpServletRequest request,
+			HttpServletResponse response) throws ServletException, IOException;
+
 }
