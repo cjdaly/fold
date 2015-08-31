@@ -13,6 +13,8 @@ package net.locosoft.fold.channel.times;
 
 import net.locosoft.fold.channel.IChannel;
 
+import com.eclipsesource.json.JsonObject;
+
 public interface ITimesChannel extends IChannel {
 
 	long getEpochNodeId();
@@ -24,6 +26,9 @@ public interface ITimesChannel extends IChannel {
 	long[] getTimesRefNodeIds(long timeMillis, String refNodeLabel);
 
 	long[] getTimesRefNodeIds(long timeMillis, String refNodeLabel,
+			String refNodeKey, String refNodeValue);
+
+	JsonObject[] getTimesRefNodes(long timeMillis, String refNodeLabel,
 			String refNodeKey, String refNodeValue);
 
 }

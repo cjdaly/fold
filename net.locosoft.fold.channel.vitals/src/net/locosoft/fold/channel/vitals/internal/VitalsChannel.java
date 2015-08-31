@@ -33,7 +33,6 @@ import net.locosoft.fold.sketch.IChannelItemDetails;
 import net.locosoft.fold.sketch.pad.html.ChannelHeaderFooterHtml;
 import net.locosoft.fold.sketch.pad.neo4j.ChannelItemNode;
 import net.locosoft.fold.sketch.pad.neo4j.HierarchyNode;
-import net.locosoft.fold.sketch.pad.neo4j.MultiPropertyAccessNode;
 import net.locosoft.fold.util.HtmlComposer;
 import net.locosoft.fold.util.MonitorThread;
 
@@ -234,7 +233,7 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 				for (Vital vital : vitals.getVitals()) {
 					if (vital.isNumeric() && !vital.Internal) {
 						String linkPath = "/fold/vitals/plot/" + vitals.getId()
-								+ "/" + vital.Id + "?skip=";
+								+ "/" + vital.Id + "?samples=40&skip=";
 						html.tr(vitals.getId(), vital.Id,
 								html.A(linkPath + "1", "1 minute"),
 								html.A(linkPath + "5", "5 minutes"),
@@ -303,19 +302,14 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 		TreeMap<Long, JsonValue> timeSeriesDataMap = new TreeMap<Long, JsonValue>();
 
 		long skipCount = 60 * 1000 * skipParam;
-		long[] timeNodeIds = new long[sampleCount];
-		for (int i = 0; i < timeNodeIds.length; i++) {
-			long[] refNodeIds = timesChannel.getTimesRefNodeIds(
+		for (int i = 0; i < sampleCount; i++) {
+			JsonObject[] jsonObjects = timesChannel.getTimesRefNodes(
 					currentTimeMillis, "vitals_Vitals",
 					IVitals.NODE_PROPERTY_ID, vitalsId);
-			for (long refNodeId : refNodeIds) {
-				MultiPropertyAccessNode sketch = new MultiPropertyAccessNode(
-						refNodeId);
-				JsonObject jsonObject = sketch.getProperties();
+			for (JsonObject jsonObject : jsonObjects) {
 				long checkTimeMillis = jsonObject.getLong(
 						IVitals.NODE_PROPERTY_CHECK_TIME, -1);
 				long checkTimeSeconds = checkTimeMillis / 1000;
-
 				JsonValue jsonValue = jsonObject.get(vitalId);
 				if (jsonValue.isNumber()) {
 					timeSeriesDataMap.put(Long.valueOf(checkTimeSeconds),
@@ -325,8 +319,20 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 			currentTimeMillis -= skipCount;
 		}
 
+		String units = getVitalUnits(vitalsId, vitalId);
 		plotChannel.plotPngImage("Vitals: " + vitalsId + " / " + vitalId,
-				"time", vitalId, vitalId, timeSeriesDataMap, request, response);
+				"time", vitalId, units, timeSeriesDataMap, request, response);
+	}
+
+	private String getVitalUnits(String vitalsId, String vitalId) {
+		IVitals vitals = getVitals(vitalsId);
+		if (vitals == null)
+			return "?";
+		Vital vital = vitals.getVital(vitalId);
+		if (vital == null)
+			return "??";
+		return vital.Units;
+
 	}
 
 	private class ChannelHttpGetVitalsItem extends ChannelHeaderFooterHtml {

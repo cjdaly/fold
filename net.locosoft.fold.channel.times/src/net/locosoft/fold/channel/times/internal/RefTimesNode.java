@@ -82,6 +82,39 @@ public class RefTimesNode extends AbstractNodeSketch {
 		return refIds;
 	}
 
+	public JsonObject[] getTimesRefNodes(String refNodeLabel,
+			String refNodeKey, String refNodeValue) {
+		INeo4jService neo4jService = getNeo4jService();
+
+		StringBuilder cypherText = new StringBuilder();
+		cypherText.append("MATCH (refNode");
+		if ((refNodeLabel != null) && !"".equals(refNodeLabel)) {
+			cypherText.append(":");
+			cypherText.append(refNodeLabel);
+		}
+		cypherText.append(")-[:times_Ref]->(timesNode) ");
+		cypherText.append("WHERE ID(timesNode)={timesNodeId} ");
+		if ((refNodeKey != null) && (refNodeValue != null)) {
+			cypherText.append(" AND refNode.`" + refNodeKey
+					+ "`={refNodeValue} ");
+		}
+		cypherText.append("RETURN refNode");
+
+		ICypher cypher = neo4jService.constructCypher(cypherText.toString());
+		cypher.addParameter("timesNodeId", getNodeId());
+		if ((refNodeKey != null) && (refNodeValue != null)) {
+			cypher.addParameter("refNodeValue", refNodeValue);
+		}
+		neo4jService.invokeCypher(cypher);
+
+		JsonObject[] refNodes = new JsonObject[cypher.getResultDataRowCount()];
+		for (int i = 0; i < cypher.getResultDataRowCount(); i++) {
+			JsonValue jsonValue = cypher.getResultDataRow(i);
+			refNodes[i] = jsonValue.asObject();
+		}
+		return refNodes;
+	}
+
 	public JsonObject[] getTimesRefNodes() {
 		INeo4jService neo4jService = getNeo4jService();
 		StringBuilder cypherText = new StringBuilder();

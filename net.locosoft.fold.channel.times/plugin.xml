@@ -6,7 +6,7 @@
       <channel
             id="times"
             implementation="net.locosoft.fold.channel.times.internal.TimesChannel"
-            description="time index data structure">
+            description="time tree data structure">
       </channel>
    </extension>
 </plugin>

@@ -44,7 +44,7 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 		response.setContentType("image/png");
 
 		StringBuilder plotInput = new StringBuilder();
-		plotInput.append("set terminal png size 800,400\n");
+		plotInput.append("set terminal pngcairo enhanced size 800,400\n");
 		plotInput.append("set title '" + title + "'\n");
 		plotInput.append("set xlabel '" + xLabel + "'\n");
 		plotInput.append("set ylabel '" + yLabel + "'\n");
@@ -52,7 +52,7 @@ public class PlotChannel extends AbstractChannel implements IPlotChannel {
 		plotInput.append("set grid\n");
 		plotInput.append("set xdata time\n");
 		plotInput.append("set timefmt '%s'\n");
-		plotInput.append("set format x '%m/%d'\n");
+		plotInput.append("set format x \"%d %b\\n%H:%M\"\n");
 		plotInput.append("plot '-' using 1:2 with lines title '" + keyLabel
 				+ "'\n");
 		plotInput.append("\n");

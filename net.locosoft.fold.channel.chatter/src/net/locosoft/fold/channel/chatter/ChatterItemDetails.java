@@ -19,12 +19,16 @@ public class ChatterItemDetails extends ChannelItemDetails {
 		super(channel, "Chatter");
 	}
 
-	public String getUrlPath() {
-		return "/fold/chatter/" + getOrdinal();
+	public String getItemKind() {
+		return getCategory();
 	}
 
 	public long getTimestamp() {
 		return getJson().getLong("Chatter_time", Long.MIN_VALUE);
+	}
+
+	public String getUrlPath() {
+		return "/fold/chatter/" + getOrdinal();
 	}
 
 	public String getCategory() {

@@ -98,6 +98,18 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 		}
 	}
 
+	public JsonObject[] getTimesRefNodes(long timeMillis, String refNodeLabel,
+			String refNodeKey, String refNodeValue) {
+		long minuteNodeId = getMinuteNodeId(timeMillis, false);
+		if (minuteNodeId == -1) {
+			return new JsonObject[0];
+		} else {
+			RefTimesNode sketch = new RefTimesNode(minuteNodeId);
+			return sketch.getTimesRefNodes(refNodeLabel, refNodeKey,
+					refNodeValue);
+		}
+	}
+
 	protected void channelHttpGet(HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		Path path = new Path(request.getPathInfo());
@@ -142,7 +154,7 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 	private String createGraphDot(Path path, HttpServletRequest request,
 			HttpServletResponse response) throws ServletException, IOException {
 		StringBuilder dot = new StringBuilder();
-		dot.append("digraph Times { pack=true; rankdir=LR; subgraph clusterTimes { ");
+		dot.append("digraph Times { rankdir=LR; subgraph clusterTimes { ");
 		for (int i = 2; i < 7; i++) {
 			String segment = path.segment(i);
 			switch (i) {
@@ -178,7 +190,7 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 			}
 		}
 
-		dot.append(" } subgraph clusterEvents { ");
+		dot.append(" } ");
 
 		GetTimesNode minuteNode = new GetTimesNode(getEpochNodeId());
 		long timeNodeId = minuteNode.getTimeNodeId(path.removeLastSegments(1));
@@ -239,7 +251,7 @@ public class TimesChannel extends AbstractChannel implements ITimesChannel {
 			}
 		}
 
-		dot.append(" } } ");
+		dot.append(" } ");
 		return dot.toString();
 	}
 
