@@ -7,7 +7,7 @@
 * local chart and diagram generation, with gnuplot and graphviz
 * Eclipse (headless, RCP) for modularity and extensibility
 * Java 7 or 8 runtime
-* runs on Raspberry Pi 2, ODroid(C1, U3), other ARM7 Linux, and x86 Linux
+* runs on Raspberry Pi 2, ODroid(C1+, XU4), other ARM7 Linux, and x86 Linux
 
 #### getting started
 
