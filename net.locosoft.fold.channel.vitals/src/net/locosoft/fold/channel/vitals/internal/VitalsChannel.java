@@ -13,6 +13,7 @@ package net.locosoft.fold.channel.vitals.internal;
 
 import java.io.IOException;
 import java.util.Set;
+import java.util.TimeZone;
 import java.util.TreeMap;
 
 import javax.servlet.ServletException;
@@ -277,6 +278,15 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
 		long currentTimeMillis = System.currentTimeMillis();
 
+		int offsetParam;
+		try {
+			offsetParam = Integer.parseInt(request.getParameter("offset"));
+		} catch (NumberFormatException ex) {
+			offsetParam = 0;
+		}
+
+		currentTimeMillis -= offsetParam * 60 * 1000;
+
 		int sampleCount;
 		try {
 			sampleCount = Integer.parseInt(request.getParameter("samples"));
@@ -301,6 +311,7 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 				ITimesChannel.class);
 		TreeMap<Long, JsonValue> timeSeriesDataMap = new TreeMap<Long, JsonValue>();
 
+		TimeZone timeZone = TimeZone.getDefault();
 		long skipCount = 60 * 1000 * skipParam;
 		for (int i = 0; i < sampleCount; i++) {
 			JsonObject[] jsonObjects = timesChannel.getTimesRefNodes(
@@ -308,12 +319,15 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 					IVitals.NODE_PROPERTY_ID, vitalsId);
 			for (JsonObject jsonObject : jsonObjects) {
 				long checkTimeMillis = jsonObject.getLong(
-						IVitals.NODE_PROPERTY_CHECK_TIME, -1);
-				long checkTimeSeconds = checkTimeMillis / 1000;
-				JsonValue jsonValue = jsonObject.get(vitalId);
-				if (jsonValue.isNumber()) {
-					timeSeriesDataMap.put(Long.valueOf(checkTimeSeconds),
-							jsonValue);
+						IVitals.NODE_PROPERTY_CHECK_TIME, Long.MIN_VALUE);
+				if (checkTimeMillis != Long.MIN_VALUE) {
+					int offset = timeZone.getOffset(checkTimeMillis);
+					long checkTimeSeconds = (checkTimeMillis + offset) / 1000;
+					JsonValue jsonValue = jsonObject.get(vitalId);
+					if (jsonValue.isNumber()) {
+						timeSeriesDataMap.put(Long.valueOf(checkTimeSeconds),
+								jsonValue);
+					}
 				}
 			}
 			currentTimeMillis -= skipCount;
