@@ -15,9 +15,12 @@ To get started using fold, see [fold-runtime](https://github.com/cjdaly/fold-run
 
 #### fold reference Things
 
+* Cali - Raspberry Pi 2
+* Chase - ODroid-XU4
 * [Marshall](https://github.com/cjdaly/fold/wiki/fold-Thing-Marshall) - Raspberry Pi 2
 * [Rubble](https://github.com/cjdaly/fold/wiki/fold-Thing-Rubble) - ODroid-C1
 * [Skye](https://github.com/cjdaly/fold/wiki/fold-Thing-Skye) - ODroid-U3
+* Zuma - ODroid-C1+
 
 #### going deeper
 
