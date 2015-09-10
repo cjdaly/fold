@@ -13,7 +13,7 @@
 
 To get started using fold, see [fold-runtime](https://github.com/cjdaly/fold-runtime).
 
-The Neo4j [guest blog post](http://neo4j.com/blog/neo4j-on-raspberry-pi/) describes some usage scenarios and talks about LAN-centric IoT.
+This Neo4j [guest blog post](http://neo4j.com/blog/neo4j-on-raspberry-pi/) describes some usage scenarios and talks about LAN-centric IoT.
 
 #### fold reference Things
 
