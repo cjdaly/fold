@@ -12,6 +12,7 @@
 package net.locosoft.fold.channel.vitals.internal;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Set;
 import java.util.TimeZone;
 import java.util.TreeMap;
@@ -97,7 +98,10 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 		HierarchyNode channelNode = new HierarchyNode(getChannelNodeId());
 		long defsNodeId = channelNode.getSubId("defs", true);
 		HierarchyNode defsNode = new HierarchyNode(defsNodeId);
-		long vitalsNodeId = defsNode.getSubId(vitalsId, true);
+		long vitalsNodeId = defsNode.getSubId(vitalsId, false);
+
+		if (vitalsNodeId == -1)
+			return null;
 
 		DynamicVitals vitals = new DynamicVitals(vitalsId);
 		vitals.loadVitals(vitalsNodeId);
@@ -141,6 +145,20 @@ public class VitalsChannel extends AbstractChannel implements IVitalsChannel {
 
 	public void fini() {
 		_vitalsMonitor.stop();
+	}
+
+	public void recordStaticVitals(String vitalsId,
+			HashMap<String, Object> vitalsData) {
+
+		IVitals vitals = getVitals(vitalsId);
+		if ((vitals == null) || !(vitals instanceof StaticVitals))
+			return;
+
+		StaticVitals staticVitals = (StaticVitals) vitals;
+		ChannelItemNode vitalsNode = new ChannelItemNode(VitalsChannel.this,
+				"Vitals");
+		long vitalsNodeId = vitalsNode.nextOrdinalNodeId();
+		staticVitals.recordVitals(vitalsNodeId, vitalsData);
 	}
 
 	private MonitorThread _vitalsMonitor = new MonitorThread() {

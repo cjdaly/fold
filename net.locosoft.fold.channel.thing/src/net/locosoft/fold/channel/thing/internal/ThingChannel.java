@@ -79,6 +79,10 @@ public class ThingChannel extends AbstractChannel implements IThingChannel {
 		return _thingDescription;
 	}
 
+	public Properties getThingConfigProperties() {
+		return getChannelConfigProperties(_thingProfileId);
+	}
+
 	public String getChannelData(String key, String... params) {
 		switch (key) {
 		case "name":

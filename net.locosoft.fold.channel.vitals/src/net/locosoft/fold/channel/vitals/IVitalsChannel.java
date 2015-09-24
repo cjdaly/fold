@@ -11,6 +11,8 @@
 
 package net.locosoft.fold.channel.vitals;
 
+import java.util.HashMap;
+
 import net.locosoft.fold.channel.IChannel;
 
 public interface IVitalsChannel extends IChannel {
@@ -18,5 +20,7 @@ public interface IVitalsChannel extends IChannel {
 	long getLatestVitalsOrdinal();
 
 	VitalsItemDetails getVitalsItemDetails(long ordinal);
+
+	void recordStaticVitals(String vitalsId, HashMap<String, Object> vitalsData);
 
 }

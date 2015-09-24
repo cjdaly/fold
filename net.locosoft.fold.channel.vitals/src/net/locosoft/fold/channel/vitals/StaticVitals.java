@@ -11,6 +11,8 @@
 
 package net.locosoft.fold.channel.vitals;
 
+import java.util.HashMap;
+
 import net.locosoft.fold.channel.ChannelUtil;
 import net.locosoft.fold.channel.IChannelService;
 import net.locosoft.fold.channel.times.ITimesChannel;
@@ -48,6 +50,9 @@ public abstract class StaticVitals extends AbstractVitals {
 	}
 
 	public boolean isCheckTime(long currentTimeMillis) {
+		if (_checkInterval < 1)
+			return false;
+
 		long nextCheckTime = _lastCheckTime + (_checkInterval * 1000);
 		return (currentTimeMillis >= nextCheckTime);
 	}
@@ -57,7 +62,21 @@ public abstract class StaticVitals extends AbstractVitals {
 			vital.clear();
 		}
 		readVitals();
+		recordVitalsHelper(vitalsItemNodeId);
+	}
 
+	public void recordVitals(long vitalsItemNodeId,
+			HashMap<String, Object> vitalsData) {
+		for (Vital vital : getVitalsCollection()) {
+			vital.clear();
+			if (vitalsData.containsKey(vital.Id)) {
+				recordVitalConvertType(vital.Id, vitalsData.get(vital.Id));
+			}
+		}
+		recordVitalsHelper(vitalsItemNodeId);
+	}
+
+	public void recordVitalsHelper(long vitalsItemNodeId) {
 		_lastCheckTime = System.currentTimeMillis();
 		recordVital(IVitals.NODE_PROPERTY_CHECK_TIME, _lastCheckTime);
 		recordVital(IVitals.NODE_PROPERTY_ID, getId());
@@ -74,5 +93,4 @@ public abstract class StaticVitals extends AbstractVitals {
 				.getChannel(ITimesChannel.class);
 		timesChannel.createTimesRef(_lastCheckTime, vitalsItemNodeId);
 	}
-
 }

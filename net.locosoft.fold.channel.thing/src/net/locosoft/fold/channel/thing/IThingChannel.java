@@ -11,6 +11,8 @@
 
 package net.locosoft.fold.channel.thing;
 
+import java.util.Properties;
+
 import net.locosoft.fold.channel.IChannel;
 
 public interface IThingChannel extends IChannel {
@@ -20,5 +22,7 @@ public interface IThingChannel extends IChannel {
 	String getThingName();
 
 	String getThingDescription();
+
+	Properties getThingConfigProperties();
 
 }

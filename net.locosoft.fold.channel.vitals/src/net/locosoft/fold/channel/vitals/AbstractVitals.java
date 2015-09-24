@@ -15,6 +15,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.TreeMap;
 
+import net.locosoft.fold.util.TypeConvertUtil;
+
 import com.eclipsesource.json.JsonValue;
 
 public abstract class AbstractVitals implements IVitals {
@@ -88,35 +90,45 @@ public abstract class AbstractVitals implements IVitals {
 		}
 	}
 
-	protected void recordVital(String id, int value) {
+	protected void recordVital(String id, Integer value) {
+		if (value == null)
+			return;
 		Vital vital = _idToVital.get(id);
 		if (vital != null) {
 			vital.setValue(value);
 		}
 	}
 
-	protected void recordVital(String id, long value) {
+	protected void recordVital(String id, Long value) {
+		if (value == null)
+			return;
 		Vital vital = _idToVital.get(id);
 		if (vital != null) {
 			vital.setValue(value);
 		}
 	}
 
-	protected void recordVital(String id, float value) {
+	protected void recordVital(String id, Float value) {
+		if (value == null)
+			return;
 		Vital vital = _idToVital.get(id);
 		if (vital != null) {
 			vital.setValue(value);
 		}
 	}
 
-	protected void recordVital(String id, double value) {
+	protected void recordVital(String id, Double value) {
+		if (value == null)
+			return;
 		Vital vital = _idToVital.get(id);
 		if (vital != null) {
 			vital.setValue(value);
 		}
 	}
 
-	protected void recordVital(String id, boolean value) {
+	protected void recordVital(String id, Boolean value) {
+		if (value == null)
+			return;
 		Vital vital = _idToVital.get(id);
 		if (vital != null) {
 			vital.setValue(value);
@@ -124,9 +136,37 @@ public abstract class AbstractVitals implements IVitals {
 	}
 
 	protected void recordVital(String id, String value) {
+		if (value == null)
+			return;
 		Vital vital = _idToVital.get(id);
 		if (vital != null) {
 			vital.setValue(value);
+		}
+	}
+
+	protected void recordVitalConvertType(String id, Object value) {
+		Vital vital = _idToVital.get(id);
+		if (vital != null) {
+			switch (vital.Datatype) {
+			case "int":
+				recordVital(id, TypeConvertUtil.toInteger(value));
+				break;
+			case "long":
+				recordVital(id, TypeConvertUtil.toLong(value));
+				break;
+			case "float":
+				recordVital(id, TypeConvertUtil.toFloat(value));
+				break;
+			case "double":
+				recordVital(id, TypeConvertUtil.toDouble(value));
+				break;
+			case "boolean":
+				recordVital(id, TypeConvertUtil.toBoolean(value));
+				break;
+			case "string":
+				recordVital(id, TypeConvertUtil.toString(value));
+				break;
+			}
 		}
 	}
 
