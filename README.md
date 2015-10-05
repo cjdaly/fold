@@ -17,6 +17,8 @@ Read the Neo4j [guest blog post](http://neo4j.com/blog/neo4j-on-raspberry-pi/) w
 
 #### fold reference Things
 
+![Rubble reformed](https://github.com/cjdaly/fold/wiki/images/fold-Thing-Rubble-4.jpg)
+
 * Cali - Raspberry Pi 2
 * Chase - ODroid-XU4
 * [Marshall](https://github.com/cjdaly/fold/wiki/fold-Thing-Marshall) - Raspberry Pi 2
