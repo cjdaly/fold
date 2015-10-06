@@ -17,6 +17,7 @@ Read the Neo4j [guest blog post](http://neo4j.com/blog/neo4j-on-raspberry-pi/) w
 
 #### fold reference Things
 
+###### Cali
 ![Cali](https://github.com/cjdaly/fold/wiki/images/fold-Thing-Cali-2.jpg)
 
 * [Cali](https://github.com/cjdaly/fold/wiki/fold-Thing-Cali) - Raspberry Pi 2
@@ -26,6 +27,7 @@ Read the Neo4j [guest blog post](http://neo4j.com/blog/neo4j-on-raspberry-pi/) w
 * [Skye](https://github.com/cjdaly/fold/wiki/fold-Thing-Skye) - ODroid-U3
 * Zuma - ODroid-C1+
 
+###### Rubble
 ![Rubble reformed](https://github.com/cjdaly/fold/wiki/images/fold-Thing-Rubble-4.jpg)
 
 #### going deeper
