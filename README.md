@@ -19,7 +19,7 @@ Read the Neo4j [guest blog post](http://neo4j.com/blog/neo4j-on-raspberry-pi/) w
 
 ![Rubble reformed](https://github.com/cjdaly/fold/wiki/images/fold-Thing-Rubble-4.jpg)
 
-* Cali - Raspberry Pi 2
+* [Cali](https://github.com/cjdaly/fold/wiki/fold-Thing-Cali) - Raspberry Pi 2
 * Chase - ODroid-XU4
 * [Marshall](https://github.com/cjdaly/fold/wiki/fold-Thing-Marshall) - Raspberry Pi 2
 * [Rubble](https://github.com/cjdaly/fold/wiki/fold-Thing-Rubble) - ODroid-C1
