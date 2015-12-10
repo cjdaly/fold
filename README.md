@@ -17,6 +17,8 @@ For some overview material, read the Neo4j [guest blog post](http://neo4j.com/bl
 
 #### fold reference Things
 
+:star: :snowman: :snowflake: For a limited time, [Cali](https://www.etsy.com/listing/258768820/cali-wall-hanging-linux-computer) and [Rubble](https://www.etsy.com/listing/258665027/rubble-wall-hanging-linux-computer) fold Things are available on [Etsy](https://www.etsy.com/shop/IoTArtworks)!  :snowflake: :snowman: :star:
+
 ###### Cali
 ![Cali](https://github.com/cjdaly/fold/wiki/images/fold-Thing-Cali-2.jpg)
 
